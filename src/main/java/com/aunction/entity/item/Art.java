@@ -1,6 +1,6 @@
 
-package entity.item;
- class Art extends Item {
+package com.aunction.entity.item;
+class Art extends Item {
     private String artist;
     private int year;
 

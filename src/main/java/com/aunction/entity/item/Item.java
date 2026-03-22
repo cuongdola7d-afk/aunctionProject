@@ -1,7 +1,7 @@
-package entity.item;
+package com.aunction.entity.item;
 
-import entity.base.BaseEntity;
-import entity.user.Seller;
+import com.aunction.entity.base.BaseEntity;
+import com.aunction.entity.user.Seller;
 
 public abstract class Item extends BaseEntity {
     protected String name;

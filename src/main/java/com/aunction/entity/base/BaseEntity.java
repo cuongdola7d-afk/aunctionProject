@@ -1,4 +1,4 @@
-package entity.base;
+package com.aunction.entity.base;
 
 public abstract class BaseEntity {
     protected String id;

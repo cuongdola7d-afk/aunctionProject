@@ -1,4 +1,4 @@
-package entity.auction;
+package com.aunction.entity.auction;
 
 public enum AuctionStatus {
     OPEN,

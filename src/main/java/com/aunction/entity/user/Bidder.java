@@ -1,7 +1,8 @@
-package entity.user;
+package com.aunction.entity.user;
 
 import java.util.List;
-import entity.auction.BidTransaction;
+
+import com.aunction.entity.auction.BidTransaction;
 
 public class Bidder extends User {
     private List<BidTransaction> bidHistory;

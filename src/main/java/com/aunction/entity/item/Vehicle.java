@@ -1,4 +1,4 @@
-package entity.item;
+package com.aunction.entity.item;
 
 public class Vehicle extends Item {
     private String manufacturer;

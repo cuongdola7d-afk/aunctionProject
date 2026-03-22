@@ -1,4 +1,4 @@
-package entity.item;
+package com.aunction.entity.item;
 
 public class Electronics extends Item {
     private String brand;

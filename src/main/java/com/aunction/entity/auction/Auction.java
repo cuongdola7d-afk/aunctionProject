@@ -1,12 +1,12 @@
-package entity.auction;
-
-import entity.base.BaseEntity;
-import entity.item.Item;
-import entity.user.Bidder;
+package com.aunction.entity.auction;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.aunction.entity.base.BaseEntity;
+import com.aunction.entity.item.Item;
+import com.aunction.entity.user.Bidder;
 
 public class Auction extends BaseEntity {
     private Item item;
