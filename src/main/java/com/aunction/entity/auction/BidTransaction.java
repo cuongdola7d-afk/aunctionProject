@@ -16,11 +16,27 @@ public class BidTransaction extends BaseEntity {
         this.time = LocalDateTime.now();
     }
 
+    public Bidder getBidder() {
+        return bidder;
+    }
+
+    public void setBidder(Bidder bidder) {
+        this.bidder = bidder;
+    }
+
     public double getAmount() {
         return amount;
     }
 
-    public Bidder getBidder() {
-        return bidder;
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
+
+    public LocalDateTime getTime() {
+        return time;
+    }
+
+    public void setTime(LocalDateTime time) {
+        this.time = time;
     }
 }
