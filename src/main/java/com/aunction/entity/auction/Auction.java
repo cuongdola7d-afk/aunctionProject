@@ -52,4 +52,7 @@ public class Auction extends BaseEntity {
     }
 
     // getters/setters
+    public double getCurrencePrice(){
+          return currentPrice;
+    }
 }
