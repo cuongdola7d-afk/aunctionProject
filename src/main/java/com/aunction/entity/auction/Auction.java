@@ -51,8 +51,61 @@ public class Auction extends BaseEntity {
         }
     }
 
-    // getters/setters
-    public double getCurrencePrice(){
-          return currentPrice;
+    // ===== GETTERS & SETTERS =====
+
+    public Item getItem() {
+        return item;
+    }
+
+    public void setItem(Item item) {
+        this.item = item;
+    }
+
+    public List<BidTransaction> getBids() {
+        return bids;
+    }
+
+    public void setBids(List<BidTransaction> bids) {
+        this.bids = bids;
+    }
+
+    public AuctionStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(AuctionStatus status) {
+        this.status = status;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
+    }
+
+    public Bidder getHighestBidder() {
+        return highestBidder;
+    }
+
+    public void setHighestBidder(Bidder highestBidder) {
+        this.highestBidder = highestBidder;
+    }
+
+    public double getCurrentPrice() {
+        return currentPrice;
+    }
+
+    public void setCurrentPrice(double currentPrice) {
+        this.currentPrice = currentPrice;
     }
 }
