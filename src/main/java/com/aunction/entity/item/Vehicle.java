@@ -4,6 +4,11 @@ public class Vehicle extends Item {
     private String manufacturer;
     private int year;
 
+    public Vehicle(String manufacturer, int year){
+        this.manufacturer = manufacturer;
+        this.year = year;
+    }
+
     @Override
     public String getCategory() {
         return "Vehicle";

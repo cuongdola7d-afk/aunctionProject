@@ -4,6 +4,11 @@ public class Art extends Item {
     private String artist;
     private int year;
 
+    public Art(String artist, int year){
+         this.artist = artist;
+         this.year = year;
+    }
+
     @Override
     public String getCategory() {
         return "Art";
