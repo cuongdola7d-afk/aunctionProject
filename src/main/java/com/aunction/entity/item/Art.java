@@ -4,7 +4,8 @@ public class Art extends Item {
     private String artist;
     private int year;
 
-    public Art(String artist, int year){
+    public Art(String name, String description, double startingPrice,String artist, int year){
+        super(name, description, startingPrice);
          this.artist = artist;
          this.year = year;
     }

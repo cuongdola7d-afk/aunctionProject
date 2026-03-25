@@ -4,7 +4,8 @@ public class Vehicle extends Item {
     private String manufacturer;
     private int year;
 
-    public Vehicle(String manufacturer, int year){
+    public Vehicle(String name, String description, double startingPrice,String manufacturer, int year){
+        super(name, description, startingPrice);
         this.manufacturer = manufacturer;
         this.year = year;
     }
