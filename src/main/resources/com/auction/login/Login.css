@@ -1,0 +1,20 @@
+.root{
+    -fx-background-color: #00008B;
+    -fx-alignment: center;
+}
+
+.label{
+    -fx-font-family: "Arial";
+    -fx-text-fill: cyan;
+}
+
+#loginText{
+    -fx-font-family: "Arial";
+    -fx-fill: cyan;
+    -fx-stroke-width: 2px;
+    -fx-stroke: black;
+}
+
+#errorLabel{
+    -fx-text-fill: white;
+}
