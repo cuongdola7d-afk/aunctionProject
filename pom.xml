@@ -41,7 +41,7 @@
                         <!-- Usage: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>com.aunction.App</mainClass>
+                            <mainClass>com.aunction.DDCAuction</mainClass>
                         </configuration>
                     </execution>
                 </executions>

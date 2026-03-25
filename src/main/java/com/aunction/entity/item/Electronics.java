@@ -4,9 +4,10 @@ public class Electronics extends Item {
     private String brand;
     private int warrantyMonths;
 
-    public Electronics(String brand, int warrantyMonths){
-          this.brand = brand;
-          this.warrantyMonths = warrantyMonths;
+    public Electronics(String id, String name, String desc, double price, String brand, int warrantyMonths) {
+        super(name, desc, price);
+        this.brand = brand;
+        this.warrantyMonths = warrantyMonths;
     }
 
     @Override
