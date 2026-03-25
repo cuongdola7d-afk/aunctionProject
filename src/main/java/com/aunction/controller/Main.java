@@ -1,4 +1,4 @@
-package com.aunction.Controller;
+package com.aunction.controller;
 
 public class Main {
     public static void main(String[] args) {
