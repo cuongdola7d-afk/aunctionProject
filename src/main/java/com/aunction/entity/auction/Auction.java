@@ -1,57 +1,52 @@
 package com.aunction.entity.auction;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.aunction.entity.base.BaseEntity;
 import com.aunction.entity.item.Item;
 import com.aunction.entity.user.Bidder;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 public class Auction extends BaseEntity {
     private Item item;
     private List<BidTransaction> bids = new ArrayList<>();
-    private AuctionStatus status;
+    private AuctionStatus status = AuctionStatus.OPEN;
 
     private LocalDateTime startTime;
     private LocalDateTime endTime;
 
     private Bidder highestBidder;
-    private double currentPrice;
+    private double currentHighestBid;
 
-    // ===== CORE METHODS =====
-
-    public void startAuction() {
-        this.status = AuctionStatus.RUNNING;
+    public Auction() {
     }
 
-    public void endAuction() {
-        this.status = AuctionStatus.FINISHED;
-    }
+    public Auction(Item item, LocalDateTime startTime, LocalDateTime endTime) {
+        this.item = item;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.status = AuctionStatus.OPEN;
 
-    public void placeBid(BidTransaction bid) {
-        if (status != AuctionStatus.RUNNING) {
-            throw new RuntimeException("Auction not running");
-        }
-
-        if (bid.getAmount() <= currentPrice) {
-            throw new RuntimeException("Invalid bid");
-        }
-
-        bids.add(bid);
-        currentPrice = bid.getAmount();
-        highestBidder = bid.getBidder();
-    }
-
-    // ===== OPTIONAL (BONUS) =====
-
-    public void extendTimeIfNeeded() {
-        if (endTime.minusSeconds(10).isBefore(LocalDateTime.now())) {
-            endTime = endTime.plusSeconds(60);
+        if (item != null) {
+            this.currentHighestBid = item.getStartingPrice();
+            item.setCurrentPrice(item.getStartingPrice());
         }
     }
 
-    // ===== GETTERS & SETTERS =====
+    public boolean hasStarted() {
+        return startTime != null && !LocalDateTime.now().isBefore(startTime);
+    }
+
+    public boolean hasEnded() {
+        return endTime != null && !LocalDateTime.now().isBefore(endTime);
+    }
+
+    public void addBid(BidTransaction bidTransaction) {
+        if (bidTransaction != null) {
+            bids.add(bidTransaction);
+        }
+    }
 
     public Item getItem() {
         return item;
@@ -59,6 +54,10 @@ public class Auction extends BaseEntity {
 
     public void setItem(Item item) {
         this.item = item;
+        if (item != null && this.currentHighestBid == 0) {
+            this.currentHighestBid = item.getStartingPrice();
+            item.setCurrentPrice(item.getStartingPrice());
+        }
     }
 
     public List<BidTransaction> getBids() {
@@ -101,11 +100,11 @@ public class Auction extends BaseEntity {
         this.highestBidder = highestBidder;
     }
 
-    public double getCurrentPrice() {
-        return currentPrice;
+    public double getCurrentHighestBid() {
+        return currentHighestBid;
     }
 
-    public void setCurrentPrice(double currentPrice) {
-        this.currentPrice = currentPrice;
+    public void setCurrentHighestBid(double currentHighestBid) {
+        this.currentHighestBid = currentHighestBid;
     }
 }

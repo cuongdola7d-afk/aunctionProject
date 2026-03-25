@@ -1,19 +1,21 @@
 package com.aunction.entity.auction;
 
-import java.time.LocalDateTime;
-
-import com.aunction.entity.base.BaseEntity;
 import com.aunction.entity.user.Bidder;
 
-public class BidTransaction extends BaseEntity {
+import java.time.LocalDateTime;
+
+public class BidTransaction {
     private Bidder bidder;
     private double amount;
-    private LocalDateTime time;
+    private LocalDateTime bidTime;
 
-    public BidTransaction(Bidder bidder, double amount) {
+    public BidTransaction() {
+    }
+
+    public BidTransaction(Bidder bidder, double amount, LocalDateTime bidTime) {
         this.bidder = bidder;
         this.amount = amount;
-        this.time = LocalDateTime.now();
+        this.bidTime = bidTime;
     }
 
     public Bidder getBidder() {
@@ -32,11 +34,21 @@ public class BidTransaction extends BaseEntity {
         this.amount = amount;
     }
 
-    public LocalDateTime getTime() {
-        return time;
+    public LocalDateTime getBidTime() {
+        return bidTime;
     }
 
-    public void setTime(LocalDateTime time) {
-        this.time = time;
+    public void setBidTime(LocalDateTime bidTime) {
+        this.bidTime = bidTime;
+    }
+
+    @Override
+    public String toString() {
+        String bidderName = (bidder != null) ? bidder.getName() : "Unknown";
+        return "BidTransaction{" +
+                "bidder=" + bidderName +
+                ", amount=" + amount +
+                ", bidTime=" + bidTime +
+                '}';
     }
 }
