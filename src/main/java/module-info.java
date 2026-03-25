@@ -3,5 +3,5 @@ module com.aunction {
     requires javafx.fxml;
 
     opens com.aunction.controller to javafx.fxml;
-    exports com.aunction.controller;
+    exports com.aunction;
 }
