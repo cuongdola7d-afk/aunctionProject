@@ -20,6 +20,10 @@
     -fx-fill: cyan;
 }
 
-#roleChoiceBox{
+#roleChoiceBox > .label {
+    -fx-text-fill: black;
+}
+
+#roleChoiceBox .menu-item > .label {
     -fx-text-fill: black;
 }

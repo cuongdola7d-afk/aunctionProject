@@ -46,17 +46,18 @@ public class Register implements Initializable{
     }
     
     public void initialize(URL arg0, ResourceBundle arg1) {
-        roleChoiceBox.getItems().addAll(choice);
+        roleChoiceBox.getItems().addAll("As A Seller", "As A Bidder");
+        roleChoiceBox.setValue("As A Bidder");
         roleChoiceBox.setOnAction(this::getChoice);
     }
 
     public void getChoice(ActionEvent event) {
         String myChoice = roleChoiceBox.getValue();
         if (myChoice.equals("As A Seller")) {
-            roleLabel.setText("Business Name");
+            roleLabel.setText("Business Name:");
         }
         else if (myChoice.equals("As A Bidder")) {
-            roleLabel.setText("Username");
+            roleLabel.setText("Username:");
         }
     }
 }
