@@ -8,18 +8,14 @@
     -fx-text-fill: cyan;
 }
 
-#loginText{
+#registerText{
     -fx-font-family: "Arial";
     -fx-fill: cyan;
     -fx-stroke-width: 2px;
     -fx-stroke: black;
 }
 
-#donthaveanaccountText{
+#alreadyhaveanaccountText{
     -fx-font-family: "Arial";
     -fx-fill: cyan;
-}
-
-#errorLabel{
-    -fx-text-fill: white;
 }
