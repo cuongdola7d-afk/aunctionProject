@@ -2,7 +2,7 @@ package com.auction;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
-public class DDCauction extends Application {
+public class DDCAuction extends Application {
     public static void main(String[] args) {
         launch(args);
     }
