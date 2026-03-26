@@ -1,8 +1,8 @@
-package com.aunction.entity.auction;
-
-import com.aunction.entity.user.Bidder;
+package com.auction.entity.auction;
 
 import java.time.LocalDateTime;
+
+import com.auction.entity.user.Bidder;
 
 public class BidTransaction {
     private Bidder bidder;

@@ -1,4 +1,4 @@
-package com.aunction.entity.item;
+package com.auction.entity.item;
 
 public class Art extends Item {
     private String artist;

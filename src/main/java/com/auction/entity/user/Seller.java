@@ -1,8 +1,8 @@
-package com.aunction.entity.user;
+package com.auction.entity.user;
 
 import java.util.List;
 
-import com.aunction.entity.item.Item;
+import com.auction.entity.item.Item;
 
 public class Seller extends User {
     private List<Item> itemsForSale;

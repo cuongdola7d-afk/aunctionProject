@@ -1,13 +1,13 @@
-package com.aunction.controller;
-
-import com.aunction.entity.auction.Auction;
-import com.aunction.entity.item.Electronics;
-import com.aunction.entity.user.Bidder;
-import com.aunction.entity.user.Seller;
-import com.aunction.exception.AuctionClosedException;
-import com.aunction.exception.InvalidBidException;
+package com.auction.controller;
 
 import java.time.LocalDateTime;
+
+import com.auction.entity.auction.Auction;
+import com.auction.entity.item.Electronics;
+import com.auction.entity.user.Bidder;
+import com.auction.entity.user.Seller;
+import com.auction.exception.AuctionClosedException;
+import com.auction.exception.InvalidBidException;
 
 public class Main {
     public static void main(String[] args) {

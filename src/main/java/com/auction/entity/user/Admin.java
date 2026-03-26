@@ -1,4 +1,4 @@
-package com.aunction.entity.user;
+package com.auction.entity.user;
 
 public class Admin extends User {
 
