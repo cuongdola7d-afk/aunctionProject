@@ -19,3 +19,7 @@
     -fx-font-family: "Arial";
     -fx-fill: cyan;
 }
+
+#roleChoiceBox{
+    -fx-text-fill: black;
+}

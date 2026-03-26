@@ -45,7 +45,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
                 <configuration>
-                    <mainClass>com.aunction.controller.DDCAuction</mainClass>
+                    <mainClass>com.auction.controller.DDCAuction</mainClass>
                 </configuration>
             </plugin>
         </plugins>
