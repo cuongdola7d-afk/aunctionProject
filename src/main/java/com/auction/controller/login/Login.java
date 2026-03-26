@@ -43,6 +43,8 @@ public class Login {
             else {
                 System.out.println(emailTextField.getText());
                 System.out.println(passwordField.getText());
+                System.out.println("Good");
+                System.out.println("Nice");
             }
         } catch (Exception e) {
             errorLabel.setText("Error!");
