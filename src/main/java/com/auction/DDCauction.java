@@ -1,4 +1,4 @@
-package com.aunction.controller;
+package com.auction;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
