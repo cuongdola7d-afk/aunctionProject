@@ -8,3 +8,4 @@ module com.auction {
     // Xuất gói để các nơi khác có thể truy cập
     exports com.auction.controller;
 }
+

@@ -8,16 +8,19 @@ import com.auction.entity.base.BaseEntity;
 import com.auction.entity.item.Item;
 import com.auction.entity.user.Bidder;
 
-public class Auction extends BaseEntity {
+public class Auction extends BaseEntity{
     private Item item;
     private List<BidTransaction> bids = new ArrayList<>();
-    private AuctionStatus status;
+
+    private AuctionStatus status = AuctionStatus.OPEN;
+
 
     private LocalDateTime startTime;
     private LocalDateTime endTime;
 
     private Bidder highestBidder;
     private double currentPrice;
+     private double currentHighestBid;
 
     // ===== CORE METHODS =====
 
@@ -53,12 +56,46 @@ public class Auction extends BaseEntity {
 
     // ===== GETTERS & SETTERS =====
 
+    public Auction() {
+    }
+
+    public Auction(Item item, LocalDateTime startTime, LocalDateTime endTime) {
+        this.item = item;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.status = AuctionStatus.OPEN;
+
+        if (item != null) {
+            this.currentHighestBid = item.getStartingPrice();
+            item.setCurrentPrice(item.getStartingPrice());
+        }
+    }
+
+    public boolean hasStarted() {
+        return startTime != null && !LocalDateTime.now().isBefore(startTime);
+    }
+
+    public boolean hasEnded() {
+        return endTime != null && !LocalDateTime.now().isBefore(endTime);
+    }
+
+    public void addBid(BidTransaction bidTransaction) {
+        if (bidTransaction != null) {
+            bids.add(bidTransaction);
+        }
+    }
+
+
     public Item getItem() {
         return item;
     }
 
     public void setItem(Item item) {
         this.item = item;
+        if (item != null && this.currentHighestBid == 0) {
+            this.currentHighestBid = item.getStartingPrice();
+            item.setCurrentPrice(item.getStartingPrice());
+        }
     }
 
     public List<BidTransaction> getBids() {
@@ -108,4 +145,11 @@ public class Auction extends BaseEntity {
     public void setCurrentPrice(double currentPrice) {
         this.currentPrice = currentPrice;
     }
+    public double getCurrentHighestBid() {
+        return currentHighestBid;
+    }
+
+    public void setCurrentHighestBid(double currentHighestBid) {
+        this.currentHighestBid = currentHighestBid;
+    }    
 }
