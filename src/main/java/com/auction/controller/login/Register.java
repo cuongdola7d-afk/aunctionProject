@@ -8,21 +8,42 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class Register{
 
     @FXML
-    private Label roleLabel;
+    private TextField emailTextField, usernameTextField;
     @FXML
-    private ChoiceBox<String> roleChoiceBox;
+    private PasswordField passwordField;
+    @FXML
+    private Button registerButton;
+    @FXML
+    private Label errorLabel;
 
     private Stage stage;
     private Scene scene;
     private Parent root;
+
+    public void register(ActionEvent event) throws IOException {
+        try {
+            if (passwordField.getText().equals("") || emailTextField.getText().equals("") || usernameTextField.getText().equals("")) {
+                errorLabel.setText("Enter your info please.");
+            }
+            else {
+                System.out.println(usernameTextField.getText());
+                System.out.println(emailTextField.getText());
+                System.out.println(passwordField.getText());
+            }
+        } catch (Exception e) {
+            errorLabel.setText("Error!");
+        }
+    }
 
     public void redirect(ActionEvent event) throws IOException {
         try {

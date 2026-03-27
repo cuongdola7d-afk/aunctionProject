@@ -31,20 +31,12 @@ public class Login {
 
     public void login(ActionEvent event) throws IOException {
         try {
-            if (passwordField.getText().equals("") && emailTextField.getText().equals("")) {
-                errorLabel.setText("Enter your email and password please.");
-            }
-            else if (passwordField.getText().equals("")) {
-                errorLabel.setText("Enter your password please.");
-            }
-            else if (emailTextField.getText().equals("")) {
-                errorLabel.setText("Enter your email please.");
+            if (passwordField.getText().equals("") || emailTextField.getText().equals("")) {
+                errorLabel.setText("Enter your info please.");
             }
             else {
                 System.out.println(emailTextField.getText());
                 System.out.println(passwordField.getText());
-                System.out.println("Good");
-                System.out.println("Nice");
             }
         } catch (Exception e) {
             errorLabel.setText("Error!");

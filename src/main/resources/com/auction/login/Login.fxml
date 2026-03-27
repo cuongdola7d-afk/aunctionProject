@@ -14,26 +14,26 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="399.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.auction.controller.login.Login">
    <children>
-      <ImageView fx:id="logoImageView" fitHeight="154.0" fitWidth="200.0" layoutX="95.0">
+      <ImageView fx:id="logoImageView" fitHeight="154.0" fitWidth="200.0" layoutX="100.0">
          <image>
             <Image url="@DDCAuction.png" />
          </image>
       </ImageView>
-      <TextField fx:id="emailTextField" layoutX="195.0" layoutY="174.0" prefHeight="0.0" prefWidth="182.0" promptText="\@gmail.com, @edu,vn,..." />
-      <PasswordField fx:id="passwordField" layoutX="195.0" layoutY="210.0" prefHeight="26.0" prefWidth="182.0" promptText="password" />
-      <Label fx:id="emailLabel" layoutX="14.0" layoutY="172.0" prefHeight="30.0" prefWidth="110.0" text="Email:">
+      <TextField fx:id="emailTextField" layoutX="195.0" layoutY="189.0" prefHeight="0.0" prefWidth="182.0" promptText="\@gmail.com, @edu,vn,..." />
+      <PasswordField fx:id="passwordField" layoutX="195.0" layoutY="225.0" prefHeight="26.0" prefWidth="182.0" promptText="password" />
+      <Label fx:id="emailLabel" layoutX="14.0" layoutY="187.0" prefHeight="30.0" prefWidth="110.0" text="Email:">
          <font>
             <Font size="20.0" />
          </font>
       </Label>
-      <Label fx:id="passwordLabel" layoutX="14.0" layoutY="208.0" prefHeight="30.0" prefWidth="110.0" text="Password:">
+      <Label fx:id="passwordLabel" layoutX="14.0" layoutY="223.0" prefHeight="30.0" prefWidth="110.0" text="Password:">
          <font>
             <Font size="20.0" />
          </font>
       </Label>
-      <Button fx:id="loginButton" layoutX="171.0" layoutY="252.0" mnemonicParsing="false" onAction="#login" text="Login" />
-      <Label fx:id="errorLabel" alignment="CENTER" layoutX="-130.0" layoutY="292.0" prefHeight="18.0" prefWidth="650.0" />
-      <Text fx:id="loginText" layoutX="-234.0" layoutY="165.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Login" textAlignment="CENTER" wrappingWidth="856.5999183654785">
+      <Button fx:id="loginButton" layoutX="177.0" layoutY="267.0" mnemonicParsing="false" onAction="#login" text="Login" />
+      <Label fx:id="errorLabel" alignment="CENTER" layoutX="-130.0" layoutY="307.0" prefHeight="18.0" prefWidth="650.0" />
+      <Text fx:id="loginText" layoutY="170.0" strokeType="OUTSIDE" strokeWidth="0.0" text="LOGIN" textAlignment="CENTER" wrappingWidth="399.00000000000006">
          <font>
             <Font size="30.0" />
          </font>
