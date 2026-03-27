@@ -1,13 +1,10 @@
 package com.auction.controller.login;
 
 import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -16,14 +13,13 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
-public class Register implements Initializable{
+public class Register{
 
     @FXML
     private Label roleLabel;
     @FXML
     private ChoiceBox<String> roleChoiceBox;
 
-    private String[] choice = {"As A Seller", "As A Bidder"};
     private Stage stage;
     private Scene scene;
     private Parent root;
@@ -42,22 +38,6 @@ public class Register implements Initializable{
             stage.setScene(scene);
             stage.show();
         } catch (Exception e) {
-        }
-    }
-    
-    public void initialize(URL arg0, ResourceBundle arg1) {
-        roleChoiceBox.getItems().addAll("As A Seller", "As A Bidder");
-        roleChoiceBox.setValue("As A Bidder");
-        roleChoiceBox.setOnAction(this::getChoice);
-    }
-
-    public void getChoice(ActionEvent event) {
-        String myChoice = roleChoiceBox.getValue();
-        if (myChoice.equals("As A Seller")) {
-            roleLabel.setText("Business Name:");
-        }
-        else if (myChoice.equals("As A Bidder")) {
-            roleLabel.setText("Username:");
         }
     }
 }
