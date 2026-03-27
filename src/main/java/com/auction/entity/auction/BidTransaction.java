@@ -1,9 +1,9 @@
-package com.aunction.entity.auction;
+package com.auction.entity.auction;
 
 import java.time.LocalDateTime;
 
-import com.aunction.entity.base.BaseEntity;
-import com.aunction.entity.user.Bidder;
+import com.auction.entity.base.BaseEntity;
+import com.auction.entity.user.Bidder;
 
 public class BidTransaction extends BaseEntity {
     private Bidder bidder;

@@ -1,6 +1,6 @@
-package com.aunction.dao;
+package com.auction.dao;
 
-import com.aunction.entity.item.Item;
+import com.auction.entity.item.Item;
 import java.util.ArrayList;
 import java.util.List;
 

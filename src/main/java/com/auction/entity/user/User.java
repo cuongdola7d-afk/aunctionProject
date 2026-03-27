@@ -1,6 +1,6 @@
-package com.aunction.entity.user;
+package com.auction.entity.user;
 
-import com.aunction.entity.base.BaseEntity;
+import com.auction.entity.base.BaseEntity;
 
 public abstract class User extends BaseEntity {
     protected String name;
