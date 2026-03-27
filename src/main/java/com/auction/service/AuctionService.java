@@ -78,11 +78,7 @@ public class AuctionService {
             );
         }
 
-        BidTransaction bidTransaction = new BidTransaction(
-                bidder,
-                amount,
-                LocalDateTime.now()
-        );
+        BidTransaction bidTransaction = new BidTransaction(bidder,amount,LocalDateTime.now());
 
         auction.addBid(bidTransaction);
         auction.setCurrentHighestBid(amount);
