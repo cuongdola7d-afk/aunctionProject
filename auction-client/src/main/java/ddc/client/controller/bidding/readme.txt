@@ -1,0 +1,1 @@
+Chỗ để làm giao diện bidding
