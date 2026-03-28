@@ -23,7 +23,7 @@ public class Register {
 
     @FXML
     public void register(ActionEvent event) {
-        if (usernameTextField.getText().equals("") || passwordField.getText().equals("") || emailTextField.getText().equals("")) {
+        if (usernameTextField.getText().isEmpty() || passwordField.getText().isEmpty() || emailTextField.getText().isEmpty()) {
             errorLabel.setText("Please enter your information.");
         }
         else {
