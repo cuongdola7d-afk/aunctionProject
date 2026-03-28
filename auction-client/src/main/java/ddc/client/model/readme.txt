@@ -1,0 +1,1 @@
+chỗ để mẫu thông tin truyền về server
