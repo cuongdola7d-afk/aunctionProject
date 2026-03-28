@@ -11,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class Login {
@@ -28,15 +29,20 @@ public class Login {
         }
         else {
             try {
-            Parent root = FXMLLoader.load(getClass().getResource("/ddc/client/views/selling/Selling.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root, 800, 600));
-            stage.show();
-        } catch (IOException e) {
-            System.out.println("Error!" + e.getMessage());
-        } catch (Exception e) {
-            System.out.println("Error!" + e.getMessage());
-        }
+                Parent root = FXMLLoader.load(getClass().getResource("/ddc/client/views/selling/Selling.fxml"));
+                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                Image icon = new Image(getClass().getResourceAsStream("/ddc/client/views/DDCAuction.png"));
+
+                stage.setTitle("DDC Auction");
+                stage.getIcons().add(icon);
+                stage.setResizable(true);
+                stage.setScene(new Scene(root, 800, 600));
+                stage.show();
+            } catch (IOException e) {
+                System.out.println("Error!" + e.getMessage());
+            } catch (Exception e) {
+                System.out.println("Error!" + e.getMessage());
+            }
         }
     }
 
