@@ -12,12 +12,12 @@ import javafx.stage.Stage;
 public class Client extends Application{
     @Override
     public void start (Stage stage) throws IOException{
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("views/loginregister/login.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("views/loginregister/Login.fxml"));
         Parent root = loader.load();
 
         Image icon = new Image(getClass().getResourceAsStream("views/DDCAuction.png"));
 
-        Scene scene = new Scene(root, 400, 350);
+        Scene scene = new Scene(root, 400, 500);
 
         stage.getIcons().add(icon);
         stage.setTitle("DDC Auction");
