@@ -20,7 +20,7 @@ public class Client extends Application{
         Scene scene = new Scene(root, 400, 500);
 
         stage.getIcons().add(icon);
-        stage.setResizable(false);
+
         stage.setTitle("DDC Auction");
         stage.setScene(scene);
         stage.setResizable(false);
