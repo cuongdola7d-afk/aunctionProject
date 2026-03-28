@@ -28,7 +28,7 @@ public class ItemDAO {
         return items;
     }
 
-    public Item getItemById(int id) {
+    public Item getItemById(String id) {
         return items.stream()
                 .filter(i -> i.getId().equals(id))
                 .findFirst()
