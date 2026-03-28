@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox alignment="CENTER" layoutX="25.0" layoutY="304.0" minHeight="0.0" prefHeight="60.0" prefWidth="550.0" spacing="15.0" style="-fx-background-color: #E3F2FD; -fx-background-radius: 40; -fx-min-height: 70; -fx-padding: 10;" AnchorPane.bottomAnchor="26.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+         <children>
+            <VBox alignment="CENTER" layoutX="403.0" layoutY="15.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="60.0" prefWidth="95.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" text="🔔" textFill="#6b6969" VBox.vgrow="NEVER">
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <Label alignment="CENTER" ellipsisString="" prefHeight="45.0" text="NOTIFICATION" textAlignment="CENTER" textFill="#6b6969" textOverrun="CLIP" VBox.vgrow="NEVER">
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                     <font>
+                        <Font name="Roboto" size="13.0" />
+                     </font>
+                  </Label>
+               </children>
+               <padding>
+                  <Insets bottom="5.0" />
+               </padding>
+            </VBox>
+            <VBox alignment="CENTER" layoutX="183.0" layoutY="15.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="60.0" prefWidth="95.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" text="⚖" textFill="#6b6969" VBox.vgrow="NEVER">
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <Label alignment="CENTER" ellipsisString="" prefHeight="45.0" text="BIDDING" textAlignment="CENTER" textFill="#6b6969" textOverrun="CLIP" VBox.vgrow="NEVER">
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                     <font>
+                        <Font name="Roboto" size="13.0" />
+                     </font>
+                  </Label>
+               </children>
+               <padding>
+                  <Insets bottom="5.0" />
+               </padding>
+            </VBox>
+            <VBox alignment="CENTER" layoutX="128.0" layoutY="15.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="60.0" prefWidth="95.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" text="🏠" textFill="#6b6969" VBox.vgrow="NEVER">
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </Label>
+                  <Label alignment="CENTER" ellipsisString="" prefHeight="45.0" text="HOME" textAlignment="CENTER" textFill="#6b6969" textOverrun="CLIP" VBox.vgrow="NEVER">
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                     <font>
+                        <Font name="Roboto" size="13.0" />
+                     </font>
+                  </Label>
+               </children>
+               <padding>
+                  <Insets bottom="5.0" />
+               </padding>
+            </VBox>
+            <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="60.0" prefWidth="95.0" style="-fx-background-color: #001F3F; -fx-background-radius: 15; -fx-padding: 10 20 10 20;" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" text="⚖" textFill="WHITE" VBox.vgrow="NEVER">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <Label ellipsisString="" prefHeight="45.0" text="SELLING" textAlignment="CENTER" textFill="WHITE" textOverrun="CLIP" VBox.vgrow="NEVER">
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                     <font>
+                        <Font name="Roboto" size="13.0" />
+                     </font>
+                  </Label>
+               </children>
+               <padding>
+                  <Insets bottom="5.0" />
+               </padding>
+            </VBox>
+            <VBox alignment="CENTER" layoutX="73.0" layoutY="15.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="60.0" prefWidth="95.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" text="👤" textFill="#6b6969" VBox.vgrow="NEVER">
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <Label alignment="CENTER" ellipsisString="" prefHeight="45.0" text="PROFILE" textAlignment="CENTER" textFill="#6b6969" textOverrun="CLIP" VBox.vgrow="NEVER">
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                     <font>
+                        <Font name="Roboto" size="13.0" />
+                     </font>
+                  </Label>
+               </children>
+               <padding>
+                  <Insets bottom="5.0" />
+               </padding>
+            </VBox>
+         </children>
+      </HBox>
+      <ImageView fitHeight="80.0" fitWidth="100.0" layoutX="45.0" layoutY="37.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="5.0">
+         <image>
+            <Image url="@../Image/icon.png" />
+         </image>
+      </ImageView>
+   </children>
+</AnchorPane>
