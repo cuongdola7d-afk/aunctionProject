@@ -19,7 +19,7 @@ public class DDCAuction extends Application {
 
         Scene scene = new Scene(root, 800, 600);
         
-        Image icon = new Image(getClass().getResourceAsStream("DDCAuction.png"));
+        Image icon = new Image(getClass().getResourceAsStream("views/DDCAuction.png"));
 
         stage.setTitle("DDCAuction");
         stage.getIcons().add(icon);
