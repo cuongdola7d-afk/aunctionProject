@@ -27,7 +27,16 @@ public class Login {
             errorLabel.setText("Please enter your information.");
         }
         else {
-
+            try {
+            Parent root = FXMLLoader.load(getClass().getResource("/ddc/client/views/selling/Selling.fxml"));
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root, 800, 600));
+            stage.show();
+        } catch (IOException e) {
+            System.out.println("Error!" + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Error!" + e.getMessage());
+        }
         }
     }
 
