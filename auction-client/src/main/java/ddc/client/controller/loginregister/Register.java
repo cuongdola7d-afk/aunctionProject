@@ -1,12 +1,13 @@
 package ddc.client.controller.loginregister;
 
+import java.io.IOException;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -17,8 +18,6 @@ public class Register {
     private TextField usernameTextField, emailTextField;
     @FXML
     private PasswordField passwordField;
-    @FXML
-    private Button registerButton;
     @FXML
     private Label errorLabel;
 
@@ -39,7 +38,6 @@ public class Register {
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root, 400, 500));
             stage.show();
-        } catch (Exception e) {
-        }
+        } catch (IOException e) {}
     }
 }
