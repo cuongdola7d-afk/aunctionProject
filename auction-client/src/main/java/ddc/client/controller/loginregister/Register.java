@@ -12,19 +12,19 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-public class Login {
+public class Register {
     @FXML
-    private TextField usernameTextField;
+    private TextField usernameTextField, emailTextField;
     @FXML
     private PasswordField passwordField;
     @FXML
-    private Button loginButton;
+    private Button registerButton;
     @FXML
     private Label errorLabel;
 
     @FXML
-    public void login(ActionEvent event) {
-        if (usernameTextField.getText().equals("") || passwordField.getText().equals("")) {
+    public void register(ActionEvent event) {
+        if (usernameTextField.getText().equals("") || passwordField.getText().equals("") || emailTextField.getText().equals("")) {
             errorLabel.setText("Please enter your information.");
         }
         else {
@@ -33,14 +33,13 @@ public class Login {
     }
 
     @FXML
-    public void switchToRegister(ActionEvent event) {
+    public void switchToLogin(ActionEvent event) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/ddc/client/views/loginregister/Register.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/ddc/client/views/loginregister/Login.fxml"));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root, 400, 500));
             stage.show();
         } catch (Exception e) {
-            System.out.println("Error!" + e.getMessage());
         }
     }
 }

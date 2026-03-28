@@ -17,7 +17,7 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="400.0" style="-fx-background-color: #00008b;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ddc.client.controller.loginregister.Login">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="400.0" style="-fx-background-color: #00008b;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ddc.client.controller.loginregister.Register">
    <children>
       <ImageView fitHeight="200.0" fitWidth="200.0" layoutX="100.0" layoutY="-25.0">
          <image>
@@ -37,21 +37,31 @@
                   <Font name="Tahoma" size="15.0" />
                </font>
             </Label>
-            <TextField fx:id="usernameTextField" prefHeight="25.0" prefWidth="225.0" promptText="Your username here..." />
+            <TextField fx:id="usernameTextField" prefHeight="25.0" prefWidth="225.0" promptText="The username you want..." />
          </children>
       </TextFlow>
-      <TextFlow layoutX="50.0" layoutY="243.0" prefHeight="20.0" prefWidth="301.0" textAlignment="CENTER">
+      <TextFlow layoutX="50.0" layoutY="276.0" prefHeight="20.0" prefWidth="301.0" textAlignment="CENTER">
          <children>
-            <Label prefHeight="16.0" prefWidth="75.0" text="Password:" textFill="AQUA">
+            <Label prefHeight="18.0" prefWidth="75.0" text="Password:" textFill="AQUA">
                <font>
                   <Font name="Tahoma" size="15.0" />
                </font>
             </Label>
-            <PasswordField fx:id="passwordField" prefHeight="25.0" prefWidth="225.0" promptText="Your password here..." />
+            <PasswordField fx:id="passwordField" prefHeight="25.0" prefWidth="225.0" promptText="The password you want..." />
          </children>
       </TextFlow>
-      <Button fx:id="loginButton" contentDisplay="CENTER" layoutX="178.0" layoutY="281.0" mnemonicParsing="false" onAction="#login" style="-fx-background-color: cyan; -fx-border-color: black;" text="Login" textFill="RED" />
-      <Text layoutX="151.0" layoutY="182.0" stroke="BLACK" strokeType="OUTSIDE" text="LOGIN">
+      <TextFlow layoutX="50.0" layoutY="242.0" prefHeight="25.0" prefWidth="301.0" textAlignment="CENTER">
+         <children>
+            <Label prefHeight="25.0" prefWidth="75.0" text="Email:" textFill="AQUA">
+               <font>
+                  <Font name="Tahoma" size="15.0" />
+               </font>
+            </Label>
+            <TextField fx:id="emailTextField" prefHeight="25.0" prefWidth="225.0" promptText="Your email here..." />
+         </children>
+      </TextFlow>
+      <Button fx:id="registerButton" contentDisplay="CENTER" layoutX="171.0" layoutY="313.0" mnemonicParsing="false" onAction="#register" style="-fx-background-color: cyan; -fx-border-color: black;" text="Register" textFill="RED" />
+      <Text layoutX="124.0" layoutY="183.0" stroke="BLACK" strokeType="OUTSIDE" text="REGISTER">
          <font>
             <Font name="Tahoma Bold" size="30.0" />
          </font>
@@ -72,16 +82,16 @@
             </LinearGradient>
          </fill>
       </Text>
-      <TextFlow layoutX="2.0" layoutY="458.0" prefHeight="28.0" prefWidth="400.0" textAlignment="CENTER">
+      <TextFlow layoutY="456.0" prefHeight="27.0" prefWidth="400.0" textAlignment="CENTER">
          <children>
-            <Label prefHeight="18.0" prefWidth="161.0" text="Don't have an account ?" textFill="AQUA">
+            <Label text="Already have an account ?" textFill="AQUA">
                <font>
                   <Font name="Arial" size="15.0" />
                </font>
             </Label>
-            <Hyperlink fx:id="registerHyperlink" alignment="CENTER" onAction="#switchToRegister" prefHeight="24.0" prefWidth="65.0" text="Register" textFill="AQUA">
+            <Hyperlink fx:id="loginHyperlink" alignment="CENTER" onAction="#switchToLogin" prefHeight="30.0" prefWidth="47.0" text="Login" textFill="AQUA">
                <font>
-                  <Font name="Arial" size="15.0" />
+                  <Font size="15.0" />
                </font>
             </Hyperlink>
          </children>
