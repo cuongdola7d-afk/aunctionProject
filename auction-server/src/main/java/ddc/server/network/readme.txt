@@ -1,0 +1,1 @@
+quản lý đa luồng, tìm hiểu xong ms làm đc :v

@@ -1,0 +1,1 @@
+truyền dữ liệu, xuất dữ liệu đấu giá
