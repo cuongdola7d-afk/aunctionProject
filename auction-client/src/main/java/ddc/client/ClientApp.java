@@ -10,14 +10,16 @@ public class ClientApp extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         FXMLLoader loader = new FXMLLoader(
-        getClass().getResource("/ddc/client/views/bidding/bidding-demo.fxml")
-);
+             getClass().getResource("/ddc/client/views/loginregister/login.fxml"));
 
-        Scene scene = new Scene(loader.load());
-        scene.getStylesheets().add(
-        getClass().getResource("/ddc/client/css/bidding/bidding-demo.css").toExternalForm());
+        Scene scene = new Scene(loader.load()); 
 
-        stage.setTitle("Bidding Demo");
+        String css = "/ddc/client/css/loginregister/login.css";
+        var cssUrl = getClass().getResource(css);
+        if (cssUrl != null) {
+            scene.getStylesheets().add(cssUrl.toExternalForm());}
+
+        stage.setTitle("Login");
         stage.setScene(scene);
         stage.show();
     }

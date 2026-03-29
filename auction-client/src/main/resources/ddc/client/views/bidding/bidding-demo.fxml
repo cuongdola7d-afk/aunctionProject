@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 
 <AnchorPane xmlns:fx="http://javafx.com/fxml"
-            fx:controller="ddc.client.controller.bidding.BiddingDemoController"
+            fx:controller="ddc.client.controller.BiddingController"
             prefWidth="1000.0"
             prefHeight="650.0">
 
