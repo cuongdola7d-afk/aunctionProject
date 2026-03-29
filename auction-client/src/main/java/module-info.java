@@ -5,6 +5,7 @@ module ddc.client {
 
     exports ddc.client;
     opens ddc.client.controller.loginregister to javafx.fxml;
+    opens ddc.client.controller.selling to javafx.fxml;
 
     // opens gemini.client.controller to javafx.fxml;
     // opens gemini.client.model to com.google.gson; 
