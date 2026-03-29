@@ -1,4 +1,4 @@
-package ddc.client.controller;
+package ddc.client.controller.bidding;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
