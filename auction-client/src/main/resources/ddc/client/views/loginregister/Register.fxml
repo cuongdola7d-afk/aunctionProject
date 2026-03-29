@@ -32,7 +32,7 @@
       </ImageView>
       <TextFlow layoutX="50.0" layoutY="208.0" prefHeight="25.0" prefWidth="301.0" textAlignment="CENTER">
          <children>
-            <Label prefHeight="25.0" prefWidth="75.0" text="Username:" textFill="AQUA">
+            <Label prefHeight="18.0" prefWidth="75.0" text="Username:" textFill="AQUA">
                <font>
                   <Font name="Tahoma" size="15.0" />
                </font>
@@ -42,7 +42,7 @@
       </TextFlow>
       <TextFlow layoutX="50.0" layoutY="276.0" prefHeight="20.0" prefWidth="301.0" textAlignment="CENTER">
          <children>
-            <Label prefHeight="18.0" prefWidth="75.0" text="Password:" textFill="AQUA">
+            <Label prefHeight="21.0" prefWidth="75.0" text="Password:" textFill="AQUA">
                <font>
                   <Font name="Tahoma" size="15.0" />
                </font>
@@ -52,7 +52,7 @@
       </TextFlow>
       <TextFlow layoutX="50.0" layoutY="242.0" prefHeight="25.0" prefWidth="301.0" textAlignment="CENTER">
          <children>
-            <Label prefHeight="25.0" prefWidth="75.0" text="Email:" textFill="AQUA">
+            <Label prefHeight="18.0" prefWidth="75.0" text="Email:" textFill="AQUA">
                <font>
                   <Font name="Tahoma" size="15.0" />
                </font>
