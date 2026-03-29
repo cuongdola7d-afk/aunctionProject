@@ -1,7 +1,5 @@
 package ddc.server.model.user;
-
 import ddc.server.model.entity.*;
-
 public abstract class User extends BaseEntity {
     protected String name;
     protected String email;

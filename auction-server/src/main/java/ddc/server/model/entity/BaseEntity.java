@@ -1,5 +1,4 @@
 package ddc.server.model.entity;
-
 public abstract class BaseEntity {
     protected String id;
 
