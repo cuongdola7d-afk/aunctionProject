@@ -38,5 +38,6 @@ public class SellingController {
             e.printStackTrace();
             System.err.println("Lỗi: Không tìm thấy file FXML. Hãy kiểm tra lại đường dẫn!");
         }
+    
     }
 }
