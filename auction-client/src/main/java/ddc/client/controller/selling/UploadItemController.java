@@ -50,11 +50,11 @@ public class UploadItemController implements Initializable {
         switch (category) {
             case "Nghệ Thuật (e.g: Tranh, ảnh, ...)":
                 addTextField("Tác giả:", "e.g: Canvas, Gỗ...");
-                addTextField("Thời điểm sở hữu:", "e.g: 2024");
+                addTextField("Năm sáng tác:", "e.g: 2024");
                 break;
             case "Xe":
                 addTextField("Hãng:", "e.g:Ferrari");
-                addTextField("Thời điểm sở hữu:", "e.g:2024...");
+                addTextField("Năm sản xuất:", "eg:2024...");
                 break;
             case "Đồ điện tử":
                 addTextField("Hãng sản xuất:", "e.g: Apple, Samsung...");
