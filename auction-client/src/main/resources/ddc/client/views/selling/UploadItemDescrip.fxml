@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
@@ -9,13 +10,12 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="500.0" spacing="15.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="500.0" spacing="15.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ddc.client.controller.selling.UploadItemController">
    <padding>
       <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
    </padding>
    <children>
-      <VBox prefHeight="200.0" prefWidth="100.0" spacing="8.0">
+      <VBox prefWidth="100.0" spacing="8.0">
          <children>
             <Label text="Điền thông tin sản phẩm" textFill="#002347">
                <font>
@@ -28,13 +28,22 @@
             <HBox prefHeight="60.0" prefWidth="200.0" spacing="10.0">
                <children>
                   <Label alignment="TOP_RIGHT" maxHeight="-Infinity" maxWidth="120.0" minHeight="-Infinity" prefHeight="30.0" text="Danh mục sản phẩm" />
-                  <ComboBox maxHeight="-Infinity" maxWidth="5000.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="20.0" HBox.hgrow="ALWAYS" />
+                  <ComboBox fx:id="categoryComboBox" maxHeight="-Infinity" maxWidth="5000.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="24.0" HBox.hgrow="ALWAYS" />
                </children>
             </HBox>
             <Label text="Tên sản phẩm" />
-            <TextField maxWidth="1.7976931348623157E308" promptText="e.g : Đồng hồ thông minh" style="-fx-background-color: transparent; -fx-border-color: #ddd; -fx-border-width: 0 0 1 0; -fx-padding: 5 0 5 0;" />
+            <TextField fx:id="itemNameField" maxWidth="1.7976931348623157E308" promptText="e.g : Đồng hồ thông minh" style="-fx-background-color: transparent; -fx-border-color: #ddd; -fx-border-width: 0 0 1 0; -fx-padding: 5 0 5 0;" />
             <Label text="Mô tả sản phẩm" />
-            <TextArea maxWidth="1.7976931348623157E308" promptText="Mô tả thông tin chung , đặc điểm..." style="-fx-background-color: transparent; -fx-border-color: #ddd; -fx-border-width: 0 0 1 0; -fx-padding: 5 0 5 0;" />
+            <TextArea fx:id="itemDescriptionArea" maxWidth="1.7976931348623157E308" promptText="Mô tả thông tin chung , đặc điểm..." style="-fx-background-color: transparent; -fx-border-color: #ddd; -fx-border-width: 0 0 1 0; -fx-padding: 5 0 5 0;" />
+            <VBox fx:id="dynamicFieldsContainer" prefWidth="100.0" />
+            <Button fx:id="btnNext" alignment="CENTER" disable="true" mnemonicParsing="false" prefHeight="50.0" prefWidth="200.0" style="-fx-background-color: #cccccc; -fx-text-fill: #666666; -fx-background-radius: 20;" text="→" textFill="WHITE" VBox.vgrow="ALWAYS">
+               <font>
+                  <Font size="24.0" />
+               </font>
+               <VBox.margin>
+                  <Insets left="125.0" />
+               </VBox.margin>
+            </Button>
          </children>
       </VBox>
    </children>
