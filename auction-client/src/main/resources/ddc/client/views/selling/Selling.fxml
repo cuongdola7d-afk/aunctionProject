@@ -25,7 +25,7 @@
                         <Image url="@../DDCAuction.png" />
                      </image>
                   </ImageView>
-                  <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="200.0" text="SELLING" textAlignment="RIGHT" textFill="DARKBLUE">
+                  <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="254.0" text="BÁN HÀNG" textAlignment="RIGHT" textFill="DARKBLUE">
                      <font>
                         <Font name="System Bold" size="36.0" />
                      </font>
@@ -35,7 +35,7 @@
                   </Label>
                </children>
             </HBox>
-            <Separator halignment="RIGHT" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-color: #00008B;" VBox.vgrow="ALWAYS">
+            <Separator halignment="RIGHT" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefWidth="779.0" style="-fx-background-color: #00008B;" VBox.vgrow="ALWAYS">
                <VBox.margin>
                   <Insets top="-130.0" />
                </VBox.margin>

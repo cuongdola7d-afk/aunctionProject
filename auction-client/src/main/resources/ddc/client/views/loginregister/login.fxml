@@ -32,26 +32,26 @@
       </ImageView>
       <TextFlow layoutX="50.0" layoutY="208.0" prefHeight="25.0" prefWidth="301.0" textAlignment="CENTER">
          <children>
-            <Label prefHeight="18.0" prefWidth="75.0" text="Username:" textFill="AQUA">
+            <Label prefHeight="23.0" prefWidth="75.0" text="Tên:" textFill="AQUA">
                <font>
                   <Font name="Tahoma" size="15.0" />
                </font>
             </Label>
-            <TextField fx:id="usernameTextField" prefHeight="25.0" prefWidth="225.0" promptText="Your username here..." />
+            <TextField fx:id="usernameTextField" prefHeight="25.0" prefWidth="225.0" promptText="ten_o_day" />
          </children>
       </TextFlow>
       <TextFlow layoutX="50.0" layoutY="243.0" prefHeight="20.0" prefWidth="301.0" textAlignment="CENTER">
          <children>
-            <Label prefHeight="16.0" prefWidth="75.0" text="Password:" textFill="AQUA">
+            <Label prefHeight="16.0" prefWidth="75.0" text="Mật khẩu:" textFill="AQUA">
                <font>
                   <Font name="Tahoma" size="15.0" />
                </font>
             </Label>
-            <PasswordField fx:id="passwordField" prefHeight="25.0" prefWidth="225.0" promptText="Your password here..." />
+            <PasswordField fx:id="passwordField" prefHeight="25.0" prefWidth="225.0" promptText="mat_khau_o_day" />
          </children>
       </TextFlow>
-      <Button fx:id="loginButton" contentDisplay="CENTER" layoutX="178.0" layoutY="281.0" mnemonicParsing="false" onAction="#login" style="-fx-background-color: cyan; -fx-border-color: black;" text="Login" textFill="RED" />
-      <Text layoutX="151.0" layoutY="182.0" stroke="BLACK" strokeType="OUTSIDE" text="LOGIN">
+      <Button fx:id="loginButton" contentDisplay="CENTER" layoutX="164.0" layoutY="281.0" mnemonicParsing="false" onAction="#login" style="-fx-background-color: cyan; -fx-border-color: black;" text="Đăng nhập" textFill="RED" />
+      <Text layoutX="110.0" layoutY="182.0" stroke="BLACK" strokeType="OUTSIDE" text="ĐĂNG NHẬP">
          <font>
             <Font name="Tahoma Bold" size="30.0" />
          </font>
@@ -74,21 +74,21 @@
       </Text>
       <TextFlow layoutX="2.0" layoutY="458.0" prefHeight="28.0" prefWidth="400.0" textAlignment="CENTER">
          <children>
-            <Label prefHeight="18.0" prefWidth="161.0" text="Don't have an account ?" textFill="AQUA">
+            <Label prefHeight="18.0" prefWidth="142.0" text="Không có tài khoản ?" textFill="AQUA">
                <font>
                   <Font name="Arial" size="15.0" />
                </font>
             </Label>
-            <Hyperlink fx:id="registerHyperlink" alignment="CENTER" onAction="#switchToRegister" prefHeight="24.0" prefWidth="65.0" text="Register" textFill="AQUA">
+            <Hyperlink fx:id="registerHyperlink" alignment="CENTER" onAction="#switchToRegister" prefHeight="24.0" prefWidth="107.0" text="Đăng ký ở đây" textFill="AQUA">
                <font>
                   <Font name="Arial" size="15.0" />
                </font>
             </Hyperlink>
          </children>
       </TextFlow>
-      <Label fx:id="errorLabel" alignment="CENTER" layoutY="397.0" prefHeight="18.0" prefWidth="400.0" text="Welcome to DDC Auction !" textAlignment="CENTER" textFill="AQUA">
+      <Label fx:id="errorLabel" alignment="CENTER" layoutY="397.0" prefHeight="18.0" prefWidth="400.0" text="Chào mừng đến với DDC Auction !" textAlignment="CENTER" textFill="AQUA">
          <font>
-            <Font name="Berlin Sans FB Demi Bold" size="15.0" />
+            <Font name="Calibri Bold" size="15.0" />
          </font>
       </Label>
    </children>

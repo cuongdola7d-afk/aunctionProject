@@ -25,7 +25,7 @@ public class Login {
     @FXML
     public void login(ActionEvent event) {
         if (usernameTextField.getText().isEmpty() || passwordField.getText().isEmpty()) {
-            errorLabel.setText("Please enter your information.");
+            errorLabel.setText("Vui lòng nhập thông tin vào chỗ trống.");
         }
         else {
             try {
