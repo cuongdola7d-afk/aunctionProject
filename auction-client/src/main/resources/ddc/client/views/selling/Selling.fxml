@@ -25,7 +25,7 @@
                         <Image url="@../DDCAuction.png" />
                      </image>
                   </ImageView>
-                  <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="75.0" prefWidth="210.0" text="BÁN HÀNG" textAlignment="CENTER" textFill="DARKBLUE">
+                  <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="75.0" prefWidth="210.0" text="ĐĂNG BÁN" textAlignment="CENTER" textFill="DARKBLUE">
                      <font>
                         <Font name="System Bold" size="36.0" />
                      </font>
@@ -41,7 +41,7 @@
       </VBox>
       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="150.0" AnchorPane.leftAnchor="150.0" AnchorPane.rightAnchor="150.0" AnchorPane.topAnchor="200.0">
          <children>
-            <Label text="TẠO MỤC ĐẤU GIÁ MỚI" textFill="DARKBLUE">
+            <Label text="ĐĂNG BÁN SẢN PHẨM" textFill="DARKBLUE">
                <font>
                   <Font name="System Bold" size="24.0" />
                </font>
@@ -52,7 +52,7 @@
                   <Insets top="-100.0" />
                </padding>
             </Label>
-            <Label text="Chia sẻ thông tin sản phẩm để bắt đầu phiên đấu giá">
+            <Label text="NHẤN VÀO BIỂU TƯỢNG BÊN DƯỚI ĐỂ THÊM SẢN PHẨM VÀO SÀN ĐẤU GIÁ">
                <padding>
                   <Insets top="-60.0" />
                </padding>
@@ -91,7 +91,7 @@
       </VBox>
       <HBox alignment="CENTER" layoutX="25.0" layoutY="304.0" minHeight="0.0" prefHeight="60.0" prefWidth="550.0" spacing="15.0" style="-fx-background-color: cyan; -fx-min-height: 70; -fx-padding: 10;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
          <children>
-            <VBox alignment="CENTER" layoutX="403.0" layoutY="15.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="60.0" prefWidth="95.0" HBox.hgrow="ALWAYS">
+            <VBox alignment="CENTER" layoutX="403.0" layoutY="15.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="60.0" prefWidth="120.0" HBox.hgrow="ALWAYS">
                <children>
                   <Label maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" text="🔔" textFill="DARKBLUE" VBox.vgrow="NEVER">
                      <VBox.margin>
@@ -101,7 +101,7 @@
                         <Font size="14.0" />
                      </font>
                   </Label>
-                  <Label alignment="CENTER" ellipsisString="" prefHeight="45.0" text="NOTIFICATION" textAlignment="CENTER" textFill="DARKBLUE" textOverrun="CLIP" VBox.vgrow="NEVER">
+                  <Label alignment="CENTER" ellipsisString="" prefHeight="45.0" text="THÔNG BÁO" textAlignment="CENTER" textFill="DARKBLUE" textOverrun="CLIP" VBox.vgrow="NEVER">
                      <VBox.margin>
                         <Insets />
                      </VBox.margin>
@@ -115,7 +115,7 @@
                </padding>
             </VBox>
             <Separator orientation="VERTICAL" prefHeight="200.0" />
-            <VBox alignment="CENTER" layoutX="183.0" layoutY="15.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="60.0" prefWidth="95.0" HBox.hgrow="ALWAYS">
+            <VBox alignment="CENTER" layoutX="183.0" layoutY="15.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="60.0" prefWidth="120.0" HBox.hgrow="ALWAYS">
                <children>
                   <Label maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" text="⚖" textFill="DARKBLUE" VBox.vgrow="NEVER">
                      <VBox.margin>
@@ -125,7 +125,7 @@
                         <Font size="14.0" />
                      </font>
                   </Label>
-                  <Label alignment="CENTER" ellipsisString="" prefHeight="45.0" text="BIDDING" textAlignment="CENTER" textFill="DARKBLUE" textOverrun="CLIP" VBox.vgrow="NEVER">
+                  <Label alignment="CENTER" ellipsisString="" prefHeight="45.0" text="ĐẤU GIÁ" textAlignment="CENTER" textFill="DARKBLUE" textOverrun="CLIP" VBox.vgrow="NEVER">
                      <VBox.margin>
                         <Insets />
                      </VBox.margin>
@@ -139,14 +139,14 @@
                </padding>
             </VBox>
             <Separator orientation="VERTICAL" prefHeight="200.0" />
-            <VBox alignment="CENTER" layoutX="128.0" layoutY="15.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="60.0" prefWidth="95.0" HBox.hgrow="ALWAYS">
+            <VBox alignment="CENTER" layoutX="128.0" layoutY="15.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="60.0" prefWidth="120.0" HBox.hgrow="ALWAYS">
                <children>
                   <Label maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" text="🏠" textFill="DARKBLUE" VBox.vgrow="NEVER">
                      <VBox.margin>
                         <Insets top="10.0" />
                      </VBox.margin>
                   </Label>
-                  <Label alignment="CENTER" ellipsisString="" prefHeight="45.0" text="HOME" textAlignment="CENTER" textFill="DARKBLUE" textOverrun="CLIP" VBox.vgrow="NEVER">
+                  <Label alignment="CENTER" ellipsisString="" prefHeight="45.0" text="TRANG CHỦ" textAlignment="CENTER" textFill="DARKBLUE" textOverrun="CLIP" VBox.vgrow="NEVER">
                      <VBox.margin>
                         <Insets />
                      </VBox.margin>
@@ -160,14 +160,14 @@
                </padding>
             </VBox>
             <Separator orientation="VERTICAL" prefHeight="200.0" />
-            <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="60.0" prefWidth="95.0" style="-fx-background-color: #001F3F; -fx-background-radius: 15; -fx-padding: 10 20 10 20;" HBox.hgrow="ALWAYS">
+            <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="60.0" prefWidth="120.0" style="-fx-background-color: #001F3F; -fx-background-radius: 15; -fx-padding: 10 20 10 20;" HBox.hgrow="ALWAYS">
                <children>
-                  <Label maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" text="💵" textFill="AQUA" VBox.vgrow="NEVER">
+                  <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" text="💵" textFill="AQUA" VBox.vgrow="NEVER">
                      <font>
                         <Font size="14.0" />
                      </font>
                   </Label>
-                  <Label ellipsisString="" prefHeight="45.0" text="SELLING" textAlignment="CENTER" textFill="AQUA" textOverrun="CLIP" VBox.vgrow="NEVER">
+                  <Label alignment="CENTER" ellipsisString="" prefHeight="45.0" prefWidth="89.0" text="ĐĂNG BÁN" textAlignment="CENTER" textFill="AQUA" textOverrun="CLIP" VBox.vgrow="NEVER">
                      <VBox.margin>
                         <Insets />
                      </VBox.margin>
@@ -181,7 +181,7 @@
                </padding>
             </VBox>
             <Separator orientation="VERTICAL" prefHeight="200.0" />
-            <VBox alignment="CENTER" layoutX="73.0" layoutY="15.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="60.0" prefWidth="95.0" HBox.hgrow="ALWAYS">
+            <VBox alignment="CENTER" layoutX="73.0" layoutY="15.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="60.0" prefWidth="120.0" HBox.hgrow="ALWAYS">
                <children>
                   <Label maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" text="👤" textFill="DARKBLUE" VBox.vgrow="NEVER">
                      <VBox.margin>
@@ -191,7 +191,7 @@
                         <Font size="14.0" />
                      </font>
                   </Label>
-                  <Label alignment="CENTER" ellipsisString="" prefHeight="45.0" text="PROFILE" textAlignment="CENTER" textFill="DARKBLUE" textOverrun="CLIP" VBox.vgrow="NEVER">
+                  <Label alignment="CENTER" ellipsisString="" prefHeight="45.0" text="THÔNG TIN" textAlignment="CENTER" textFill="DARKBLUE" textOverrun="CLIP" VBox.vgrow="NEVER">
                      <VBox.margin>
                         <Insets />
                      </VBox.margin>
