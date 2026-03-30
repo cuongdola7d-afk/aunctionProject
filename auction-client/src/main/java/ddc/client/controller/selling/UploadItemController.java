@@ -1,7 +1,11 @@
 package ddc.client.controller.selling;
 
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
+
 import javafx.application.Platform;
-import javafx.beans.binding.BooleanBinding;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -11,11 +15,6 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
 
 public class UploadItemController implements Initializable {
 
@@ -50,12 +49,12 @@ public class UploadItemController implements Initializable {
         if (category == null) return;
         switch (category) {
             case "Nghệ Thuật (e.g: Tranh, ảnh, ...)":
-                addTextField("Tác giả:", "e.g: Canvas, Gỗ...");
+                addTextField("Tác giả:", "e.g: Da Vinci...");
                 addTextField("Năm sáng tác:", "e.g: 2024");
                 break;
             case "Xe":
-                addTextField("Hãng:", "e.g:Ferrari");
-                addTextField("Năm sản xuất:", "eg:2024...");
+                addTextField("Hãng:", "e.g: Ferrari");
+                addTextField("Năm sản xuất:", "e.g: 2024...");
                 break;
             case "Đồ điện tử":
                 addTextField("Hãng sản xuất:", "e.g: Apple, Samsung...");
