@@ -1,12 +1,12 @@
-module ddc.client {
+module auction.client {
     requires javafx.controls;
     requires javafx.fxml;
-    requires com.google.gson;
+
+    opens ddc.client to javafx.fxml;
+    opens ddc.client.controller.bidding to javafx.fxml;
+    opens ddc.client.model to javafx.base;
 
     exports ddc.client;
-    opens ddc.client.controller.loginregister to javafx.fxml;
-    opens ddc.client to javafx.fxml, javafx.graphics;
-    opens ddc.client.controller to javafx.fxml;
-    // opens gemini.client.controller to javafx.fxml;
-    // opens gemini.client.model to com.google.gson; 
+    exports ddc.client.controller.bidding;
+    exports ddc.client.model;
 }

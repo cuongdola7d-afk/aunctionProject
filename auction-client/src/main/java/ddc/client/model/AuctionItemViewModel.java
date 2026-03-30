@@ -1,10 +1,10 @@
 package ddc.client.model;
 
 public class AuctionItemViewModel {
-    private String name;
-    private String price;
-    private String timeLeft;
-    private String imagePath;
+    private final String name;
+    private final String price;
+    private final String timeLeft;
+    private final String imagePath;
 
     public AuctionItemViewModel(String name, String price, String timeLeft, String imagePath) {
         this.name = name;
