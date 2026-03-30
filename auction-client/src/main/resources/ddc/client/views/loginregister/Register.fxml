@@ -32,36 +32,36 @@
       </ImageView>
       <TextFlow layoutX="50.0" layoutY="208.0" prefHeight="25.0" prefWidth="301.0" textAlignment="CENTER">
          <children>
-            <Label prefHeight="25.0" prefWidth="75.0" text="Username:" textFill="AQUA">
+            <Label prefHeight="22.0" prefWidth="75.0" text="Tên:" textFill="AQUA">
                <font>
                   <Font name="Tahoma" size="15.0" />
                </font>
             </Label>
-            <TextField fx:id="usernameTextField" prefHeight="25.0" prefWidth="225.0" promptText="The username you want..." />
+            <TextField fx:id="usernameTextField" prefHeight="25.0" prefWidth="225.0" promptText="ten_cua_ban" />
          </children>
       </TextFlow>
       <TextFlow layoutX="50.0" layoutY="276.0" prefHeight="20.0" prefWidth="301.0" textAlignment="CENTER">
          <children>
-            <Label prefHeight="18.0" prefWidth="75.0" text="Password:" textFill="AQUA">
+            <Label prefHeight="20.0" prefWidth="75.0" text="Mật khẩu" textFill="AQUA">
                <font>
                   <Font name="Tahoma" size="15.0" />
                </font>
             </Label>
-            <PasswordField fx:id="passwordField" prefHeight="25.0" prefWidth="225.0" promptText="The password you want..." />
+            <PasswordField fx:id="passwordField" prefHeight="25.0" prefWidth="225.0" promptText="mat_khau_cua_ban" />
          </children>
       </TextFlow>
       <TextFlow layoutX="50.0" layoutY="242.0" prefHeight="25.0" prefWidth="301.0" textAlignment="CENTER">
          <children>
-            <Label prefHeight="25.0" prefWidth="75.0" text="Email:" textFill="AQUA">
+            <Label prefHeight="20.0" prefWidth="75.0" text="Email:" textFill="AQUA">
                <font>
                   <Font name="Tahoma" size="15.0" />
                </font>
             </Label>
-            <TextField fx:id="emailTextField" prefHeight="25.0" prefWidth="225.0" promptText="Your email here..." />
+            <TextField fx:id="emailTextField" prefHeight="25.0" prefWidth="225.0" promptText="email_cua_ban" />
          </children>
       </TextFlow>
-      <Button fx:id="registerButton" contentDisplay="CENTER" layoutX="171.0" layoutY="313.0" mnemonicParsing="false" onAction="#register" style="-fx-background-color: cyan; -fx-border-color: black;" text="Register" textFill="RED" />
-      <Text layoutX="124.0" layoutY="183.0" stroke="BLACK" strokeType="OUTSIDE" text="REGISTER">
+      <Button fx:id="registerButton" contentDisplay="CENTER" layoutX="171.0" layoutY="313.0" mnemonicParsing="false" onAction="#register" style="-fx-background-color: cyan; -fx-border-color: black;" text="Đăng ký" textFill="RED" />
+      <Text layoutX="131.0" layoutY="181.0" stroke="BLACK" strokeType="OUTSIDE" text="ĐĂNG KÝ">
          <font>
             <Font name="Tahoma Bold" size="30.0" />
          </font>
@@ -84,21 +84,21 @@
       </Text>
       <TextFlow layoutY="456.0" prefHeight="27.0" prefWidth="400.0" textAlignment="CENTER">
          <children>
-            <Label text="Already have an account ?" textFill="AQUA">
+            <Label text="Có tài khoản rồi ?" textFill="AQUA">
                <font>
                   <Font name="Arial" size="15.0" />
                </font>
             </Label>
-            <Hyperlink fx:id="loginHyperlink" alignment="CENTER" onAction="#switchToLogin" prefHeight="30.0" prefWidth="47.0" text="Login" textFill="AQUA">
+            <Hyperlink fx:id="loginHyperlink" alignment="CENTER" onAction="#switchToLogin" prefHeight="30.0" prefWidth="83.0" text="Đăng nhập" textFill="AQUA">
                <font>
                   <Font size="15.0" />
                </font>
             </Hyperlink>
          </children>
       </TextFlow>
-      <Label fx:id="errorLabel" alignment="CENTER" layoutY="397.0" prefHeight="18.0" prefWidth="400.0" text="Welcome to DDC Auction !" textAlignment="CENTER" textFill="AQUA">
+      <Label fx:id="errorLabel" alignment="CENTER" layoutY="397.0" prefHeight="18.0" prefWidth="400.0" text="Chào mừng đến với DDC Auction !" textAlignment="CENTER" textFill="AQUA">
          <font>
-            <Font name="Berlin Sans FB Demi Bold" size="15.0" />
+            <Font name="Calibri Bold" size="15.0" />
          </font>
       </Label>
    </children>
