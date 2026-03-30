@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<HBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="ddc.client.controller.bidding.AuctionCardController"
+      spacing="12"
+      prefWidth="250"
+      prefHeight="130"
+      styleClass="auction-card">
+
+    <padding>
+        <Insets top="12" right="12" bottom="12" left="12"/>
+    </padding>
+
+    <ImageView fx:id="imgItem"
+               fitWidth="95"
+               fitHeight="95"
+               preserveRatio="false"
+               smooth="true"/>
+
+    <VBox spacing="8" alignment="TOP_LEFT">
+        <Label fx:id="lblName"
+               styleClass="card-title"
+               wrapText="true"
+               maxWidth="120"/>
+
+        <Label fx:id="lblPrice"
+               styleClass="card-price"/>
+
+        <Label fx:id="lblTimeLeft"
+               styleClass="card-time"/>
+    </VBox>
+</HBox>
