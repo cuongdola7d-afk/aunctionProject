@@ -1,5 +1,7 @@
 package ddc.client.controller.selling;
 
+import java.io.IOException;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -7,7 +9,6 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import java.io.IOException;
 
 public class SellingController {
 
@@ -24,6 +25,7 @@ public class SellingController {
             Stage stage = new Stage();
             stage.setTitle("Tạo mục đấu giá mới");
             stage.setResizable(false);
+            stage.centerOnScreen();
             Image icon = new Image(getClass().getResourceAsStream("/ddc/client/views/DDCAuction.png"));
             stage.getIcons().add(icon);
             
