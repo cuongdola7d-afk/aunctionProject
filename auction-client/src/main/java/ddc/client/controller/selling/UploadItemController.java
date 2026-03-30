@@ -26,6 +26,7 @@ public class UploadItemController implements Initializable {
     @FXML private Button btnNext;
     private List<TextField> dynamicTextFields = new ArrayList<>();
 
+    
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // Nạp dữ liệu
