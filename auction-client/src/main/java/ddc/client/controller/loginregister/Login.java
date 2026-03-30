@@ -25,17 +25,19 @@ public class Login {
     @FXML
     public void login(ActionEvent event) {
         if (usernameTextField.getText().isEmpty() || passwordField.getText().isEmpty()) {
-            errorLabel.setText("Please enter your information.");
+            errorLabel.setText("Vui lòng nhập thông tin vào chỗ trống.");
         }
         else {
             try {
+                ((Stage) ((Node) event.getSource()).getScene().getWindow()).close();
                 Parent root = FXMLLoader.load(getClass().getResource("/ddc/client/views/selling/Selling.fxml"));
-                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                Stage stage = new Stage();
                 Image icon = new Image(getClass().getResourceAsStream("/ddc/client/views/DDCAuction.png"));
 
                 stage.setTitle("DDC Auction");
                 stage.getIcons().add(icon);
                 stage.setResizable(true);
+                stage.centerOnScreen();
                 stage.setScene(new Scene(root, 800, 600));
                 stage.show();
             } catch (IOException e) {

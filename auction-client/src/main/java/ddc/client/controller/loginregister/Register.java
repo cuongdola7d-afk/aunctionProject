@@ -24,7 +24,7 @@ public class Register {
     @FXML
     public void register(ActionEvent event) {
         if (usernameTextField.getText().isEmpty() || passwordField.getText().isEmpty() || emailTextField.getText().isEmpty()) {
-            errorLabel.setText("Please enter your information.");
+            errorLabel.setText("Bạn chưa điền thông tin vào chỗ trống.");
         }
         else {
 
