@@ -16,7 +16,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ddc.client.controller.selling.SellingController">
    <children>
-      <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
+      <VBox layoutX="3.2" prefHeight="80.0" prefWidth="787.0" AnchorPane.leftAnchor="11.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
          <children>
             <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                <children>
@@ -25,19 +25,16 @@
                         <Image url="@../DDCAuction.png" />
                      </image>
                   </ImageView>
-                  <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="254.0" text="BÁN HÀNG" textAlignment="RIGHT" textFill="DARKBLUE">
+                  <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="75.0" prefWidth="210.0" text="BÁN HÀNG" textAlignment="CENTER" textFill="DARKBLUE">
                      <font>
                         <Font name="System Bold" size="36.0" />
                      </font>
-                     <padding>
-                        <Insets bottom="120.0" right="40.0" />
-                     </padding>
                   </Label>
                </children>
             </HBox>
             <Separator halignment="RIGHT" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefWidth="779.0" style="-fx-background-color: #00008B;" VBox.vgrow="ALWAYS">
                <VBox.margin>
-                  <Insets top="-130.0" />
+                  <Insets top="-30.0" />
                </VBox.margin>
             </Separator>
          </children>
@@ -55,14 +52,14 @@
                   <Insets top="-100.0" />
                </padding>
             </Label>
-            <Label text="Chia sẻ thông tin sản phầm để bắt đầu phiên đấu giá">
+            <Label text="Chia sẻ thông tin sản phẩm để bắt đầu phiên đấu giá">
                <padding>
                   <Insets top="-60.0" />
                </padding>
             </Label>
             <StackPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #b1cefc; -fx-background-radius: 15; -fx-border-radius: 15; -fx-border-color: #00008b; -fx-border-style: dashed;" VBox.vgrow="ALWAYS">
                <children>
-                  <VBox alignment="CENTER" maxHeight="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="280.0" prefWidth="200.0" StackPane.alignment="CENTER">
+                  <VBox alignment="CENTER" maxHeight="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="280.0" prefWidth="290.0" StackPane.alignment="CENTER">
                      <children>
                         <ImageView fitHeight="60.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
                            <image>
