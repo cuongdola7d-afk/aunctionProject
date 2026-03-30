@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -155,28 +156,62 @@
             </VBox>
          </children>
       </HBox>
-      <HBox layoutX="19.0" layoutY="122.0" prefHeight="80.0" prefWidth="750.0">
-         <children>
-            <VBox prefHeight="80.0" prefWidth="120.0" style="-fx-background-color: cyan;">
-               <children>
-                  <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="80.0" prefWidth="120.0" style="-fx-text-fill: #00008b;" text="🎨">
-                     <font>
-                        <Font size="40.0" />
-                     </font>
-                  </Label>
-                  <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="40.0" prefWidth="120.0" style="-fx-text-fill: #00008b;" text="NGHỆ THUẬT">
-                     <font>
-                        <Font size="15.0" />
-                     </font>
-                  </Label>
-               </children>
-            </VBox>
-         </children>
-      </HBox>
       <Label contentDisplay="CENTER" layoutX="14.0" layoutY="80.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="42.0" prefWidth="778.0" text="DANH MỤC ĐỀ XUẤT" textAlignment="CENTER" textFill="DARKBLUE">
          <font>
             <Font name="System Bold" size="29.0" />
          </font>
       </Label>
+      <ScrollPane layoutX="18.0" layoutY="122.0" prefHeight="110.0" prefWidth="425.0" style="-fx-border-color: #00008b; -fx-border-radius: 15;" stylesheets="@../../css/home/Home.css">
+         <content>
+            <HBox alignment="CENTER_LEFT" prefHeight="80.0" prefWidth="770.0">
+               <children>
+                  <VBox alignment="CENTER" prefHeight="80.0" prefWidth="120.0" style="-fx-background-color: cyan; -fx-background-radius: 15;">
+                     <children>
+                        <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="80.0" prefWidth="120.0" style="-fx-text-fill: #00008b;" text="🎨">
+                           <font>
+                              <Font size="40.0" />
+                           </font>
+                        </Label>
+                        <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="40.0" prefWidth="120.0" style="-fx-text-fill: #00008b;" text="NGHỆ THUẬT">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <Separator orientation="VERTICAL" prefHeight="80.0" prefWidth="30.0" style="-fx-skin: #00008b;" />
+                  <VBox alignment="CENTER" prefHeight="80.0" prefWidth="120.0" style="-fx-background-color: cyan; -fx-background-radius: 15;">
+                     <children>
+                        <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="80.0" prefWidth="120.0" style="-fx-text-fill: #00008b;" text="💻">
+                           <font>
+                              <Font size="40.0" />
+                           </font>
+                        </Label>
+                        <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="40.0" prefWidth="120.0" style="-fx-text-fill: #00008b;" text="ĐỒ ĐIỆN TỬ">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <Separator orientation="VERTICAL" prefHeight="80.0" prefWidth="30.0" style="-fx-skin: #00008b;" />
+                  <VBox alignment="CENTER" prefHeight="80.0" prefWidth="120.0" style="-fx-background-color: cyan; -fx-background-radius: 15;">
+                     <children>
+                        <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="80.0" prefWidth="120.0" style="-fx-text-fill: #00008b;" text="🚗">
+                           <font>
+                              <Font size="40.0" />
+                           </font>
+                        </Label>
+                        <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="40.0" prefWidth="120.0" style="-fx-text-fill: #00008b;" text="PHƯƠNG TIỆN">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+         </content>
+      </ScrollPane>
    </children>
 </AnchorPane>
