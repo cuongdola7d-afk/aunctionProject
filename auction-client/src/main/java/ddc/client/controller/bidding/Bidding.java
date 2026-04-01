@@ -12,7 +12,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.FlowPane;
 
-public class BiddingController {
+public class Bidding {
 
     @FXML
     private ScrollPane mainScrollPane;
@@ -62,7 +62,7 @@ public class BiddingController {
 
                 Parent card = loader.load();
 
-                AuctionCardController cardController = loader.getController();
+                AuctionCard cardController = loader.getController();
                 cardController.setData(item);
 
                 auctionContainer.getChildren().add(card);

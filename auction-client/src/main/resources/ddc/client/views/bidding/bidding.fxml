@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml"
-            fx:controller="ddc.client.controller.bidding.BiddingController"
+            fx:controller="ddc.client.controller.bidding.Bidding"
             prefWidth="1180"
             prefHeight="760"
             styleClass="root-container">

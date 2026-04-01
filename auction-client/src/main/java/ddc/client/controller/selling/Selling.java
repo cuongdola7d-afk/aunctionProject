@@ -10,11 +10,11 @@ import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-public class SellingController {
+public class Selling {
     @FXML
     private void handleOpenUploadDialog() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ddc/client/views/selling/UploadItemDescrip.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ddc/client/views/selling/UploadItem.fxml"));
             Parent root = loader.load();
 
             Stage stage = new Stage();

@@ -21,7 +21,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 
-public class UploadItemController implements Initializable {
+public class UploadItem implements Initializable {
 
     @FXML private ComboBox<String> categoryComboBox;
     @FXML private VBox dynamicFieldsContainer;
