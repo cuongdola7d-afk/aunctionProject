@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="ddc.client.controller.bidding.BiddingController"
+            prefWidth="1180"
+            prefHeight="760"
+            styleClass="root-container">
+
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="20" styleClass="top-bar">
+            <padding>
+                <Insets top="18" right="24" bottom="18" left="24"/>
+            </padding>
+
+            <Label text="DDC Auction logo" styleClass="logo-text"/>
+
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <TextField fx:id="txtSearch"
+                       prefWidth="670"
+                       promptText="Tìm kiếm sản phẩm đấu giá..."
+                       styleClass="search-box"/>
+        </HBox>
+    </top>
+
+    <left>
+        <VBox alignment="CENTER" spacing="18" prefWidth="55" styleClass="left-dots-bar">
+            <Label text="●" styleClass="dot-indicator"/>
+            <Label text="●" styleClass="dot-indicator"/>
+            <Label text="●" styleClass="dot-indicator"/>
+        </VBox>
+    </left>
+
+    <center>
+        <StackPane styleClass="content-wrapper">
+            <ScrollPane fx:id="mainScrollPane"
+                        fitToWidth="true"
+                        hbarPolicy="NEVER"
+                        styleClass="main-scroll">
+                <content>
+                    <FlowPane fx:id="auctionContainer"
+                              hgap="24"
+                              vgap="28"
+                              prefWrapLength="1000"
+                              styleClass="auction-grid">
+                        <padding>
+                            <Insets top="20" right="24" bottom="20" left="24"/>
+                        </padding>
+                    </FlowPane>
+                </content>
+            </ScrollPane>
+
+            <Button text="↑"
+                    onAction="#handleScrollTop"
+                    styleClass="scroll-top-button"
+                    StackPane.alignment="BOTTOM_RIGHT"
+                    translateX="-18"
+                    translateY="-18"/>
+        </StackPane>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER" spacing="90" styleClass="bottom-nav">
+            <padding>
+                <Insets top="14" right="30" bottom="14" left="30"/>
+            </padding>
+
+            <VBox alignment="CENTER" spacing="6">
+                <Label text="🔔" styleClass="nav-icon"/>
+                <Label text="NOTIFICATION" styleClass="nav-text"/>
+            </VBox>
+
+            <VBox alignment="CENTER" spacing="6" styleClass="nav-active-box">
+                <Label text="🔨" styleClass="nav-icon-active"/>
+                <Label text="BIDDING" styleClass="nav-text-active"/>
+            </VBox>
+
+            <VBox alignment="CENTER" spacing="6">
+                <Label text="⌂" styleClass="nav-icon"/>
+                <Label text="HOME" styleClass="nav-text"/>
+            </VBox>
+
+            <VBox alignment="CENTER" spacing="6">
+                <Label text="⚖" styleClass="nav-icon"/>
+                <Label text="SELLING" styleClass="nav-text"/>
+            </VBox>
+
+            <VBox alignment="CENTER" spacing="6">
+                <Label text="◌" styleClass="nav-icon"/>
+                <Label text="PROFILE" styleClass="nav-text"/>
+            </VBox>
+        </HBox>
+    </bottom>
+</BorderPane>

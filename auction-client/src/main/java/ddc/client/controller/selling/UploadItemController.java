@@ -5,24 +5,35 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import javafx.animation.FadeTransition;
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Duration;
+
 
 public class UploadItemController implements Initializable {
 
-    @FXML private ComboBox<String> categoryComboBox; // ComboBox của bạn
+    @FXML private ComboBox<String> categoryComboBox;
     @FXML private VBox dynamicFieldsContainer;
     @FXML private TextField itemNameField;
     @FXML private TextArea itemDescriptionArea;
     @FXML private Button btnNext;
+    @FXML private VBox step1Container;
+    @FXML private VBox step2Container;
+    @FXML private TextField priceField;
+    @FXML private DatePicker auctionDatePicker;
+    // @FXML private ImageView mainImageView;
+    @FXML private Button registerButton;
     private List<TextField> dynamicTextFields = new ArrayList<>();
 
     
@@ -39,6 +50,25 @@ public class UploadItemController implements Initializable {
         itemNameField.textProperty().addListener((o, old, newVal) -> updateNextButtonState());
         itemDescriptionArea.textProperty().addListener((o, old, newVal) -> updateNextButtonState());
         categoryComboBox.valueProperty().addListener((o, old, newVal) -> updateNextButtonState());
+
+        step1Container.setVisible(true);
+        step1Container.setManaged(true);
+
+        step2Container.setVisible(false);
+        step2Container.setManaged(false);
+
+        // Mặc định lúc mới mở tab 2 thì nút phải xám (disable)
+    registerButton.setDisable(true);
+
+    // Lắng nghe khi người dùng gõ giá tiền
+    priceField.textProperty().addListener((observable, oldValue, newValue) -> {
+        updateRegisterButtonState();
+    });
+
+    // Lắng nghe khi người dùng chọn ngày
+    auctionDatePicker.valueProperty().addListener((observable, oldValue, newValue) -> {
+        updateRegisterButtonState();
+    });
 }
 
     private void renderFields(String category) {
@@ -71,6 +101,48 @@ public class UploadItemController implements Initializable {
             }
         });
     }
+    @FXML
+    private void handleNextStep() {
+        // 1. Ẩn Step 1
+        step1Container.setVisible(false);
+        step1Container.setManaged(false);
+
+        // 2. Hiện Step 2
+        step2Container.setVisible(true);
+        step2Container.setManaged(true);
+
+        // 3. (Tùy chọn) Thêm hiệu ứng Fade cho xịn
+        FadeTransition ft = new FadeTransition(Duration.millis(500), step2Container);
+        ft.setFromValue(0.0);
+        ft.setToValue(1.0);
+        ft.play();
+}
+
+    @FXML
+    private void handleInitialize() {
+        // 1. Giai đoạn Loading: Đổi chữ trên nút và đổi màu
+        registerButton.setText("Đang xử lý... ⏳");
+        registerButton.setDisable(true); // Khóa nút để tránh bấm lung tung
+        registerButton.setStyle("-fx-background-color: #555555; -fx-text-fill: white;");
+
+        // 2. Tạo độ trễ 2 giây (giả lập nạp dữ liệu)
+        PauseTransition pause = new PauseTransition(Duration.seconds(2));
+        pause.setOnFinished(e -> {
+            
+            // 3. Giai đoạn Done: Đổi chữ thành tích xanh và đổi màu nền xanh lá
+            registerButton.setText("Thành công! ✔");
+            registerButton.setStyle("-fx-background-color: #28a745; -fx-text-fill: white; -fx-font-weight: bold;");
+
+            // 4. Đợi 1 giây rồi tắt cửa sổ
+            PauseTransition closePause = new PauseTransition(Duration.seconds(1));
+            closePause.setOnFinished(event -> {
+                Stage stage = (Stage) registerButton.getScene().getWindow();
+                stage.close();
+            });
+            closePause.play();
+        });
+        pause.play();
+}
 
     private void updateNextButtonState() {
         // 1. Kiểm tra các ô cố định
@@ -100,6 +172,21 @@ public class UploadItemController implements Initializable {
         }
 }
 
+private void updateRegisterButtonState() {
+    // Kiểm tra: giá không trống VÀ ngày đã được chọn
+    boolean isPriceEntered = priceField.getText() != null && !priceField.getText().trim().isEmpty();
+    boolean isDateSelected = auctionDatePicker.getValue() != null;
+    boolean canProceed = isPriceEntered && isDateSelected;
+    // Nếu cả 2 đều thỏa mãn thì enable nút, ngược lại thì disable
+    registerButton.setDisable(!canProceed);
+
+        // Cập nhật màu sắc
+        if (!canProceed) {
+            btnNext.setStyle("-fx-background-color: #cccccc; -fx-text-fill: #666666;");
+        } else {
+            btnNext.setStyle("-fx-background-color: #00008b; -fx-cursor: hand;");
+}
+}
     private void addTextField(String labelText, String promptText) {
         Label label = new Label(labelText);
         TextField textField = new TextField();

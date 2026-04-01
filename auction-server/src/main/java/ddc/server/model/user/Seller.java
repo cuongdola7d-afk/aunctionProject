@@ -1,9 +1,6 @@
 package ddc.server.model.user;
-
 import java.util.List;
-
 import ddc.server.model.item.*;
-
 public class Seller extends User {
     private List<Item> itemsForSale;
 

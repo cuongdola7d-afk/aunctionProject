@@ -1,5 +1,5 @@
-package ddc.server.model.item;
 
+package ddc.server.model.item;
 public class Art extends Item {
     private String artist;
     private int year;
