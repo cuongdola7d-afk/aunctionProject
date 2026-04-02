@@ -1,7 +1,7 @@
 package ddc.client.controller.selling;
-import java.io.IOException;
 
 import ddc.client.controller.SceneSwitcher;
+import java.io.IOException;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -12,6 +12,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class Selling {
+
     @FXML
     private void handleOpenUploadDialog() {
         try {
@@ -24,26 +25,23 @@ public class Selling {
             stage.centerOnScreen();
             Image icon = new Image(getClass().getResourceAsStream("/ddc/client/views/DDCAuction.png"));
             stage.getIcons().add(icon);
-            
+
             stage.initModality(Modality.APPLICATION_MODAL);
-            
             stage.setScene(new Scene(root));
             stage.show();
 
         } catch (IOException e) {
             e.printStackTrace();
-            System.err.println("Lỗi: Không tìm thấy file FXML. Hãy kiểm tra lại đường dẫn!");
         }
-    
     }
 
     @FXML
-    private void switchToHome(MouseEvent event) {
-        SceneSwitcher.goToME(event, "/ddc/client/views/home/Home.fxml");
+    private void toHome(MouseEvent event) {
+        SceneSwitcher.goTo(event, "/ddc/client/views/home/Home.fxml");
     }
 
     @FXML
-    private void switchToBidding(MouseEvent event) {
-        SceneSwitcher.goToME(event, "/ddc/client/views/bidding/Bidding.fxml");
+    private void toBidding(MouseEvent event) {
+        SceneSwitcher.goTo(event, "/ddc/client/views/bidding/Bidding.fxml");
     }
 }

@@ -3,7 +3,7 @@ package ddc.client.controller.bidding;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
+import javafx.scene.input.MouseEvent;
 import ddc.client.controller.SceneSwitcher;
 import ddc.client.model.AuctionItemViewModel;
 import javafx.fxml.FXML;
@@ -97,12 +97,12 @@ public class Bidding {
     }
 
     @FXML
-    private void switchToHome(MouseEvent event) {
-        SceneSwitcher.goToME(event, "/ddc/client/views/home/Home.fxml");
-    }
+
+    private void toHome(MouseEvent event) {
+    SceneSwitcher.goTo(event, "/ddc/client/views/home/Home.fxml");}
 
     @FXML
-    private void switchToSelling (MouseEvent event) {
-        SceneSwitcher.goToME(event, "/ddc/client/views/selling/Selling.fxml");
-    }
+    private void toSelling(MouseEvent event) {
+    SceneSwitcher.goTo(event, "/ddc/client/views/selling/Selling.fxml");}
+
 }
