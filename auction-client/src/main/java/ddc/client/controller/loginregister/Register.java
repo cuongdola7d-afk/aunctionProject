@@ -27,6 +27,6 @@ public class Register {
 
     @FXML
     private void switchToLogin(ActionEvent event) {
-        SceneSwitcher.goToAE(event, "/ddc/client/views/loginregister/Login.fxml");
+        SceneSwitcher.goTo(event, "/ddc/client/views/loginregister/Login.fxml");
     }
 }

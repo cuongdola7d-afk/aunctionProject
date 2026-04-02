@@ -11,7 +11,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 public class SceneSwitcher{
-    public static void goToAE(ActionEvent event, String fxmlPath) {
+    public static void goTo(ActionEvent event, String fxmlPath) {
         try {
             Parent root = FXMLLoader.load(SceneSwitcher.class.getResource(fxmlPath));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -23,7 +23,7 @@ public class SceneSwitcher{
         }
     }
 
-    public static void goToME(MouseEvent event, String fxmlPath) {
+    public static void goTo(MouseEvent event, String fxmlPath) {
         try {
             Parent root = FXMLLoader.load(SceneSwitcher.class.getResource(fxmlPath));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();

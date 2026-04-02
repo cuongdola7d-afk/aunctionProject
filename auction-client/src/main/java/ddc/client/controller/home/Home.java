@@ -7,17 +7,17 @@ import javafx.scene.input.MouseEvent;
 public class Home {
     @FXML
     private void switchToSelling (MouseEvent event) {
-        SceneSwitcher.goToME(event, "/ddc/client/views/selling/Selling.fxml");
+        SceneSwitcher.goTo(event, "/ddc/client/views/selling/Selling.fxml");
     }
 
     @FXML
     private void switchToBidding (MouseEvent event) {
-        SceneSwitcher.goToME(event, "/ddc/client/views/bidding/Bidding.fxml");
+        SceneSwitcher.goTo(event, "/ddc/client/views/bidding/Bidding.fxml");
     }
 
     @FXML
     private void learnMore (ActionEvent event) {
-        SceneSwitcher.goToAE(event, "/ddc/client/views/bidding/Bidding.fxml");
+        SceneSwitcher.goTo(event, "/ddc/client/views/bidding/Bidding.fxml");
     }
 }
 
