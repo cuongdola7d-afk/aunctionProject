@@ -3,7 +3,8 @@ package ddc.client.controller.bidding;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
+import javafx.scene.input.MouseEvent;
+import ddc.client.controller.SceneSwitcher;
 import ddc.client.model.AuctionItemViewModel;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -89,8 +90,16 @@ public class Bidding {
         renderItems(filtered);
     }
 
-@FXML
+    @FXML
     private void handleScrollTop() {
         mainScrollPane.setVvalue(0);
-}
+    }
+
+    @FXML
+    private void toHome(MouseEvent event) {
+    SceneSwitcher.goTo(event, "/ddc/client/views/home/Home.fxml");}
+
+    @FXML
+    private void toSelling(MouseEvent event) {
+    SceneSwitcher.goTo(event, "/ddc/client/views/selling/Selling.fxml");}
 }
