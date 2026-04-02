@@ -41,7 +41,7 @@ public class Login {
                 stage.setScene(new Scene(root, 800, 600));
                 stage.show();
             } catch (IOException e) {
-                System.out.println("Error!" + e.getMessage());
+                System.out.println("IO Error!" + e.getMessage());
             } catch (Exception e) {
                 System.out.println("Error!" + e.getMessage());
             }
