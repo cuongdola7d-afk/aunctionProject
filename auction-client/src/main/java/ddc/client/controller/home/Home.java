@@ -24,4 +24,19 @@ public class Home {
             System.out.println("Error!" + e.getMessage());
         }
     }
+
+    @FXML
+    private void switchToBidding (MouseEvent event) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/ddc/client/views/bidding/Bidding.fxml"));
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root, 800, 600));
+            stage.show();
+        } catch (IOException e) {
+            System.out.println("Error!" + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Error!" + e.getMessage());
+        }
+    }
 }
+
