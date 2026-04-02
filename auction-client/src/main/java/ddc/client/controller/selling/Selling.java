@@ -1,7 +1,6 @@
 package ddc.client.controller.selling;
-
 import java.io.IOException;
-
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -34,5 +33,15 @@ public class Selling {
             System.err.println("Lỗi: Không tìm thấy file FXML. Hãy kiểm tra lại đường dẫn!");
         }
     
+    }
+
+    @FXML
+    private void toHome(ActionEvent event) {
+        SceneSwitcher.goTo(event, "/ddc/client/views/home/Home.fxml");
+    }
+
+    @FXML
+    private void toBidding(ActionEvent event) {
+        SceneSwitcher.goTo(event, "/ddc/client/views/bidding/Bidding.fxml");
     }
 }

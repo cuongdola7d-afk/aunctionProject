@@ -39,7 +39,7 @@
             </Separator>
          </children>
       </VBox>
-      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="150.0" AnchorPane.leftAnchor="150.0" AnchorPane.rightAnchor="150.0" AnchorPane.topAnchor="200.0">
+      <VBox alignment="CENTER" prefWidth="100.0" AnchorPane.bottomAnchor="150.0" AnchorPane.leftAnchor="150.0" AnchorPane.rightAnchor="150.0" AnchorPane.topAnchor="200.0">
          <children>
             <Label text="ĐĂNG BÁN SẢN PHẨM" textFill="DARKBLUE">
                <font>
@@ -204,6 +204,50 @@
                   <Insets bottom="5.0" />
                </padding>
             </VBox>
+         </children>
+      </HBox>
+      <HBox alignment="CENTER" prefHeight="70.0" prefWidth="100.0" spacing="70.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+         <children>
+            <Button fx:id="toNoti" mnemonicParsing="false" opacity="0.0" text="Button">
+               <font>
+                  <Font size="18.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+            <Button fx:id="toBid" mnemonicParsing="false" onAction="#toBidding" opacity="0.0" text="Button">
+               <font>
+                  <Font size="18.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+            <Button fx:id="toHome" mnemonicParsing="false" onAction="#toHome" opacity="0.0" text="Button">
+               <font>
+                  <Font size="18.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+            <Button mnemonicParsing="false" opacity="0.0" text="Button">
+               <font>
+                  <Font size="18.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+            <Button fx:id="toProfile" mnemonicParsing="false" opacity="0.0" text="Button">
+               <font>
+                  <Font size="18.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
          </children>
       </HBox>
    </children>
