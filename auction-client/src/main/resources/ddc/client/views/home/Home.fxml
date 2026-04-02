@@ -178,7 +178,7 @@
                   </Label>
                </children>
             </VBox>
-            <Separator orientation="VERTICAL" prefHeight="80.0" prefWidth="30.0" style="-fx-skin: #00008b;" />
+            <Separator orientation="VERTICAL" prefHeight="80.0" prefWidth="30.0" />
             <VBox alignment="CENTER" prefHeight="80.0" prefWidth="120.0" style="-fx-background-color: cyan; -fx-background-radius: 15; -fx-border-color: #00008b; -fx-border-radius: 15;">
                <children>
                   <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="80.0" prefWidth="120.0" style="-fx-text-fill: #00008b;" text="💻">
@@ -193,7 +193,7 @@
                   </Label>
                </children>
             </VBox>
-            <Separator orientation="VERTICAL" prefHeight="80.0" prefWidth="30.0" style="-fx-skin: #00008b;" />
+            <Separator orientation="VERTICAL" prefHeight="80.0" prefWidth="30.0" />
             <VBox alignment="CENTER" prefHeight="80.0" prefWidth="120.0" style="-fx-background-color: cyan; -fx-background-radius: 15; -fx-border-color: #00008b; -fx-border-radius: 15;">
                <children>
                   <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="80.0" prefWidth="120.0" style="-fx-text-fill: #00008b;" text="🚗">
@@ -270,7 +270,7 @@
                   </TextFlow>
                </children>
             </VBox>
-            <Separator orientation="VERTICAL" prefHeight="80.0" prefWidth="30.0" style="-fx-skin: #00008b;" />
+            <Separator orientation="VERTICAL" prefHeight="80.0" prefWidth="30.0" />
             <VBox alignment="CENTER" prefHeight="220.0" prefWidth="160.0" style="-fx-background-color: cyan; -fx-border-color: #00008b;">
                <children>
                   <ImageView fx:id="iv2" fitHeight="150.0" fitWidth="160.0" pickOnBounds="true" preserveRatio="true">
@@ -324,7 +324,7 @@
                   </TextFlow>
                </children>
             </VBox>
-            <Separator orientation="VERTICAL" prefHeight="80.0" prefWidth="30.0" style="-fx-skin: #00008b;" />
+            <Separator orientation="VERTICAL" prefHeight="80.0" prefWidth="30.0" />
             <VBox alignment="CENTER" prefHeight="220.0" prefWidth="160.0" style="-fx-background-color: cyan; -fx-border-color: #00008b;">
                <children>
                   <ImageView fx:id="iv3" fitHeight="150.0" fitWidth="160.0" pickOnBounds="true" preserveRatio="true">

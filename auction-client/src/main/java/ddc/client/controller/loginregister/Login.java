@@ -31,7 +31,7 @@ public class Login {
         else {
             try {
                 ((Stage) ((Node) event.getSource()).getScene().getWindow()).close();
-                Parent root = FXMLLoader.load(getClass().getResource("/ddc/client/views/selling/Selling.fxml"));
+                Parent root = FXMLLoader.load(getClass().getResource("/ddc/client/views/home/Home.fxml"));
                 Stage stage = new Stage();
                 Image icon = new Image(getClass().getResourceAsStream("/ddc/client/views/DDCAuction.png"));
 

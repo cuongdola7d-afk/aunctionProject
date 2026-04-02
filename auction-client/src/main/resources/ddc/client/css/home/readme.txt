@@ -1,0 +1,1 @@
+css giao diện bidding (có thể không cần vì có thể làm luôn trong scenebuilder)
