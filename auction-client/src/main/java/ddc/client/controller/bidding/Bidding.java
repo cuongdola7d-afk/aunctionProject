@@ -4,12 +4,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import ddc.client.controller.SceneSwitcher;
 import ddc.client.model.AuctionItemViewModel;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 
 public class Bidding {
@@ -89,8 +91,18 @@ public class Bidding {
         renderItems(filtered);
     }
 
-@FXML
+    @FXML
     private void handleScrollTop() {
         mainScrollPane.setVvalue(0);
-}
+    }
+
+    @FXML
+    private void switchToHome(MouseEvent event) {
+        SceneSwitcher.goToME(event, "/ddc/client/views/home/Home.fxml");
+    }
+
+    @FXML
+    private void switchToSelling (MouseEvent event) {
+        SceneSwitcher.goToME(event, "/ddc/client/views/selling/Selling.fxml");
+    }
 }
