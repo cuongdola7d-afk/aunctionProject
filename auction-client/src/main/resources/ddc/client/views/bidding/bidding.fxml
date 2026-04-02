@@ -11,30 +11,13 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ddc.client.controller.bidding.Bidding">
    <children>
-      <VBox alignment="CENTER" layoutX="3.2" prefHeight="80.0" prefWidth="280.0" AnchorPane.leftAnchor="11.0" AnchorPane.rightAnchor="509.0" AnchorPane.topAnchor="0.0">
-         <children>
-            <HBox prefHeight="100.0" prefWidth="265.0" spacing="10.0">
-               <children>
-                  <ImageView fitHeight="70.0" fitWidth="70.0">
-                     <image>
-                        <Image url="@../DDCAuction.png" />
-                     </image>
-                  </ImageView>
-                  <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="75.0" prefWidth="174.0" text="ĐẤU GIÁ" textAlignment="CENTER" textFill="DARKBLUE">
-                     <font>
-                        <Font name="System Bold" size="36.0" />
-                     </font>
-                  </Label>
-               </children>
-            </HBox>
-         </children>
-      </VBox>
       <HBox alignment="CENTER" layoutX="25.0" layoutY="304.0" minHeight="0.0" prefHeight="60.0" prefWidth="550.0" spacing="15.0" style="-fx-background-color: cyan; -fx-min-height: 70; -fx-padding: 10;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
          <children>
             <VBox fx:id="notifyVBox" alignment="CENTER" layoutX="403.0" layoutY="15.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="60.0" prefWidth="120.0" HBox.hgrow="ALWAYS">
@@ -155,8 +138,10 @@
             </VBox>
          </children>
       </HBox>
-        <StackPane layoutY="78.0" prefHeight="450.0" prefWidth="800.0" styleClass="content-wrapper">
-            <ScrollPane fx:id="mainScrollPane" fitToWidth="true" hbarPolicy="NEVER" prefHeight="440.0" prefWidth="557.0" styleClass="main-scroll">
+        <StackPane layoutY="78.0" prefHeight="450.0" prefWidth="800.0" styleClass="content-wrapper" AnchorPane.bottomAnchor="71.60000000000002" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="77.60000000000002">
+
+                  <Button onAction="#handleScrollTop" styleClass="scroll-top-button" text="↑" translateX="-18" translateY="-18" StackPane.alignment="BOTTOM_RIGHT" />
+            <ScrollPane fx:id="mainScrollPane" fitToWidth="true" prefHeight="440.0" prefWidth="557.0" styleClass="main-scroll" StackPane.alignment="CENTER">
                 <content>
                     <FlowPane fx:id="auctionContainer" hgap="24" prefWidth="798.0" prefWrapLength="1000" styleClass="auction-grid" vgap="28">
                         <padding>
@@ -165,18 +150,39 @@
                     </FlowPane>
                 </content>
             </ScrollPane>
-
-                  <Button onAction="#handleScrollTop" styleClass="scroll-top-button" text="↑" translateX="-18" translateY="-18" StackPane.alignment="BOTTOM_RIGHT" />
         </StackPane>
-      <Separator halignment="RIGHT" layoutX="11.0" layoutY="69.0" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefWidth="779.0" style="-fx-background-color: #00008B;" />
-
-                                       <TextField fx:id="txtSearch" layoutX="386.0" layoutY="24.0" prefHeight="30.0" prefWidth="400.0" promptText="Tìm kiếm sản phẩm đấu giá..." styleClass="search-box">
-         <font>
-            <Font size="15.0" />
-         </font>
-         <opaqueInsets>
-            <Insets />
-         </opaqueInsets>
-      </TextField>
+      <VBox layoutX="10.0" prefHeight="80.0" prefWidth="778.0" AnchorPane.leftAnchor="10.399999999999977" AnchorPane.rightAnchor="10.799999999999955" AnchorPane.topAnchor="0.0">
+         <children>
+            <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+               <children>
+                  <ImageView fitHeight="70.0" fitWidth="70.0">
+                     <image>
+                        <Image url="@../DDCAuction.png" />
+                     </image>
+                  </ImageView>
+                  <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="75.0" prefWidth="167.0" text="ĐẤU GIÁ" textAlignment="CENTER" textFill="DARKBLUE">
+                     <font>
+                        <Font name="System Bold" size="36.0" />
+                     </font>
+                  </Label>
+                  <Region prefHeight="100.0" prefWidth="0.0" HBox.hgrow="ALWAYS" />
+            
+                                                                                    <TextField fx:id="txtSearch" prefHeight="65.0" prefWidth="458.0" promptText="Tìm kiếm sản phẩm đấu giá..." styleClass="search-box">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                  </TextField>
+               </children>
+            </HBox>
+            <Separator halignment="RIGHT" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefWidth="779.0" style="-fx-background-color: #00008B;" VBox.vgrow="ALWAYS">
+               <VBox.margin>
+                  <Insets top="-30.0" />
+               </VBox.margin>
+            </Separator>
+         </children>
+      </VBox>
    </children>
 </AnchorPane>

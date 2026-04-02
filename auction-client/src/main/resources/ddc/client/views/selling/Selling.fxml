@@ -115,7 +115,7 @@
                </padding>
             </VBox>
             <Separator orientation="VERTICAL" prefHeight="200.0" />
-            <VBox alignment="CENTER" layoutX="183.0" layoutY="15.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="60.0" prefWidth="120.0" HBox.hgrow="ALWAYS">
+            <VBox alignment="CENTER" layoutX="183.0" layoutY="15.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#switchToBidding" prefHeight="60.0" prefWidth="120.0" HBox.hgrow="ALWAYS">
                <children>
                   <Label maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" text="⚖" textFill="DARKBLUE" VBox.vgrow="NEVER">
                      <VBox.margin>
@@ -139,7 +139,7 @@
                </padding>
             </VBox>
             <Separator orientation="VERTICAL" prefHeight="200.0" />
-            <VBox alignment="CENTER" layoutX="128.0" layoutY="15.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="60.0" prefWidth="120.0" HBox.hgrow="ALWAYS">
+            <VBox alignment="CENTER" layoutX="128.0" layoutY="15.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#switchToHome" prefHeight="60.0" prefWidth="120.0" HBox.hgrow="ALWAYS">
                <children>
                   <Label maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" text="🏠" textFill="DARKBLUE" VBox.vgrow="NEVER">
                      <VBox.margin>
@@ -204,50 +204,6 @@
                   <Insets bottom="5.0" />
                </padding>
             </VBox>
-         </children>
-      </HBox>
-      <HBox alignment="CENTER" prefHeight="70.0" prefWidth="100.0" spacing="70.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
-         <children>
-            <Button fx:id="toNoti" mnemonicParsing="false" opacity="0.0" text="Button">
-               <font>
-                  <Font size="18.0" />
-               </font>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Button>
-            <Button fx:id="toBid" mnemonicParsing="false" onAction="#toBidding" opacity="0.0" text="Button">
-               <font>
-                  <Font size="18.0" />
-               </font>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Button>
-            <Button fx:id="toHome" mnemonicParsing="false" onAction="#toHome" opacity="0.0" text="Button">
-               <font>
-                  <Font size="18.0" />
-               </font>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Button>
-            <Button mnemonicParsing="false" opacity="0.0" text="Button">
-               <font>
-                  <Font size="18.0" />
-               </font>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Button>
-            <Button fx:id="toProfile" mnemonicParsing="false" opacity="0.0" text="Button">
-               <font>
-                  <Font size="18.0" />
-               </font>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Button>
          </children>
       </HBox>
    </children>

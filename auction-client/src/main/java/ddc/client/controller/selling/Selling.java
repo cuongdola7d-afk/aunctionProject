@@ -2,12 +2,12 @@ package ddc.client.controller.selling;
 import java.io.IOException;
 
 import ddc.client.controller.SceneSwitcher;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -38,12 +38,12 @@ public class Selling {
     }
 
     @FXML
-    private void toHome(ActionEvent event) {
-        SceneSwitcher.goTo(event, "/ddc/client/views/home/Home.fxml");
+    private void switchToHome(MouseEvent event) {
+        SceneSwitcher.goToME(event, "/ddc/client/views/home/Home.fxml");
     }
 
     @FXML
-    private void toBidding(ActionEvent event) {
-        SceneSwitcher.goTo(event, "/ddc/client/views/bidding/Bidding.fxml");
+    private void switchToBidding(MouseEvent event) {
+        SceneSwitcher.goToME(event, "/ddc/client/views/bidding/Bidding.fxml");
     }
 }

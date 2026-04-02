@@ -2,6 +2,7 @@ package ddc.client.controller.loginregister;
 
 import java.io.IOException;
 
+import ddc.client.controller.SceneSwitcher;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -23,7 +24,7 @@ public class Login {
     private Label errorLabel;
 
     @FXML
-    public void login(ActionEvent event) {
+    private void login(ActionEvent event) {
         if (usernameTextField.getText().isEmpty() || passwordField.getText().isEmpty()) {
             errorLabel.setText("Vui lòng nhập thông tin vào chỗ trống.");
         }
@@ -49,16 +50,7 @@ public class Login {
     }
 
     @FXML
-    public void switchToRegister(ActionEvent event) {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("/ddc/client/views/loginregister/Register.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root, 400, 500));
-            stage.show();
-        } catch (IOException e) {
-            System.out.println("Error!" + e.getMessage());
-        } catch (Exception e) {
-            System.out.println("Error!" + e.getMessage());
-        }
+    private void switchToRegister(ActionEvent event) {
+        SceneSwitcher.goToAE(event, "/ddc/client/views/loginregister/Register.fxml");
     }
 }
