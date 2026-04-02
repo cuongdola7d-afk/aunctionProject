@@ -380,12 +380,12 @@
             </VBox>
          </children>
       </HBox>
-      <Button alignment="CENTER" contentDisplay="CENTER" layoutX="648.0" layoutY="142.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="120.0" style="-fx-border-radius: 15; -fx-background-color: CYAN; -fx-border-color: #00008b; -fx-border-width: 2; -fx-background-radius: 15;" text="XEM THÊM" textAlignment="CENTER" textFill="DARKBLUE" AnchorPane.rightAnchor="32.0">
+      <Button alignment="CENTER" contentDisplay="CENTER" layoutX="648.0" layoutY="142.0" mnemonicParsing="false" onAction="#learnMore" prefHeight="40.0" prefWidth="120.0" style="-fx-border-radius: 15; -fx-background-color: CYAN; -fx-border-color: #00008b; -fx-border-width: 2; -fx-background-radius: 15;" text="XEM THÊM" textAlignment="CENTER" textFill="DARKBLUE" AnchorPane.rightAnchor="32.0">
          <font>
             <Font name="Arial Bold Italic" size="15.0" />
          </font>
       </Button>
-      <Button alignment="CENTER" contentDisplay="CENTER" layoutX="648.0" layoutY="365.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="120.0" style="-fx-border-radius: 15; -fx-background-color: CYAN; -fx-border-color: #00008b; -fx-border-width: 2; -fx-background-radius: 15;" text="XEM THÊM" textAlignment="CENTER" textFill="DARKBLUE" AnchorPane.rightAnchor="32.0">
+      <Button alignment="CENTER" contentDisplay="CENTER" layoutX="648.0" layoutY="365.0" mnemonicParsing="false" onAction="#learnMore" prefHeight="40.0" prefWidth="120.0" style="-fx-border-radius: 15; -fx-background-color: CYAN; -fx-border-color: #00008b; -fx-border-width: 2; -fx-background-radius: 15;" text="XEM THÊM" textAlignment="CENTER" textFill="DARKBLUE" AnchorPane.rightAnchor="32.0">
          <font>
             <Font name="Arial Bold Italic" size="15.0" />
          </font>
