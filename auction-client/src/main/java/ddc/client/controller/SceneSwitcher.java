@@ -1,11 +1,13 @@
-package ddc.client.controller.selling;
+package ddc.client.controller;
+
+import java.io.IOException;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import java.io.IOException;
 
 public class SceneSwitcher{
     public static void goTo(ActionEvent event, String fxmlPath) {
