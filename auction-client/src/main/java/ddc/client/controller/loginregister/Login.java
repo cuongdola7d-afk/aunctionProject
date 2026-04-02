@@ -23,31 +23,23 @@ public class Login {
     @FXML
     private Label errorLabel;
 
-    @FXML
-    private void login(ActionEvent event) {
-        if (usernameTextField.getText().isEmpty() || passwordField.getText().isEmpty()) {
-            errorLabel.setText("Vui lòng nhập thông tin vào chỗ trống.");
-        }
-        else {
-            try {
-                ((Stage) ((Node) event.getSource()).getScene().getWindow()).close();
-                Parent root = FXMLLoader.load(getClass().getResource("/ddc/client/views/selling/Selling.fxml"));
-                Stage stage = new Stage();
-                Image icon = new Image(getClass().getResourceAsStream("/ddc/client/views/DDCAuction.png"));
-
-                stage.setTitle("DDC Auction");
-                stage.getIcons().add(icon);
-                stage.setResizable(true);
-                stage.centerOnScreen();
-                stage.setScene(new Scene(root, 800, 600));
-                stage.show();
-            } catch (IOException e) {
-                System.out.println("IO Error!" + e.getMessage());
-            } catch (Exception e) {
-                System.out.println("Error!" + e.getMessage());
-            }
-        }
+@FXML
+private void login(ActionEvent event) {
+    try {
+        Parent root = FXMLLoader.load(getClass().getResource("/ddc/client/views/home/Home.fxml"));
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setResizable(true);
+        stage.centerOnScreen();
+        stage.setScene(new Scene(root, 800, 600));
+        stage.show();
+    } catch (IOException e) {
+        e.printStackTrace();
+        System.out.println("Loi mo Home.fxml: " + e.getMessage());
+    } catch (Exception e) {
+        e.printStackTrace();
+        System.out.println("Error: " + e.getMessage());
     }
+}
 
     @FXML
     private void switchToRegister(ActionEvent event) {

@@ -98,11 +98,11 @@ public class Bidding {
 
     @FXML
 
-    private void toHome(MouseEvent event) {
+    private void switchToHome(MouseEvent event) {
     SceneSwitcher.goTo(event, "/ddc/client/views/home/Home.fxml");}
 
     @FXML
-    private void toSelling(MouseEvent event) {
+    private void switchToSelling(MouseEvent event) {
     SceneSwitcher.goTo(event, "/ddc/client/views/selling/Selling.fxml");}
 
 }
