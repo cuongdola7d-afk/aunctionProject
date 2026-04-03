@@ -106,4 +106,9 @@ public class Bidding {
     private void switchToSelling (MouseEvent event) {
         SceneSwitcher.goTo(event, "/ddc/client/views/selling/Selling.fxml");
     }
+
+    @FXML
+    private void switchToProfile (MouseEvent event) {
+        SceneSwitcher.goTo(event, "/ddc/client/views/profile/Profile.fxml");
+    }
 }

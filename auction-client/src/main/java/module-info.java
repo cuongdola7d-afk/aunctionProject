@@ -10,4 +10,5 @@ module ddc.client {
     opens ddc.client.controller.bidding to javafx.fxml;
     opens ddc.client.controller.selling to javafx.fxml;
     opens ddc.client.controller.home to javafx.fxml;
+    opens ddc.client.controller.profile to javafx.fxml;
 }
