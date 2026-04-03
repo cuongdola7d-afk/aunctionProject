@@ -1,7 +1,8 @@
 package ddc.client.controller.selling;
 
-import ddc.client.controller.SceneSwitcher;
 import java.io.IOException;
+
+import ddc.client.controller.SceneSwitcher;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -43,5 +44,10 @@ public class Selling {
     @FXML
     private void switchToBidding(MouseEvent event) {
         SceneSwitcher.goTo(event, "/ddc/client/views/bidding/Bidding.fxml");
+    }
+
+    @FXML
+    private void switchToProfile (MouseEvent event) {
+        SceneSwitcher.goTo(event, "/ddc/client/views/profile/Profile.fxml");
     }
 }
