@@ -13,29 +13,6 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ddc.client.controller.profile.Profile">
    <children>
-      <VBox alignment="CENTER" layoutX="13.2" layoutY="10.0" prefHeight="80.0" prefWidth="787.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
-         <children>
-            <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
-               <children>
-                  <ImageView fitHeight="70.0" fitWidth="70.0">
-                     <image>
-                        <Image url="@../DDCAuction.png" />
-                     </image>
-                  </ImageView>
-                  <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="75.0" prefWidth="210.0" text="THÔNG TIN" textAlignment="CENTER" textFill="DARKBLUE">
-                     <font>
-                        <Font name="System Bold" size="36.0" />
-                     </font>
-                  </Label>
-               </children>
-            </HBox>
-            <Separator halignment="RIGHT" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefWidth="500.0" style="-fx-background-color: #00008B;" VBox.vgrow="ALWAYS">
-               <VBox.margin>
-                  <Insets top="-30.0" />
-               </VBox.margin>
-            </Separator>
-         </children>
-      </VBox>
       <HBox alignment="CENTER" layoutY="529.8000000000001" minHeight="0.0" prefHeight="60.0" prefWidth="550.0" spacing="15.0" style="-fx-background-color: cyan; -fx-min-height: 70; -fx-padding: 10;" AnchorPane.bottomAnchor="-0.20000000000004547" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
          <children>
             <VBox fx:id="notifyVBox" alignment="CENTER" layoutX="403.0" layoutY="15.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="60.0" prefWidth="120.0" HBox.hgrow="ALWAYS">
@@ -232,5 +209,28 @@
          </children>
       </HBox>
       <Circle fill="WHITE" layoutX="659.0" layoutY="156.0" radius="75.0" stroke="DARKBLUE" strokeType="INSIDE" strokeWidth="2.0" AnchorPane.rightAnchor="66.0" />
+      <VBox layoutX="11.0" prefHeight="80.0" prefWidth="774.0">
+         <children>
+            <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+               <children>
+                  <ImageView fitHeight="70.0" fitWidth="70.0">
+                     <image>
+                        <Image url="@../DDCAuction.png" />
+                     </image>
+                  </ImageView>
+                  <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="75.0" prefWidth="219.0" text="THÔNG TIN" textAlignment="CENTER" textFill="DARKBLUE">
+                     <font>
+                        <Font name="System Bold" size="36.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+            <Separator halignment="RIGHT" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="3.2" prefWidth="779.0" style="-fx-background-color: #00008B;" VBox.vgrow="ALWAYS">
+               <VBox.margin>
+                  <Insets top="-30.0" />
+               </VBox.margin>
+            </Separator>
+         </children>
+      </VBox>
    </children>
 </AnchorPane>

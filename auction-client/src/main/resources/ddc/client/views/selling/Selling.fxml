@@ -16,29 +16,6 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ddc.client.controller.selling.Selling">
    <children>
-      <VBox layoutX="3.2" prefHeight="80.0" prefWidth="787.0" AnchorPane.leftAnchor="11.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
-         <children>
-            <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
-               <children>
-                  <ImageView fitHeight="70.0" fitWidth="70.0">
-                     <image>
-                        <Image url="@../DDCAuction.png" />
-                     </image>
-                  </ImageView>
-                  <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="75.0" prefWidth="210.0" text="ĐĂNG BÁN" textAlignment="CENTER" textFill="DARKBLUE">
-                     <font>
-                        <Font name="System Bold" size="36.0" />
-                     </font>
-                  </Label>
-               </children>
-            </HBox>
-            <Separator halignment="RIGHT" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefWidth="779.0" style="-fx-background-color: #00008B;" VBox.vgrow="ALWAYS">
-               <VBox.margin>
-                  <Insets top="-30.0" />
-               </VBox.margin>
-            </Separator>
-         </children>
-      </VBox>
       <VBox alignment="CENTER" prefWidth="100.0" AnchorPane.bottomAnchor="150.0" AnchorPane.leftAnchor="150.0" AnchorPane.rightAnchor="150.0" AnchorPane.topAnchor="200.0">
          <children>
             <Label text="ĐĂNG BÁN SẢN PHẨM" textFill="DARKBLUE">
@@ -206,5 +183,28 @@
             </VBox>
          </children>
       </HBox>
+      <VBox layoutX="11.0" layoutY="1.0" prefHeight="80.0" prefWidth="774.0">
+         <children>
+            <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+               <children>
+                  <ImageView fitHeight="70.0" fitWidth="70.0">
+                     <image>
+                        <Image url="@../DDCAuction.png" />
+                     </image>
+                  </ImageView>
+                  <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="75.0" prefWidth="212.0" text="ĐĂNG BÁN" textAlignment="CENTER" textFill="DARKBLUE">
+                     <font>
+                        <Font name="System Bold" size="36.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+            <Separator halignment="RIGHT" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefWidth="779.0" style="-fx-background-color: #00008B;" VBox.vgrow="ALWAYS">
+               <VBox.margin>
+                  <Insets top="-30.0" />
+               </VBox.margin>
+            </Separator>
+         </children>
+      </VBox>
    </children>
 </AnchorPane>
