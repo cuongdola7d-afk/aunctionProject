@@ -135,7 +135,7 @@
       </HBox>
       <VBox layoutY="236.0" prefHeight="292.0" prefWidth="800.0" AnchorPane.bottomAnchor="72.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="236.0">
          <children>
-            <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: #e0e0e0; -fx-border-radius: 10;" VBox.vgrow="ALWAYS">
+            <HBox alignment="CENTER_LEFT" onMouseClicked="#switchToPersonalInfo" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: #e0e0e0; -fx-border-radius: 10;" VBox.vgrow="ALWAYS">
                <children>
                   <Label prefWidth="250.0" text="--&gt; Thông tin cá nhân" textFill="DARKBLUE">
                      <HBox.margin>
@@ -171,7 +171,7 @@
                   </Label>
                </children>
             </HBox>
-            <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: #e0e0e0; -fx-border-radius: 10;" VBox.vgrow="ALWAYS">
+            <HBox alignment="CENTER_LEFT" onMouseClicked="#showLogoutPopup" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: #e0e0e0; -fx-border-radius: 10;" VBox.vgrow="ALWAYS">
                <children>
                   <Label prefWidth="250.0" text="--&gt; Đăng xuất" textFill="DARKBLUE">
                      <HBox.margin>
