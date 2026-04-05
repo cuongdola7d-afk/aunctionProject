@@ -181,8 +181,7 @@ private void setupCategoryTree() {
     private void switchToNotify (MouseEvent event) {
         SceneSwitcher.goTo(event, "/ddc/client/views/notify/Notify.fxml");
     }
+
+
     private TreeView<String> categoryTree;
-
-
-    
 }

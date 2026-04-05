@@ -173,43 +173,6 @@
             </Separator>
          </children>
       </VBox>
-        <StackPane alignment="TOP_LEFT" layoutX="200.0" layoutY="79.0" prefHeight="450.0" prefWidth="600.0" styleClass="content-wrapper" AnchorPane.bottomAnchor="70.39999999999998" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="79.0">
-            <ScrollPane fx:id="mainScrollPane" fitToWidth="true" prefHeight="450.0" prefWidth="600.0" styleClass="main-scroll">
-                <content>
-                    <FlowPane fx:id="auctionContainer" hgap="24" prefHeight="40.0" prefWidth="0.0" prefWrapLength="1000" styleClass="auction-grid" vgap="28">
-                        <padding>
-                            <Insets bottom="20" left="24" right="24" top="20" />
-                        </padding>
-                    </FlowPane>
-                </content>
-            </ScrollPane>
-
-                           <Button onAction="#handleScrollTop" styleClass="scroll-top-button" text="↑" translateX="-18" translateY="-18" StackPane.alignment="BOTTOM_RIGHT" />
-        </StackPane>
-      <VBox layoutY="80.0" prefHeight="450.0" prefWidth="200.0" AnchorPane.bottomAnchor="69.60000000000002" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="80.0">
-         <children>
-            <Label prefHeight="40.0" prefWidth="200.0" text="- TẤT CẢ (20)" textFill="DARKBLUE" VBox.vgrow="ALWAYS">
-               <font>
-                  <Font name="Calibri Bold Italic" size="20.0" />
-               </font>
-            </Label>
-            <Label prefHeight="40.0" prefWidth="200.0" text="- NGHỆ THUẬT (9)" textFill="DARKBLUE">
-               <font>
-                  <Font name="Calibri Bold Italic" size="20.0" />
-               </font>
-            </Label>
-            <Label prefHeight="40.0" prefWidth="200.0" text="- ĐỒ ĐIỆN TỬ (8)" textFill="DARKBLUE">
-               <font>
-                  <Font name="Calibri Bold Italic" size="20.0" />
-               </font>
-            </Label>
-            <Label prefHeight="40.0" prefWidth="200.0" text="- PHƯƠNG TIỆN (3)" textFill="DARKBLUE">
-               <font>
-                  <Font name="Calibri Bold Italic" size="20.0" />
-               </font>
-            </Label>
-         </children>
-      </VBox>
       <SplitPane dividerPositions="0.25" layoutY="78.0" prefHeight="450.0" AnchorPane.bottomAnchor="71.20000000000005" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="78.0">
          <items>
             <TreeView fx:id="categoryTree" minWidth="50.0" prefHeight="449.0" prefWidth="56.0" SplitPane.resizableWithParent="false" />
