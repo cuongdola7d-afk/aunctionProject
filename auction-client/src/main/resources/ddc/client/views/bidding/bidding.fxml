@@ -6,6 +6,7 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TreeView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -14,9 +15,10 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.SVGPath?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ddc.client.controller.bidding.Bidding">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" stylesheets="@../../css/bidding/bidding.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ddc.client.controller.bidding.Bidding">
    <children>
       <HBox alignment="CENTER" layoutX="25.0" layoutY="304.0" minHeight="0.0" prefHeight="60.0" prefWidth="550.0" spacing="15.0" style="-fx-background-color: cyan; -fx-min-height: 70; -fx-padding: 10;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
          <children>
@@ -171,6 +173,7 @@
             </Separator>
          </children>
       </VBox>
+<<<<<<< HEAD
         <StackPane alignment="TOP_LEFT" layoutX="200.0" layoutY="79.0" prefHeight="450.0" prefWidth="600.0" styleClass="content-wrapper" AnchorPane.bottomAnchor="70.39999999999998" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="79.0">
             <ScrollPane fx:id="mainScrollPane" fitToWidth="true" prefHeight="450.0" prefWidth="600.0" styleClass="main-scroll">
                 <content>
@@ -208,5 +211,29 @@
             </Label>
          </children>
       </VBox>
+=======
+      <SplitPane dividerPositions="0.25" layoutY="78.0" prefHeight="450.0" AnchorPane.bottomAnchor="71.20000000000005" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="78.0">
+         <items>
+            <TreeView fx:id="categoryTree" minWidth="50.0" prefHeight="449.0" prefWidth="56.0" SplitPane.resizableWithParent="false" />
+              <StackPane alignment="TOP_LEFT" minWidth="200.0" prefHeight="450.0" prefWidth="600.0" styleClass="content-wrapper">
+                  <ScrollPane fx:id="mainScrollPane" fitToWidth="true" prefHeight="449.0" prefWidth="260.0" styleClass="main-scroll">
+                      <content>
+                          <FlowPane fx:id="auctionContainer" hgap="24" prefHeight="40.0" prefWidth="0.0" prefWrapLength="1000" styleClass="auction-grid" vgap="28">
+                              <padding>
+                                  <Insets bottom="20" left="24" right="24" top="20" />
+                              </padding>
+                          </FlowPane>
+                      </content>
+                  </ScrollPane>
+      
+<Button maxHeight="35.0" maxWidth="35.0" onAction="#handleScrollTop" prefHeight="35.0" prefWidth="35.0" styleClass="scroll-top-button" translateX="-5.0" translateY="-5.0" StackPane.alignment="BOTTOM_RIGHT">
+   <graphic>
+      <SVGPath content="M 0 10 L 10 0 L 20 10" styleClass="arrow-svg" />
+   </graphic>
+</Button>
+              </StackPane>
+         </items>
+      </SplitPane>
+>>>>>>> origin/master
    </children>
 </AnchorPane>
