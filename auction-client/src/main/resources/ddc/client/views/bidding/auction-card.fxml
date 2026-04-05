@@ -1,38 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<HBox xmlns:fx="http://javafx.com/fxml"
-      fx:controller="ddc.client.controller.bidding.AuctionCard"
-      spacing="12"
-      prefWidth="250"
-      prefHeight="130"
-      styleClass="auction-card">
-
-    <padding>
-        <Insets top="12" right="12" bottom="12" left="12"/>
-    </padding>
-
-    <ImageView fx:id="imgItem"
-               fitWidth="95"
-               fitHeight="95"
-               preserveRatio="false"
-               smooth="true"/>
-
-    <VBox spacing="8" alignment="TOP_LEFT">
-        <Label fx:id="lblName"
-               styleClass="card-title"
-               wrapText="true"
-               maxWidth="120"/>
-
-        <Label fx:id="lblPrice"
-               styleClass="card-price"/>
-
-        <Label fx:id="lblTimeLeft"
-               styleClass="card-time"/>
-    </VBox>
+<HBox fx:id="cardRoot" alignment="CENTER_LEFT" onMouseClicked="#handleCardClick" prefHeight="130.0" prefWidth="250.0" spacing="12.0" styleClass="auction-card" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ddc.client.controller.bidding.AuctionCard">
+   <children>
+      <ImageView fx:id="imgItem" fitHeight="95.0" fitWidth="95.0" preserveRatio="false" smooth="true" />
+      <Separator orientation="VERTICAL" prefHeight="200.0" styleClass="card-divider" />
+      <VBox alignment="TOP_LEFT" spacing="8.0">
+         <children>
+            <Label fx:id="lblName" maxWidth="120.0" styleClass="card-title" wrapText="true" />
+            <Label fx:id="lblPrice" styleClass="card-price" />
+            <Label fx:id="lblTimeLeft" styleClass="card-time" />
+         </children>
+      </VBox>
+   </children>
+   <padding>
+      <Insets bottom="12.0" left="12.0" right="12.0" top="12.0" />
+   </padding>
+   <cursor>
+      <Cursor fx:constant="HAND" />
+   </cursor>
 </HBox>
