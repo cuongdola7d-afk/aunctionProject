@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ddc.client.controller.bidding.Bidding">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ddc.client.controller.bidding.Bidding" stylesheets="@../../css/bidding/bidding.css">
    <children>
       <HBox alignment="CENTER" layoutX="25.0" layoutY="304.0" minHeight="0.0" prefHeight="60.0" prefWidth="550.0" spacing="15.0" style="-fx-background-color: cyan; -fx-min-height: 70; -fx-padding: 10;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
          <children>
@@ -179,7 +179,7 @@
               <StackPane alignment="TOP_LEFT" prefHeight="450.0" prefWidth="800.0" styleClass="content-wrapper">
                   <ScrollPane fx:id="mainScrollPane" fitToWidth="true" prefHeight="440.0" prefWidth="458.0" styleClass="main-scroll">
                       <content>
-                          <FlowPane fx:id="auctionContainer" hgap="24" prefHeight="40.0" prefWidth="0.0" prefWrapLength="1000" styleClass="auction-grid" vgap="28">
+                          <FlowPane fx:id="auctionContainer" hgap="24" prefHeight="40.0" prefWidth="0.0" prefWrapLength="1000" styleClass="auction-grid" vgap="28" >
                               <padding>
                                   <Insets bottom="20" left="24" right="24" top="20" />
                               </padding>

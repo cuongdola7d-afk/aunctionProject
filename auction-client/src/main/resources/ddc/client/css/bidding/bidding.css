@@ -53,11 +53,13 @@
 
 .auction-card {
     -fx-background-color: #f8f8f8;
-    -fx-background-radius: 10;
+    -fx-background-radius: 12;
     -fx-border-color: #222222;
-    -fx-border-radius: 10;
+    -fx-border-radius: 12;
+    -fx-border-style: solid;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 4, 0.2, 0, 1);
 }
+
 
 .card-image {
     -fx-background-radius: 6;
