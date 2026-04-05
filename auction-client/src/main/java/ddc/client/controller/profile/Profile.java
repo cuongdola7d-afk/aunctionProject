@@ -1,11 +1,10 @@
-package ddc.client.controller.home;
+package ddc.client.controller.profile;
+
 import ddc.client.controller.SceneSwitcher;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.input.MouseEvent;
 
-public class Home {
-
+public class Profile {
     @FXML
     private void switchToSelling (MouseEvent event) {
         SceneSwitcher.goTo(event, "/ddc/client/views/selling/Selling.fxml");
@@ -17,12 +16,7 @@ public class Home {
     }
 
     @FXML
-    private void switchToProfile (MouseEvent event) {
-        SceneSwitcher.goTo(event, "/ddc/client/views/profile/Profile.fxml");
-    }
-    
-    @FXML
-    private void learnMore (ActionEvent event) {
-        SceneSwitcher.goTo(event, "/ddc/client/views/bidding/Bidding.fxml");
+    private void switchToHome (MouseEvent event) {
+        SceneSwitcher.goTo(event, "/ddc/client/views/home/Home.fxml");
     }
 }
