@@ -173,7 +173,6 @@
             </Separator>
          </children>
       </VBox>
-<<<<<<< HEAD
         <StackPane alignment="TOP_LEFT" layoutX="200.0" layoutY="79.0" prefHeight="450.0" prefWidth="600.0" styleClass="content-wrapper" AnchorPane.bottomAnchor="70.39999999999998" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="79.0">
             <ScrollPane fx:id="mainScrollPane" fitToWidth="true" prefHeight="450.0" prefWidth="600.0" styleClass="main-scroll">
                 <content>
@@ -211,7 +210,6 @@
             </Label>
          </children>
       </VBox>
-=======
       <SplitPane dividerPositions="0.25" layoutY="78.0" prefHeight="450.0" AnchorPane.bottomAnchor="71.20000000000005" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="78.0">
          <items>
             <TreeView fx:id="categoryTree" minWidth="50.0" prefHeight="449.0" prefWidth="56.0" SplitPane.resizableWithParent="false" />
@@ -234,6 +232,5 @@
               </StackPane>
          </items>
       </SplitPane>
->>>>>>> origin/master
    </children>
 </AnchorPane>
