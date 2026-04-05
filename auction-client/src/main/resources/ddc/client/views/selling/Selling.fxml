@@ -183,7 +183,7 @@
             </VBox>
          </children>
       </HBox>
-      <VBox layoutX="11.0" layoutY="1.0" prefHeight="80.0" prefWidth="774.0">
+      <VBox layoutX="11.0" layoutY="1.0" prefHeight="80.0" prefWidth="774.0" AnchorPane.leftAnchor="11.199999999999932" AnchorPane.rightAnchor="9.799999999999955" AnchorPane.topAnchor="1.0">
          <children>
             <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                <children>

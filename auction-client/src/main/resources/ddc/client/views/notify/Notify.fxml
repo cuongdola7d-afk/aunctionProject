@@ -155,7 +155,7 @@
             </VBox>
          </children>
       </HBox>
-      <Label layoutX="178.0" layoutY="485.0" text="TẠM THỜI CHƯA CÓ GÌ Ở ĐÂY CẢ :V" textFill="DARKBLUE">
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="178.0" layoutY="485.0" text="TẠM THỜI CHƯA CÓ GÌ Ở ĐÂY CẢ :V" textFill="DARKBLUE" AnchorPane.bottomAnchor="84.6" AnchorPane.leftAnchor="177.59999999999997" AnchorPane.rightAnchor="177.2">
          <font>
             <Font name="Arial Bold Italic" size="25.0" />
          </font>
