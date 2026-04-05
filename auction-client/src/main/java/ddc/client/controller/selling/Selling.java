@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 public class Selling {
 
     @FXML
+    @SuppressWarnings({"unused", "CallToPrintStackTrace"})
     private void handleOpenUploadDialog() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ddc/client/views/selling/UploadItem.fxml"));
@@ -37,17 +38,26 @@ public class Selling {
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void switchToHome(MouseEvent event) {
         SceneSwitcher.goTo(event, "/ddc/client/views/home/Home.fxml");
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void switchToBidding(MouseEvent event) {
         SceneSwitcher.goTo(event, "/ddc/client/views/bidding/Bidding.fxml");
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void switchToProfile (MouseEvent event) {
         SceneSwitcher.goTo(event, "/ddc/client/views/profile/Profile.fxml");
+    }
+
+    @FXML
+    @SuppressWarnings("unused")
+    private void switchToNotify (MouseEvent event) {
+        SceneSwitcher.goTo(event, "/ddc/client/views/notify/Notify.fxml");
     }
 }

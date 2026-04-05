@@ -53,6 +53,7 @@ public class Bidding {
         itemList.add(new AuctionItemViewModel("Bàn phím Bluetooth", "950,000 đ", "01:55:12", "/ddc/client/views/bidding/image/keyboard.jpg"));
     }
 
+    @SuppressWarnings("CallToPrintStackTrace")
     private void renderItems(List<AuctionItemViewModel> items) {
         auctionContainer.getChildren().clear();
 
@@ -92,23 +93,32 @@ public class Bidding {
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void handleScrollTop() {
         mainScrollPane.setVvalue(0);
     }
 
     @FXML
-
+    @SuppressWarnings("unused")
     private void switchToHome(MouseEvent event) {
         SceneSwitcher.goTo(event, "/ddc/client/views/home/Home.fxml");
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void switchToSelling (MouseEvent event) {
         SceneSwitcher.goTo(event, "/ddc/client/views/selling/Selling.fxml");
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void switchToProfile (MouseEvent event) {
         SceneSwitcher.goTo(event, "/ddc/client/views/profile/Profile.fxml");
+    }
+
+    @FXML
+    @SuppressWarnings("unused")
+    private void switchToNotify (MouseEvent event) {
+        SceneSwitcher.goTo(event, "/ddc/client/views/notify/Notify.fxml");
     }
 }

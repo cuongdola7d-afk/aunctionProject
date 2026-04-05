@@ -39,7 +39,7 @@
       </VBox>
       <HBox alignment="CENTER" layoutX="25.0" layoutY="304.0" minHeight="0.0" prefHeight="60.0" prefWidth="550.0" spacing="15.0" style="-fx-background-color: cyan; -fx-min-height: 70; -fx-padding: 10;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
          <children>
-            <VBox fx:id="notifyVBox" alignment="CENTER" layoutX="403.0" layoutY="15.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="60.0" prefWidth="120.0" HBox.hgrow="ALWAYS">
+            <VBox fx:id="notifyVBox" alignment="CENTER" layoutX="403.0" layoutY="15.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#switchToNotify" prefHeight="60.0" prefWidth="120.0" HBox.hgrow="ALWAYS">
                <children>
                   <Label maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" text="🔔" textFill="DARKBLUE" VBox.vgrow="NEVER">
                      <VBox.margin>
