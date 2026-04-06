@@ -5,12 +5,14 @@ public class AuctionItemViewModel {
     private final String price;
     private final String timeLeft;
     private final String imagePath;
+    private String category;
 
-    public AuctionItemViewModel(String name, String price, String timeLeft, String imagePath) {
+    public AuctionItemViewModel(String name, String price, String timeLeft, String imagePath, String category) {
         this.name = name;
         this.price = price;
         this.timeLeft = timeLeft;
         this.imagePath = imagePath;
+        this.category = category;
     }
 
     public String getName() {
@@ -28,4 +30,6 @@ public class AuctionItemViewModel {
     public String getImagePath() {
         return imagePath;
     }
+
+    public String getCategory() { return category; }
 }

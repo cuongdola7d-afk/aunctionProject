@@ -98,19 +98,19 @@ private void setupCategoryTree() {
     }
 
     private void loadSampleData() {
-        itemList.add(new AuctionItemViewModel("Đồng hồ thông minh", "1,250,000 đ", "02:15:30", "/ddc/client/views/bidding/image/watch.jpg"));
-        itemList.add(new AuctionItemViewModel("Máy ảnh Vintage", "3,400,000 đ", "00:45:12", "/ddc/client/views/bidding/image/camera.jpg"));
-        itemList.add(new AuctionItemViewModel("Tai nghe chống ồn", "850,000 đ", "05:10:00", "/ddc/client/views/bidding/image/headphone.jpg"));
-        itemList.add(new AuctionItemViewModel("Bàn phím cơ RGB", "2,100,000 đ", "01:20:45", "/ddc/client/views/bidding/image/mechanicalKeyboard.jpg"));
-        itemList.add(new AuctionItemViewModel("Màn hình 4K", "6,500,000 đ", "12:05:00", "/ddc/client/views/bidding/image/monitor.jpg"));
-        itemList.add(new AuctionItemViewModel("Chuột Gaming Wireless", "1,150,000 đ", "00:15:00", "/ddc/client/views/bidding/image/mouse.jpg"));
-        itemList.add(new AuctionItemViewModel("MacBook Pro", "22,000,000 đ", "23:45:10", "/ddc/client/views/bidding/image/laptop.jpg"));
-        itemList.add(new AuctionItemViewModel("Loa Bluetooth", "4,200,000 đ", "08:30:00", "/ddc/client/views/bidding/image/speaker.jpg"));
+        itemList.add(new AuctionItemViewModel("Đồng hồ thông minh", "1,250,000 đ", "02:15:30", "/ddc/client/views/bidding/image/watch.jpg", "Đồ điện tử"));
+        itemList.add(new AuctionItemViewModel("Đồng hồ Vintage", "3,400,000 đ", "00:45:12", "/ddc/client/views/bidding/image/vintageWatch.jpg", "Đồ điện tử"));
+        itemList.add(new AuctionItemViewModel("Tai nghe chống ồn", "850,000 đ", "05:10:00", "/ddc/client/views/bidding/image/headphone.jpg", "Đồ điện tử"));
+        itemList.add(new AuctionItemViewModel("Bàn phím cơ RGB", "2,100,000 đ", "01:20:45", "/ddc/client/views/bidding/image/mechanicalKeyboard.jpg", "Đồ điện tử"));
+        itemList.add(new AuctionItemViewModel("Màn hình 4K", "6,500,000 đ", "12:05:00", "/ddc/client/views/bidding/image/monitor.jpg", "Đồ điện tử"));
+        itemList.add(new AuctionItemViewModel("Chuột Gaming Wireless", "1,150,000 đ", "00:15:00", "/ddc/client/views/bidding/image/mouse.jpg", "Đồ điện tử"));
+        itemList.add(new AuctionItemViewModel("MacBook Pro", "22,000,000 đ", "23:45:10", "/ddc/client/views/bidding/image/laptop.jpg", "Đồ điện tử"));
+        itemList.add(new AuctionItemViewModel("Loa Bluetooth", "4,200,000 đ", "08:30:00", "/ddc/client/views/bidding/image/speaker.jpg", "Đồ điện tử"));
 
-        itemList.add(new AuctionItemViewModel("Đồng hồ thể thao", "1,850,000 đ", "03:20:10", "/ddc/client/views/bidding/image/watch.jpg"));
-        itemList.add(new AuctionItemViewModel("Máy ảnh Canon", "5,400,000 đ", "00:25:00", "/ddc/client/views/bidding/image/camera.jpg"));
-        itemList.add(new AuctionItemViewModel("Tai nghe Gaming", "1,100,000 đ", "06:40:32", "/ddc/client/views/bidding/image/headphone.jpg"));
-        itemList.add(new AuctionItemViewModel("Bàn phím Bluetooth", "950,000 đ", "01:55:12", "/ddc/client/views/bidding/image/bluetoothKeyboard.jpg"));
+        itemList.add(new AuctionItemViewModel("Đồng hồ thể thao", "1,850,000 đ", "03:20:10", "/ddc/client/views/bidding/image/watch.jpg", "Đồ điện tử"));
+        itemList.add(new AuctionItemViewModel("Máy ảnh Canon", "5,400,000 đ", "00:25:00", "/ddc/client/views/bidding/image/camera.jpg", "Đồ điện tử"));
+        itemList.add(new AuctionItemViewModel("Tai nghe Gaming", "1,100,000 đ", "06:40:32", "/ddc/client/views/bidding/image/headphone.jpg", "Đồ điện tử"));
+        itemList.add(new AuctionItemViewModel("Bàn phím Bluetooth", "950,000 đ", "01:55:12", "/ddc/client/views/bidding/image/bluetoothKeyboard.jpg", "Đồ điện tử"));
     }
 
     private void renderItems(List<AuctionItemViewModel> items) {

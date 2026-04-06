@@ -27,7 +27,7 @@
                <children>
                   <Label maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" text="🔔" textFill="DARKBLUE" VBox.vgrow="NEVER">
                      <VBox.margin>
-                        <Insets top="10.0" />
+                        <Insets left="0.0" top="10.0" />
                      </VBox.margin>
                      <font>
                         <Font size="14.0" />
@@ -174,9 +174,12 @@
             </Separator>
          </children>
       </VBox>
-      <SplitPane dividerPositions="0.25" layoutY="78.0" prefHeight="450.0" AnchorPane.bottomAnchor="71.20000000000005" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="78.0">
+      <SplitPane dividerPositions="0.25" layoutY="78.0" minWidth="200.0" prefHeight="450.0" AnchorPane.bottomAnchor="71.20000000000005" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="78.39999999999998">
          <items>
-            <TreeView fx:id="categoryTree" minWidth="50.0" prefHeight="449.0" prefWidth="56.0" SplitPane.resizableWithParent="false" />
+            <TreeView fx:id="categoryTree" minWidth="200.0" prefHeight="449.0" prefWidth="226.0" showRoot="false" SplitPane.resizableWithParent="false">
+               <padding>
+                  <Insets top="10.0" />
+               </padding></TreeView>
               <StackPane alignment="TOP_LEFT" minWidth="200.0" prefHeight="450.0" prefWidth="600.0" styleClass="content-wrapper">
                   <ScrollPane fx:id="mainScrollPane" fitToWidth="true" prefHeight="449.0" prefWidth="260.0" styleClass="main-scroll">
                       <content>

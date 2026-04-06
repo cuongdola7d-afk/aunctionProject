@@ -26,6 +26,9 @@ public class AuctionCard {
     @FXML
     private Label lblTimeLeft;
 
+    @FXML
+    private Label lblCategory; //
+
     private AuctionItemViewModel item;
 
 public void setData(AuctionItemViewModel item) {
@@ -33,6 +36,7 @@ public void setData(AuctionItemViewModel item) {
     lblName.setText(item.getName());
     lblPrice.setText(item.getPrice());
     lblTimeLeft.setText("◷ " + item.getTimeLeft());
+    lblCategory.setText(item.getCategory());
 
     try {
         // Sử dụng getResource thay vì getResourceAsStream để dễ kiểm tra URL

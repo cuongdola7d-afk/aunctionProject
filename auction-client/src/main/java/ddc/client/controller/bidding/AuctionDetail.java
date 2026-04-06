@@ -1,10 +1,12 @@
 package ddc.client.controller.bidding;
 
+import ddc.client.controller.SceneSwitcher;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.input.MouseEvent;
 
 public class AuctionDetail {
 
@@ -38,4 +40,17 @@ public class AuctionDetail {
             System.out.println("Lỗi load ảnh chi tiết");
         }
     }
+
+    @FXML
+    private void handleBackToBidding(MouseEvent event) {
+        // In ra console để kiểm tra sự kiện có hoạt động không
+        System.out.println("Quay lại trang danh sách đấu giá...");
+        
+        // Đường dẫn đến file FXML của trang danh sách
+        String biddingView = "/ddc/client/views/bidding/bidding.fxml";
+        
+        // Gọi hàm chuyển trang từ lớp tiện ích của bạn
+        SceneSwitcher.goTo(event, biddingView);
+}
+
 }

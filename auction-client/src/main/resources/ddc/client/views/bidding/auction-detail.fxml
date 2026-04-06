@@ -4,6 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.Cursor?>
 
 <AnchorPane prefHeight="700.0" prefWidth="1100.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ddc.client.controller.bidding.AuctionDetail">
    <children>
@@ -11,6 +12,17 @@
          <padding>
             <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
          </padding>
+<ImageView fx:id="btnBack" fitHeight="60.0" fitWidth="150.0" 
+           layoutX="20.0" layoutY="20.0" 
+           onMouseClicked="#handleBackToBidding" 
+           pickOnBounds="true" preserveRatio="true">
+   <image>
+      <Image url="@../DDCAuction.png" />
+   </image>
+   <cursor>
+      <Cursor fx:constant="HAND" />
+   </cursor>
+</ImageView>
          <children>
             
             <VBox spacing="10.0" HBox.hgrow="ALWAYS" alignment="TOP_CENTER">
@@ -70,7 +82,7 @@
 
       <Region VBox.vgrow="ALWAYS" />
 
-      <Button maxWidth="Infinity" prefHeight="50.0" text="ĐĂNG KÝ THAM GIA" 
+      <Button maxWidth="Infinity" prefHeight="50.0" text="ĐĂNG KÝ ĐẤU GIÁ" 
               style="-fx-background-color: #b22222; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;" />
    </children>
 </VBox> 
