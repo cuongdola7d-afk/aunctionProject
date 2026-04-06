@@ -3,8 +3,10 @@ package ddc.client.controller.selling;
 import java.io.IOException;
 
 import ddc.client.controller.SceneSwitcher;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -16,7 +18,7 @@ public class Selling {
 
     @FXML
     @SuppressWarnings({"unused", "CallToPrintStackTrace"})
-    private void handleOpenUploadDialog() {
+    private void handleOpenUploadDialog(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ddc/client/views/selling/UploadItem.fxml"));
             Parent root = loader.load();
@@ -25,8 +27,12 @@ public class Selling {
             stage.setTitle("Tạo mục đấu giá mới");
             stage.setResizable(false);
             stage.centerOnScreen();
+
             Image icon = new Image(getClass().getResourceAsStream("/ddc/client/views/DDCAuction.png"));
             stage.getIcons().add(icon);
+
+            Stage ownerStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.initOwner(ownerStage);
 
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setScene(new Scene(root));
