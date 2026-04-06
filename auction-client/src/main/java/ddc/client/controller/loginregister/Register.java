@@ -16,6 +16,7 @@ public class Register {
     private Label errorLabel;
 
     @FXML
+    @SuppressWarnings("unused")
     private void register(ActionEvent event) {
         if (usernameTextField.getText().isEmpty() || passwordField.getText().isEmpty() || emailTextField.getText().isEmpty()) {
             errorLabel.setText("Bạn chưa điền thông tin vào chỗ trống.");
@@ -26,6 +27,7 @@ public class Register {
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void switchToLogin(ActionEvent event) {
         SceneSwitcher.goTo(event, "/ddc/client/views/loginregister/Login.fxml");
     }

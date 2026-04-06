@@ -68,7 +68,7 @@
       </VBox>
       <HBox alignment="CENTER" layoutX="25.0" layoutY="304.0" minHeight="0.0" prefHeight="60.0" prefWidth="550.0" spacing="15.0" style="-fx-background-color: cyan; -fx-min-height: 70; -fx-padding: 10;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
          <children>
-            <VBox alignment="CENTER" layoutX="403.0" layoutY="15.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="60.0" prefWidth="120.0" HBox.hgrow="ALWAYS">
+            <VBox alignment="CENTER" layoutX="403.0" layoutY="15.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#switchToNotify" prefHeight="60.0" prefWidth="120.0" HBox.hgrow="ALWAYS">
                <children>
                   <Label maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" text="🔔" textFill="DARKBLUE" VBox.vgrow="NEVER">
                      <VBox.margin>
@@ -183,7 +183,7 @@
             </VBox>
          </children>
       </HBox>
-      <VBox layoutX="11.0" layoutY="1.0" prefHeight="80.0" prefWidth="774.0">
+      <VBox layoutX="11.0" layoutY="1.0" prefHeight="80.0" prefWidth="774.0" AnchorPane.leftAnchor="11.199999999999932" AnchorPane.rightAnchor="9.799999999999955" AnchorPane.topAnchor="1.0">
          <children>
             <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                <children>
