@@ -10,6 +10,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 public class SceneSwitcher{
+    @SuppressWarnings("CallToPrintStackTrace")
     public static void goTo(ActionEvent event, String fxmlPath) {
         try {
             Parent root = FXMLLoader.load(SceneSwitcher.class.getResource(fxmlPath));
@@ -20,6 +21,7 @@ public class SceneSwitcher{
         }
     }
 
+    @SuppressWarnings("CallToPrintStackTrace")
     public static void goTo(MouseEvent event, String fxmlPath) {
         try {
             Parent root = FXMLLoader.load(SceneSwitcher.class.getResource(fxmlPath));

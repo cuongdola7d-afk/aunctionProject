@@ -14,16 +14,19 @@ import javafx.stage.Stage;
 import javafx.scene.Node;
 public class Profile {
     @FXML
+    @SuppressWarnings("unused")
     private void switchToSelling (MouseEvent event) {
         SceneSwitcher.goTo(event, "/ddc/client/views/selling/Selling.fxml");
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void switchToBidding (MouseEvent event) {
         SceneSwitcher.goTo(event, "/ddc/client/views/bidding/Bidding.fxml");
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void switchToHome (MouseEvent event) {
         SceneSwitcher.goTo(event, "/ddc/client/views/home/Home.fxml");
     }
@@ -62,5 +65,10 @@ public class Profile {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    
+    @FXML
+    private void switchToNotify(MouseEvent event) {
+        SceneSwitcher.goTo(event, "/ddc/client/views/notify/Notify.fxml");
     }
 }

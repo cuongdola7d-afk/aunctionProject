@@ -11,10 +11,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.control.TreeItem;
 
 public class Bidding {
 
@@ -157,7 +157,6 @@ private void setupCategoryTree() {
     }
 
     @FXML
-
     private void switchToHome(MouseEvent event) {
         SceneSwitcher.goTo(event, "/ddc/client/views/home/Home.fxml");
     }
@@ -170,6 +169,11 @@ private void setupCategoryTree() {
     @FXML
     private void switchToProfile (MouseEvent event) {
         SceneSwitcher.goTo(event, "/ddc/client/views/profile/Profile.fxml");
+    }
+
+    @FXML
+    private void switchToNotify (MouseEvent event) {
+        SceneSwitcher.goTo(event, "/ddc/client/views/notify/Notify.fxml");
     }
 
     @FXML
