@@ -20,7 +20,7 @@ public class AuctionService {
             return;
         }
 
-        if (auction.getStatus() == AuctionStatus.CANCELED || auction.getStatus() == AuctionStatus.PAID) {
+        if (auction.getStatus() == AuctionStatus.CANCELED) {
             return;
         }
 
