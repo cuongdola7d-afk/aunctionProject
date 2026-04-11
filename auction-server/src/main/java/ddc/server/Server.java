@@ -22,6 +22,12 @@ import ddc.server.service.AuctionService;
 public class Server {
     private static final int PORT = 5555;
 
+    // ID cố định để test
+    public static final String DEMO_AUCTION_ID = "AUCT-001";
+    public static final String BIDDER_ALICE_ID = "BIDDER-ALICE";
+    public static final String BIDDER_BOB_ID = "BIDDER-BOB";
+    public static final String BIDDER_CHARLIE_ID = "BIDDER-CHARLIE";
+
     private final ExecutorService executor = Executors.newCachedThreadPool();
     private final Map<String, Auction> auctionStore = new ConcurrentHashMap<>();
     private final Map<String, Bidder> bidderStore = new ConcurrentHashMap<>();
@@ -74,15 +80,22 @@ public class Server {
                 LocalDateTime.now().minusMinutes(1),
                 LocalDateTime.now().plusMinutes(30)
         );
+        auction.setId(DEMO_AUCTION_ID);
 
         Bidder alice = new Bidder();
+        alice.setId(BIDDER_ALICE_ID);
         alice.setName("Alice");
 
         Bidder bob = new Bidder();
+        bob.setId(BIDDER_BOB_ID);
         bob.setName("Bob");
 
         Bidder charlie = new Bidder();
+        charlie.setId(BIDDER_CHARLIE_ID);
         charlie.setName("Charlie");
+
+        auctionStore.clear();
+        bidderStore.clear();
 
         auctionStore.put(auction.getId(), auction);
         bidderStore.put(alice.getId(), alice);
@@ -92,16 +105,12 @@ public class Server {
 
     private void printDemoIds() {
         System.out.println("=== DEMO AUCTIONS ===");
-        for (Auction auction : auctionStore.values()) {
-            System.out.println("auctionId = " + auction.getId()
-                    + " | item = " + (auction.getItem() != null ? auction.getItem().getName() : "null"));
-        }
+        System.out.println("auctionId = " + DEMO_AUCTION_ID + " | item = Ban phim co");
 
         System.out.println("=== DEMO BIDDERS ===");
-        for (Bidder bidder : bidderStore.values()) {
-            System.out.println("bidderId = " + bidder.getId()
-                    + " | name = " + bidder.getName());
-        }
+        System.out.println("bidderId = " + BIDDER_ALICE_ID + " | name = Alice");
+        System.out.println("bidderId = " + BIDDER_BOB_ID + " | name = Bob");
+        System.out.println("bidderId = " + BIDDER_CHARLIE_ID + " | name = Charlie");
     }
 
     public static void main(String[] args) throws Exception {

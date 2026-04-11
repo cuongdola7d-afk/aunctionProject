@@ -104,7 +104,7 @@ public class Bidding {
     }
 
     private void loadSampleData() {
-        String demoAuctionId = "06f57c1e-0319-4131-85d9-e855608100cd";
+        String demoAuctionId = "AUCT-001";
 
         itemList.add(new AuctionItemViewModel(demoAuctionId, "Đồng hồ thông minh", "1,250,000 đ", "02:15:30",
                 "/ddc/client/views/bidding/image/watch.jpg", "Đồ điện tử"));

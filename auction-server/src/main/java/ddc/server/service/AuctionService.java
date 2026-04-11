@@ -174,22 +174,6 @@ public class AuctionService implements AuctionSubject {
         notifyAllPending(pendingEvents);
     }
 
-    public void markPaid(Auction auction) throws InvalidBidException {
-        validateAuction(auction);
-
-        List<AuctionEvent> pendingEvents = new ArrayList<>();
-
-        auction.getLock().lock();
-        try {
-            auction.markPaid();
-            pendingEvents.add(AuctionEvent.auctionPaid(auction));
-        } finally {
-            auction.getLock().unlock();
-        }
-
-        notifyAllPending(pendingEvents);
-    }
-
     public void cancelAuction(Auction auction) throws InvalidBidException {
         validateAuction(auction);
 

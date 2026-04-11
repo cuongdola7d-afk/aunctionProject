@@ -53,68 +53,94 @@ public class AuctionDetail implements ServerMessageListener {
         }
     }
 
-    public void setProductData(String name, String price, String imagePath) {
-        if (lblPrice != null) {
-            lblPrice.setText(price);
-        }
-
-        try {
-            mainImage.setImage(new Image(getClass().getResourceAsStream(imagePath)));
-        } catch (Exception e) {
-            System.out.println("Lỗi load ảnh chi tiết");
-        }
+public void setProductData(String name, String price, String imagePath) {
+    if (lblPrice != null) {
+        lblPrice.setText(price);
     }
 
-    public void setupAuctionContext(String auctionId, String bidderId) {
-        this.currentAuctionId = auctionId;
-        this.currentBidderId = bidderId;
+    try {
+        var imageUrl = getClass().getResource(imagePath);
+        if (imageUrl != null) {
+            // load ảnh nền, không chặn UI
+            mainImage.setImage(new Image(imageUrl.toExternalForm(), true));
+        }
+    } catch (Exception e) {
+        System.out.println("Lỗi load ảnh chi tiết");
+    }
+}
 
+public void setupAuctionContext(String auctionId, String bidderId) {
+    this.currentAuctionId = auctionId;
+    this.currentBidderId = bidderId;
+
+    setMessage("Đang kết nối tới phiên đấu giá...");
+
+    Thread thread = new Thread(() -> {
         try {
             if (!socketClient.isConnected()) {
                 socketClient.connect();
             }
 
             socketClient.subscribeAuction(auctionId);
-            setMessage("Đã kết nối tới phiên đấu giá.");
 
+            Platform.runLater(() ->
+                    setMessage("Đã kết nối tới phiên đấu giá."));
         } catch (Exception e) {
             e.printStackTrace();
-            setMessage("Không kết nối được server: " + e.getMessage());
+            Platform.runLater(() ->
+                    setMessage("Không kết nối được server: " + e.getMessage()));
         }
+    });
+
+    thread.setDaemon(true);
+    thread.start();
+}
+
+@FXML
+private void handlePlaceBid() {
+    if (currentAuctionId == null || currentBidderId == null) {
+        setMessage("Thiếu auctionId hoặc bidderId.");
+        return;
     }
 
-    @FXML
-    private void handlePlaceBid() {
-        if (currentAuctionId == null || currentBidderId == null) {
-            setMessage("Thiếu auctionId hoặc bidderId.");
-            return;
-        }
+    if (txtBidAmount == null || txtBidAmount.getText() == null || txtBidAmount.getText().isBlank()) {
+        setMessage("Vui lòng nhập số tiền ra giá.");
+        return;
+    }
 
-        if (txtBidAmount == null || txtBidAmount.getText() == null || txtBidAmount.getText().isBlank()) {
-            setMessage("Vui lòng nhập số tiền ra giá.");
-            return;
-        }
+    final double amount;
+    try {
+        amount = Double.parseDouble(txtBidAmount.getText().trim());
+    } catch (NumberFormatException e) {
+        setMessage("Số tiền không hợp lệ.");
+        return;
+    }
 
+    if (amount <= 0) {
+        setMessage("Số tiền phải lớn hơn 0.");
+        return;
+    }
+
+    setMessage("Đang gửi yêu cầu ra giá...");
+
+    Thread thread = new Thread(() -> {
         try {
-            double amount = Double.parseDouble(txtBidAmount.getText().trim());
-
-            if (amount <= 0) {
-                setMessage("Số tiền phải lớn hơn 0.");
-                return;
-            }
-
             socketClient.placeBid(currentAuctionId, currentBidderId, amount);
-            txtBidAmount.clear();
-            setMessage("Đã gửi yêu cầu ra giá.");
 
-        } catch (NumberFormatException e) {
-            setMessage("Số tiền không hợp lệ.");
+            Platform.runLater(() -> {
+                txtBidAmount.clear();
+                setMessage("Đã gửi yêu cầu ra giá.");
+            });
         } catch (Exception e) {
             e.printStackTrace();
-            setMessage("Không gửi được bid: " + e.getMessage());
+            Platform.runLater(() ->
+                    setMessage("Không gửi được bid: " + e.getMessage()));
         }
-    }
+    });
 
+    thread.setDaemon(true);
+    thread.start();
+}
     @Override
     public void onAuctionEvent(AuctionEventResponse event) {
         if (event == null) {
