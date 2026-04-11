@@ -3,72 +3,85 @@ package ddc.server.model.transaction;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 
-import ddc.server.model.entity.*;
-import ddc.server.model.item.*;
-import ddc.server.model.user.*;
+import ddc.server.model.entity.BaseEntity;
+import ddc.server.model.item.Item;
+import ddc.server.model.user.Bidder;
 
-public class Auction extends BaseEntity{
+public class Auction extends BaseEntity {
     private Item item;
     private List<BidTransaction> bids = new ArrayList<>();
 
     private AuctionStatus status = AuctionStatus.OPEN;
-
 
     private LocalDateTime startTime;
     private LocalDateTime endTime;
 
     private Bidder highestBidder;
     private double currentPrice;
-     private double currentHighestBid;
 
-    // ===== CORE METHODS =====
-
-    public void startAuction() {
-        this.status = AuctionStatus.RUNNING;
-    }
-
-    public void endAuction() {
-        this.status = AuctionStatus.FINISHED;
-    }
-
-    public void placeBid(BidTransaction bid) {
-        if (status != AuctionStatus.RUNNING) {
-            throw new RuntimeException("Auction not running");
-        }
-
-        if (bid.getAmount() <= currentPrice) {
-            throw new RuntimeException("Invalid bid");
-        }
-
-        bids.add(bid);
-        currentPrice = bid.getAmount();
-        highestBidder = bid.getBidder();
-    }
-
-    // ===== OPTIONAL (BONUS) =====
-
-    public void extendTimeIfNeeded() {
-        if (endTime.minusSeconds(10).isBefore(LocalDateTime.now())) {
-            endTime = endTime.plusSeconds(60);
-        }
-    }
-
-    // ===== GETTERS & SETTERS =====
+    // Lock riêng cho từng phiên đấu giá
+    private final ReentrantLock lock = new ReentrantLock(true);
 
     public Auction() {
+        super();
+        this.bids = new ArrayList<>();
+        this.status = AuctionStatus.OPEN;
     }
 
     public Auction(Item item, LocalDateTime startTime, LocalDateTime endTime) {
+        super();
         this.item = item;
         this.startTime = startTime;
         this.endTime = endTime;
+        this.bids = new ArrayList<>();
         this.status = AuctionStatus.OPEN;
+        initializePriceFromItem();
+    }
 
+    private void initializePriceFromItem() {
         if (item != null) {
-            this.currentHighestBid = item.getStartingPrice();
+            this.currentPrice = item.getStartingPrice();
             item.setCurrentPrice(item.getStartingPrice());
         }
+    }
+
+    public void startAuction() {
+        if (status == AuctionStatus.CANCELLED) {
+            throw new IllegalStateException("Auction has been canceled");
+        }
+        if (status == AuctionStatus.PAID) {
+            throw new IllegalStateException("Auction has already been paid");
+        }
+        if (status == AuctionStatus.FINISHED) {
+            throw new IllegalStateException("Auction has already finished");
+        }
+        this.status = AuctionStatus.RUNNING;
+    }
+
+    public void finishAuction() {
+        if (status == AuctionStatus.CANCELLED) {
+            throw new IllegalStateException("Canceled auction cannot be finished");
+        }
+        if (status == AuctionStatus.PAID) {
+            throw new IllegalStateException("Paid auction cannot be finished again");
+        }
+        this.status = AuctionStatus.FINISHED;
+    }
+
+    public void markPaid() {
+        if (status != AuctionStatus.FINISHED) {
+            throw new IllegalStateException("Auction can only be marked PAID after FINISHED");
+        }
+        this.status = AuctionStatus.PAID;
+    }
+
+    public void cancelAuction() {
+        if (status == AuctionStatus.PAID) {
+            throw new IllegalStateException("Paid auction cannot be canceled");
+        }
+        this.status = AuctionStatus.CANCELLED;
     }
 
     public boolean hasStarted() {
@@ -79,12 +92,66 @@ public class Auction extends BaseEntity{
         return endTime != null && !LocalDateTime.now().isBefore(endTime);
     }
 
+    public boolean isRunning() {
+        return status == AuctionStatus.RUNNING;
+    }
+
+    public boolean canAcceptBid(double amount) {
+        return status == AuctionStatus.RUNNING
+                && !hasEnded()
+                && amount > currentPrice;
+    }
+
+    public void placeBid(BidTransaction bid) {
+        validateBid(bid);
+
+        if (bid.getAuctionId() == null || bid.getAuctionId().isBlank()) {
+            bid.setAuctionId(this.getId());
+        }
+
+        bids.add(bid);
+        currentPrice = bid.getAmount();
+        highestBidder = bid.getBidder();
+
+        if (item != null) {
+            item.setCurrentPrice(currentPrice);
+        }
+    }
+
+    private void validateBid(BidTransaction bid) {
+        if (bid == null) {
+            throw new IllegalArgumentException("Bid must not be null");
+        }
+
+        if (status != AuctionStatus.RUNNING) {
+            throw new IllegalStateException("Auction is not running");
+        }
+
+        if (hasEnded()) {
+            this.status = AuctionStatus.FINISHED;
+            throw new IllegalStateException("Auction has ended");
+        }
+
+        if (bid.getBidder() == null) {
+            throw new IllegalArgumentException("Bidder must not be null");
+        }
+
+        if (bid.getAmount() <= currentPrice) {
+            throw new IllegalArgumentException("Bid amount must be greater than current price");
+        }
+    }
+
     public void addBid(BidTransaction bidTransaction) {
         if (bidTransaction != null) {
             bids.add(bidTransaction);
         }
     }
 
+    public void extendTimeIfNeeded() {
+        if (endTime != null && endTime.minusSeconds(10).isBefore(LocalDateTime.now())) {
+            endTime = endTime.plusSeconds(60);
+        }
+    }
 
     public Item getItem() {
         return item;
@@ -92,8 +159,8 @@ public class Auction extends BaseEntity{
 
     public void setItem(Item item) {
         this.item = item;
-        if (item != null && this.currentHighestBid == 0) {
-            this.currentHighestBid = item.getStartingPrice();
+        if (item != null && currentPrice <= 0) {
+            this.currentPrice = item.getStartingPrice();
             item.setCurrentPrice(item.getStartingPrice());
         }
     }
@@ -103,7 +170,7 @@ public class Auction extends BaseEntity{
     }
 
     public void setBids(List<BidTransaction> bids) {
-        this.bids = bids;
+        this.bids = (bids != null) ? bids : new ArrayList<>();
     }
 
     public AuctionStatus getStatus() {
@@ -144,12 +211,21 @@ public class Auction extends BaseEntity{
 
     public void setCurrentPrice(double currentPrice) {
         this.currentPrice = currentPrice;
+        if (item != null) {
+            item.setCurrentPrice(currentPrice);
+        }
     }
+
+    public ReentrantLock getLock() {
+        return lock;
+    }
+
+    // Compatibility cho code cũ
     public double getCurrentHighestBid() {
-        return currentHighestBid;
+        return currentPrice;
     }
 
     public void setCurrentHighestBid(double currentHighestBid) {
-        this.currentHighestBid = currentHighestBid;
-    }    
+        setCurrentPrice(currentHighestBid);
+    }
 }

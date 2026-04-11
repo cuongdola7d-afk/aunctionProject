@@ -27,7 +27,13 @@ public class Bidding {
     @FXML
     private FlowPane auctionContainer;
 
+    @FXML
+    private TreeView<String> categoryTree;
+
     private final List<AuctionItemViewModel> itemList = new ArrayList<>();
+
+    // bidder hiện tại sẽ được scene trước truyền vào
+    private String currentBidderId;
 
     @FXML
     public void initialize() {
@@ -38,79 +44,76 @@ public class Bidding {
             filterItems(newValue);
         });
 
-        setupCategoryTree();//logic khởi tạo TreeView
+        setupCategoryTree();
     }
 
-private void setupCategoryTree() {
-    // Tạo nút Gốc (vẫn để Root và ẩn đi)
-    TreeItem<String> root = new TreeItem<>("Root");
-    root.setExpanded(true);
+    /**
+     * Gọi hàm này sau khi load Bidding.fxml
+     * để truyền bidderId hiện tại từ user/session sang.
+     */
+    public void setupBidderContext(String bidderId) {
+        this.currentBidderId = bidderId;
+        renderItems(itemList);
+    }
 
-    // 1. Danh mục Nghệ thuật
-    TreeItem<String> art = new TreeItem<>("Nghệ thuật");
-    art.getChildren().addAll(
-        new TreeItem<>("Hội họa"),
-        new TreeItem<>("Điêu khắc")
-    );
+    private void setupCategoryTree() {
+        TreeItem<String> root = new TreeItem<>("Root");
+        root.setExpanded(true);
 
-    // 2. Danh mục Đồ điện tử
-    TreeItem<String> elec = new TreeItem<>("Đồ điện tử");
-    TreeItem<String> accessories = new TreeItem<>("Phụ kiện");
-    TreeItem<String> laptops = new TreeItem<>("Máy tính xách tay");
-    TreeItem<String> smartphones = new TreeItem<>("Điện thoại");
-    
-    elec.getChildren().addAll(smartphones, laptops, accessories);
+        TreeItem<String> art = new TreeItem<>("Nghệ thuật");
+        art.getChildren().addAll(
+                new TreeItem<>("Hội họa"),
+                new TreeItem<>("Điêu khắc")
+        );
 
-    // 3. Danh mục Phương tiện
-    TreeItem<String> veh = new TreeItem<>("Phương tiện");
-    veh.getChildren().addAll(
-        new TreeItem<>("Ô tô"),
-        new TreeItem<>("Xe máy")
-    );
+        TreeItem<String> elec = new TreeItem<>("Đồ điện tử");
+        TreeItem<String> accessories = new TreeItem<>("Phụ kiện");
+        TreeItem<String> laptops = new TreeItem<>("Máy tính xách tay");
+        TreeItem<String> smartphones = new TreeItem<>("Điện thoại");
 
-    // Thêm tất cả vào gốc
-    root.getChildren().addAll(art, elec, veh);
-    
-    categoryTree.setRoot(root);
-    categoryTree.setShowRoot(false);
+        elec.getChildren().addAll(smartphones, laptops, accessories);
 
-    // Cập nhật lại sự kiện lắng nghe để khớp với tiếng Việt
-    categoryTree.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-        if (newVal != null && newVal.isLeaf()) {
-            filterByCategory(newVal.getValue());
-        }
-    });
-}
+        TreeItem<String> veh = new TreeItem<>("Phương tiện");
+        veh.getChildren().addAll(
+                new TreeItem<>("Ô tô"),
+                new TreeItem<>("Xe máy")
+        );
 
-    // Hàm bổ trợ để lọc sản phẩm theo danh mục (tương tự filterItems của bạn)
+        root.getChildren().addAll(art, elec, veh);
+
+        categoryTree.setRoot(root);
+        categoryTree.setShowRoot(false);
+
+        categoryTree.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null && newVal.isLeaf()) {
+                filterByCategory(newVal.getValue());
+            }
+        });
+    }
+
     private void filterByCategory(String category) {
-        // Giả sử chúng ta lọc dựa trên tên hoặc một thuộc tính category (nếu model của bạn có)
-        // Ở đây mình ví dụ lọc theo từ khóa trong tên sản phẩm cho đơn giản
         String lowerCategory = category.toLowerCase();
-        
+
         List<AuctionItemViewModel> filtered = itemList.stream()
-                .filter(item -> item.getName().toLowerCase().contains(lowerCategory) || 
-                                // Nếu là "Laptops" thì tìm các mục có tên "MacBook" chẳng hạn
-                                (lowerCategory.equals("laptops") && item.getName().toLowerCase().contains("macbook")))
+                .filter(item -> item.getName().toLowerCase().contains(lowerCategory)
+                        || (lowerCategory.equals("laptops")
+                        && item.getName().toLowerCase().contains("macbook")))
                 .toList();
 
         renderItems(filtered);
     }
 
     private void loadSampleData() {
-        itemList.add(new AuctionItemViewModel("Đồng hồ thông minh", "1,250,000 đ", "02:15:30", "/ddc/client/views/bidding/image/watch.jpg"));
-        itemList.add(new AuctionItemViewModel("Máy ảnh Vintage", "3,400,000 đ", "00:45:12", "/ddc/client/views/bidding/image/camera.jpg"));
-        itemList.add(new AuctionItemViewModel("Tai nghe chống ồn", "850,000 đ", "05:10:00", "/ddc/client/views/bidding/image/headphone.jpg"));
-        itemList.add(new AuctionItemViewModel("Bàn phím cơ RGB", "2,100,000 đ", "01:20:45", "/ddc/client/views/bidding/image/mechanicalKeyboard.jpg"));
-        itemList.add(new AuctionItemViewModel("Màn hình 4K", "6,500,000 đ", "12:05:00", "/ddc/client/views/bidding/image/monitor.jpg"));
-        itemList.add(new AuctionItemViewModel("Chuột Gaming Wireless", "1,150,000 đ", "00:15:00", "/ddc/client/views/bidding/image/mouse.jpg"));
-        itemList.add(new AuctionItemViewModel("MacBook Pro", "22,000,000 đ", "23:45:10", "/ddc/client/views/bidding/image/laptop.jpg"));
-        itemList.add(new AuctionItemViewModel("Loa Bluetooth", "4,200,000 đ", "08:30:00", "/ddc/client/views/bidding/image/speaker.jpg"));
+        String demoAuctionId = "06f57c1e-0319-4131-85d9-e855608100cd";
 
-        itemList.add(new AuctionItemViewModel("Đồng hồ thể thao", "1,850,000 đ", "03:20:10", "/ddc/client/views/bidding/image/watch.jpg"));
-        itemList.add(new AuctionItemViewModel("Máy ảnh Canon", "5,400,000 đ", "00:25:00", "/ddc/client/views/bidding/image/camera.jpg"));
-        itemList.add(new AuctionItemViewModel("Tai nghe Gaming", "1,100,000 đ", "06:40:32", "/ddc/client/views/bidding/image/headphone.jpg"));
-        itemList.add(new AuctionItemViewModel("Bàn phím Bluetooth", "950,000 đ", "01:55:12", "/ddc/client/views/bidding/image/bluetoothKeyboard.jpg"));
+        itemList.add(new AuctionItemViewModel(demoAuctionId, "Đồng hồ thông minh", "1,250,000 đ", "02:15:30",
+                "/ddc/client/views/bidding/image/watch.jpg", "Đồ điện tử"));
+        itemList.add(new AuctionItemViewModel(demoAuctionId, "Đồng hồ Vintage", "3,400,000 đ", "00:45:12",
+                "/ddc/client/views/bidding/image/vintageWatch.jpg", "Đồ điện tử"));
+        itemList.add(new AuctionItemViewModel(demoAuctionId, "Tai nghe chống ồn", "850,000 đ", "05:10:00",
+                "/ddc/client/views/bidding/image/headphone.jpg", "Đồ điện tử"));
+        itemList.add(new AuctionItemViewModel(demoAuctionId, "Bàn phím cơ RGB", "2,100,000 đ", "01:20:45",
+                "/ddc/client/views/bidding/image/mechanicalKeyboard.jpg", "Đồ điện tử"));
     }
 
     private void renderItems(List<AuctionItemViewModel> items) {
@@ -125,7 +128,7 @@ private void setupCategoryTree() {
                 Parent card = loader.load();
 
                 AuctionCard cardController = loader.getController();
-                cardController.setData(item);
+                cardController.setData(item, currentBidderId);
 
                 auctionContainer.getChildren().add(card);
 
@@ -162,23 +165,17 @@ private void setupCategoryTree() {
     }
 
     @FXML
-    private void switchToSelling (MouseEvent event) {
+    private void switchToSelling(MouseEvent event) {
         SceneSwitcher.goTo(event, "/ddc/client/views/selling/Selling.fxml");
     }
 
     @FXML
-    private void switchToProfile (MouseEvent event) {
+    private void switchToProfile(MouseEvent event) {
         SceneSwitcher.goTo(event, "/ddc/client/views/profile/Profile.fxml");
     }
 
     @FXML
-    private void switchToNotify (MouseEvent event) {
+    private void switchToNotify(MouseEvent event) {
         SceneSwitcher.goTo(event, "/ddc/client/views/notify/Notify.fxml");
     }
-
-    @FXML
-    private TreeView<String> categoryTree;
-
-
-    
 }

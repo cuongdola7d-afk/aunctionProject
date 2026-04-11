@@ -12,7 +12,7 @@ import javafx.stage.Stage;
 public class Client extends Application{
     @Override
     public void start (Stage stage) throws IOException{
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("views/loginregister/Login.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/ddc/client/views/bidding/bidding.fxml"));
         Parent root = loader.load();
 
         Image icon = new Image(getClass().getResourceAsStream("views/DDCAuction.png"));
