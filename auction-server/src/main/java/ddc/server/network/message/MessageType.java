@@ -1,4 +1,4 @@
-package ddc.server.network;
+package ddc.server.network.message;
 
 public enum MessageType {
     SUBSCRIBE_AUCTION,

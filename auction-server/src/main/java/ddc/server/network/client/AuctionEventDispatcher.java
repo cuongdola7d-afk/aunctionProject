@@ -1,10 +1,12 @@
-package ddc.server.network;
+package ddc.server.network.client;
 
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.google.gson.Gson;
 
+import ddc.server.network.message.MessageType;
+import ddc.server.network.response.AuctionEventResponse;
 import ddc.server.pattern.observer.AuctionEvent;
 import ddc.server.pattern.observer.AuctionObserver;
 

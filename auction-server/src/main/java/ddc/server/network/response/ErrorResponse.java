@@ -1,4 +1,4 @@
-package ddc.server.network;
+package ddc.server.network.response;
 
 public class ErrorResponse {
     private String message;

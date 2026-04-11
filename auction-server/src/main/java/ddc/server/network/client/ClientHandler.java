@@ -1,4 +1,4 @@
-package ddc.server.network;
+package ddc.server.network.client;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -10,6 +10,12 @@ import com.google.gson.Gson;
 import ddc.server.controller.AuctionController;
 import ddc.server.model.transaction.Auction;
 import ddc.server.model.user.Bidder;
+import ddc.server.network.message.MessageType;
+import ddc.server.network.message.SocketMessage;
+import ddc.server.network.request.PlaceBidRequest;
+import ddc.server.network.request.SubscribeAuctionRequest;
+import ddc.server.network.response.AuctionEventResponse;
+import ddc.server.network.response.ErrorResponse;
 
 public class ClientHandler implements Runnable {
     private final ClientConnection connection;

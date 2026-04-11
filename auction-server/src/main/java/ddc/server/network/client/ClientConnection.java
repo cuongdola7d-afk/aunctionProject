@@ -1,4 +1,4 @@
-package ddc.server.network;
+package ddc.server.network.client;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,6 +9,9 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.google.gson.Gson;
+
+import ddc.server.network.message.MessageType;
+import ddc.server.network.message.SocketMessage;
 
 public class ClientConnection {
     private final String connectionId;

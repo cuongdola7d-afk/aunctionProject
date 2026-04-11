@@ -1,9 +1,9 @@
 package ddc.client.controller.bidding;
 
 import ddc.client.controller.SceneSwitcher;
-import ddc.client.network.AuctionEventResponse;
-import ddc.client.network.AuctionSocketClient;
-import ddc.client.network.ServerMessageListener;
+import ddc.client.network.client.AuctionSocketClient;
+import ddc.client.network.listener.ServerMessageListener;
+import ddc.client.network.response.AuctionEventResponse;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;

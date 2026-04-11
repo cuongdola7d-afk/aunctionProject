@@ -1,4 +1,4 @@
-package ddc.server.network;
+package ddc.server.network.response;
 
 import ddc.server.model.transaction.Auction;
 import ddc.server.model.user.Bidder;

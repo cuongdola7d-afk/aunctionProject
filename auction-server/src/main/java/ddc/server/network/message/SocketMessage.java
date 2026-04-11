@@ -1,4 +1,4 @@
-package ddc.client.network;
+package ddc.server.network.message;
 
 public class SocketMessage {
     private MessageType type;

@@ -1,4 +1,4 @@
-package ddc.server.network;
+package ddc.client.network.request;
 
 public class SubscribeAuctionRequest {
     private String auctionId;

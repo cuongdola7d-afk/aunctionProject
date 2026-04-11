@@ -1,4 +1,6 @@
-package ddc.client.network;
+package ddc.client.network.listener;
+
+import ddc.client.network.response.AuctionEventResponse;
 
 public interface ServerMessageListener {
     void onAuctionEvent(AuctionEventResponse event);

@@ -1,4 +1,4 @@
-package ddc.client.network;
+package ddc.client.network.client;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,6 +7,14 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 import com.google.gson.Gson;
+
+import ddc.client.network.listener.ServerMessageListener;
+import ddc.client.network.message.MessageType;
+import ddc.client.network.message.SocketMessage;
+import ddc.client.network.request.PlaceBidRequest;
+import ddc.client.network.request.SubscribeAuctionRequest;
+import ddc.client.network.response.AuctionEventResponse;
+import ddc.client.network.response.ErrorResponse;
 
 public class AuctionSocketClient {
     private final String host;

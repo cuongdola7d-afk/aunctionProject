@@ -1,4 +1,4 @@
-package ddc.server.network;
+package ddc.server.network.debug;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

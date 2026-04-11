@@ -1,4 +1,4 @@
-package ddc.client.network;
+package ddc.client.network.request;
 
 public class PlaceBidRequest {
     private String auctionId;
