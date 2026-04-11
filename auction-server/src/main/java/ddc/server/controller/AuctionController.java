@@ -1,16 +1,24 @@
 package ddc.server.controller;
 
 import java.util.List;
-import ddc.server.service.*;
-import ddc.server.exception.*;
-import ddc.server.model.transaction.*;
-import ddc.server.model.user.*;
+
+import ddc.server.exception.AuctionClosedException;
+import ddc.server.exception.InvalidBidException;
+import ddc.server.model.transaction.Auction;
+import ddc.server.model.transaction.AuctionStatus;
+import ddc.server.model.transaction.BidTransaction;
+import ddc.server.model.user.Bidder;
+import ddc.server.service.AuctionService;
 
 public class AuctionController {
     private final AuctionService auctionService;
 
     public AuctionController() {
-        this.auctionService = new AuctionService();
+        this(new AuctionService());
+    }
+
+    public AuctionController(AuctionService auctionService) {
+        this.auctionService = auctionService;
     }
 
     public void handleStartAuction(Auction auction) throws AuctionClosedException, InvalidBidException {
@@ -41,5 +49,9 @@ public class AuctionController {
 
     public List<BidTransaction> getBidHistory(Auction auction) {
         return auctionService.getBidHistory(auction);
+    }
+
+    public AuctionService getAuctionService() {
+        return auctionService;
     }
 }

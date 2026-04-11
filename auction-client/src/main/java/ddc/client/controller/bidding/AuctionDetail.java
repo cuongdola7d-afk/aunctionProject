@@ -1,19 +1,24 @@
 package ddc.client.controller.bidding;
 
 import ddc.client.controller.SceneSwitcher;
+import ddc.client.network.AuctionEventResponse;
+import ddc.client.network.AuctionSocketClient;
+import ddc.client.network.ServerMessageListener;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.FlowPane;
 
-public class AuctionDetail {
+public class AuctionDetail implements ServerMessageListener {
 
-    @FXML 
+    @FXML
     private Label lblStartTime;
 
-    @FXML 
+    @FXML
     private Label lblEndTime;
 
     @FXML
@@ -23,17 +28,36 @@ public class AuctionDetail {
     private Label lblPrice;
 
     @FXML
+    private Label lblCountdown;
+
+    @FXML
+    private Label lblMessage;
+
+    @FXML
+    private TextField txtBidAmount;
+
+    @FXML
     private FlowPane thumbnailContainer;
+
+    private AuctionSocketClient socketClient;
+    private String currentAuctionId;
+    private String currentBidderId;
 
     @FXML
     public void initialize() {
-        // Bạn sẽ nhận dữ liệu từ AuctionCard truyền sang tại đây
-        // Tạm thời set cứng dữ liệu để test giao diện
+        socketClient = new AuctionSocketClient("localhost", 5555);
+        socketClient.setListener(this);
+
+        if (lblMessage != null) {
+            lblMessage.setText("Chưa có cập nhật.");
+        }
     }
-    
-    // Hàm này dùng để cập nhật thông tin sản phẩm
+
     public void setProductData(String name, String price, String imagePath) {
-        lblPrice.setText(price);
+        if (lblPrice != null) {
+            lblPrice.setText(price);
+        }
+
         try {
             mainImage.setImage(new Image(getClass().getResourceAsStream(imagePath)));
         } catch (Exception e) {
@@ -41,16 +65,118 @@ public class AuctionDetail {
         }
     }
 
+    public void setupAuctionContext(String auctionId, String bidderId) {
+        this.currentAuctionId = auctionId;
+        this.currentBidderId = bidderId;
+
+        try {
+            if (!socketClient.isConnected()) {
+                socketClient.connect();
+            }
+
+            socketClient.subscribeAuction(auctionId);
+            setMessage("Đã kết nối tới phiên đấu giá.");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            setMessage("Không kết nối được server: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handlePlaceBid() {
+        if (currentAuctionId == null || currentBidderId == null) {
+            setMessage("Thiếu auctionId hoặc bidderId.");
+            return;
+        }
+
+        if (txtBidAmount == null || txtBidAmount.getText() == null || txtBidAmount.getText().isBlank()) {
+            setMessage("Vui lòng nhập số tiền ra giá.");
+            return;
+        }
+
+        try {
+            double amount = Double.parseDouble(txtBidAmount.getText().trim());
+
+            if (amount <= 0) {
+                setMessage("Số tiền phải lớn hơn 0.");
+                return;
+            }
+
+            socketClient.placeBid(currentAuctionId, currentBidderId, amount);
+            txtBidAmount.clear();
+            setMessage("Đã gửi yêu cầu ra giá.");
+
+        } catch (NumberFormatException e) {
+            setMessage("Số tiền không hợp lệ.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            setMessage("Không gửi được bid: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void onAuctionEvent(AuctionEventResponse event) {
+        if (event == null) {
+            return;
+        }
+
+        if (currentAuctionId != null
+                && event.getAuctionId() != null
+                && !currentAuctionId.equals(event.getAuctionId())) {
+            return;
+        }
+
+        Platform.runLater(() -> {
+            if (lblPrice != null) {
+                lblPrice.setText(formatPrice(event.getCurrentPrice()));
+            }
+
+            String eventType = event.getEventType();
+            if ("SNAPSHOT".equals(eventType)) {
+                setMessage("Đã tải dữ liệu phiên đấu giá.");
+            } else if ("NEW_BID".equals(eventType)) {
+                setMessage("Bid mới từ " + event.getBidderName() + ": " + formatPrice(event.getBidAmount()));
+            } else {
+                setMessage(event.getMessage() != null ? event.getMessage() : "Có cập nhật mới.");
+            }
+        });
+    }
+
+    @Override
+    public void onError(String message) {
+        Platform.runLater(() -> setMessage(message));
+    }
+
+    @Override
+    public void onDisconnected(String message) {
+        Platform.runLater(() -> setMessage(message));
+    }
+
+    private void setMessage(String message) {
+        if (lblMessage != null) {
+            lblMessage.setText(message);
+        } else {
+            System.out.println(message);
+        }
+    }
+
+    private String formatPrice(double value) {
+        return String.format("%,.0f đ", value);
+    }
+
     @FXML
     private void handleBackToBidding(MouseEvent event) {
-        // In ra console để kiểm tra sự kiện có hoạt động không
-        System.out.println("Quay lại trang danh sách đấu giá...");
-        
-        // Đường dẫn đến file FXML của trang danh sách
-        String biddingView = "/ddc/client/views/bidding/bidding.fxml";
-        
-        // Gọi hàm chuyển trang từ lớp tiện ích của bạn
-        SceneSwitcher.goTo(event, biddingView);
-}
+        if (socketClient != null) {
+            socketClient.disconnect();
+        }
 
+        SceneSwitcher.goTo(event, "/ddc/client/views/bidding/bidding.fxml");
+    }
+
+    public void cleanup() {
+        if (socketClient != null) {
+            socketClient.disconnect();
+        }
+    }
 }
