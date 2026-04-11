@@ -49,4 +49,23 @@ public class AuctionEventDispatcher implements AuctionObserver {
             }
         }
     }
+
+    public void dispatch(AuctionEvent event) {
+        String auctionId = event.getAuctionId();
+        
+        // Lấy danh sách những người đang xem phiên này
+        Set<ClientConnection> clients = subscribers.get(auctionId);
+        
+        if (clients != null) {
+            // Duyệt qua từng kết nối
+            for (ClientConnection connection : clients) {
+                // Gọi đúng hàm send(type, payload, gson) trong ảnh của bạn
+                connection.send(
+                    MessageType.AUCTION_EVENT, // Loại tin nhắn (bạn kiểm tra xem trong MessageType có cái này chưa nhé)
+                    event,                     // Dữ liệu sự kiện
+                    this.gson                  // Truyền đối tượng gson của Dispatcher vào
+                );
+            }
+        }
+    }
 }

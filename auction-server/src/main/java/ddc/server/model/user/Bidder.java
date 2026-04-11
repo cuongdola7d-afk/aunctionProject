@@ -27,4 +27,9 @@ public class Bidder extends User {
     public void printInfo() {
         System.out.println("Bidder: " + name);
     }
+
+
+    public String getName(){
+        return this.name;
+    }
 }
