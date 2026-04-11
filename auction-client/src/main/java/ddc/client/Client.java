@@ -14,6 +14,7 @@ public class Client extends Application{
     @Override
     public void start (Stage stage) throws IOException{
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/ddc/client/views/loginregister/login.fxml"));
+
         Parent root = loader.load();
 
         /*Bidding controller = loader.getController();

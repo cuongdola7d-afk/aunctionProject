@@ -5,13 +5,13 @@ import java.io.IOException;
 import ddc.client.controller.SceneSwitcher;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.scene.Node;
 public class Profile {
     @FXML
     @SuppressWarnings("unused")
@@ -32,11 +32,13 @@ public class Profile {
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void switchToPersonalInfo (MouseEvent event) {
         SceneSwitcher.goTo(event, "/ddc/client/views/profile/Personalinfo.fxml");
     }
     @FXML
-    void showLogoutPopup(MouseEvent event) {
+    @SuppressWarnings({"unused", "CallToPrintStackTrace"})
+    private void showLogoutPopup(MouseEvent event) {
         try {
             // 1. Chỉ nạp FXML, TUYỆT ĐỐI không dùng SceneSwitcher ở đây
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ddc/client/views/profile/logout.fxml"));
@@ -46,6 +48,9 @@ public class Profile {
             Stage popupStage = new Stage();
             popupStage.setTitle("Xác nhận đăng xuất");
             popupStage.setResizable(false);
+            
+            Image icon = new Image(getClass().getResourceAsStream("/ddc/client/views/DDCAuction.png"));
+            popupStage.getIcons().add(icon);
 
             // 3. Khóa màn hình chính (Profile) ở phía sau
             popupStage.initModality(Modality.APPLICATION_MODAL);

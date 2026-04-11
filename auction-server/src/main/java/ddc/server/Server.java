@@ -10,13 +10,18 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import ddc.server.controller.AuctionController;
 import ddc.server.model.item.Item;
 import ddc.server.model.transaction.Auction;
+import ddc.server.model.transaction.AuctionStatus;
 import ddc.server.model.user.Bidder;
 import ddc.server.network.AuctionEventDispatcher;
 import ddc.server.network.ClientHandler;
+import ddc.server.pattern.observer.AuctionEvent;
+import ddc.server.pattern.observer.AuctionEventType;
 import ddc.server.service.AuctionService;
 
 public class Server {
@@ -36,6 +41,7 @@ public class Server {
     private final AuctionController auctionController;
     private final AuctionEventDispatcher dispatcher;
 
+    private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     public Server() throws Exception {
         this.auctionService = new AuctionService();
         this.auctionController = new AuctionController(auctionService);
@@ -50,7 +56,9 @@ public class Server {
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             System.out.println("Auction server running on port " + PORT);
             printDemoIds();
-
+            //Khởi động luồng chạy status liên tục
+            startAutoSchedule();
+            startStatusMonitor();
             while (true) {
                 Socket socket = serverSocket.accept();
 
@@ -72,13 +80,77 @@ public class Server {
         }
     }
 
+    private void startAutoSchedule() {
+        scheduler.scheduleAtFixedRate(() -> {
+            LocalDateTime now = LocalDateTime.now();
+            
+            // Duyệt qua tất cả phiên đấu giá trong kho
+            auctionStore.values().forEach(auction -> {
+                // Nếu phiên đang chạy mà đã quá giờ kết thúc
+                if (auction.getStatus() == AuctionStatus.RUNNING && 
+                    auction.getEndTime().isBefore(now)) {
+                    
+                    processAuctionEnd(auction);
+                }
+            });
+        }, 0, 1, TimeUnit.SECONDS); // Chạy ngay lập tức, lặp lại mỗi 1 giây
+        System.out.println(">>> Hệ thống quét tự động đã kích hoạt.");
+    }
+
+    private void processAuctionEnd(Auction auction) {
+        // 1. Cập nhật trạng thái
+        auction.setStatus(AuctionStatus.FINISHED);
+
+        // 2. Lấy tên người thắng an toàn (tránh lỗi nếu không có ai bid)
+        String winnerName = (auction.getHighestBidder() != null) 
+                            ? auction.getHighestBidder().getName() 
+                            : "Không có";
+
+        // 3. Tạo sự kiện với ĐẦY ĐỦ 10 tham số
+        AuctionEvent endEvent = new AuctionEvent(
+            AuctionEventType.AUCTION_FINISHED, // 1. type
+            auction.getId(),                   // 2. auctionId
+            auction.getItem().getId(),         // 3. itemId
+            auction.getItem().getName(),       // 4. itemName
+            winnerName,                        // 5. bidderName
+            auction.getCurrentPrice(),         // 6. bidAmount
+            auction.getCurrentPrice(),         // 7. currentPrice
+            AuctionStatus.FINISHED,            // 8. status
+            LocalDateTime.now(),               // 9. eventTime
+            "Phiên đấu giá đã kết thúc!"       // 10. message
+        );
+
+        // 4. Bắn tin
+        dispatcher.dispatch(endEvent);
+        System.out.println("\n[THÔNG BÁO] Phát hiện phiên kết thúc!");
+        System.out.println("Trạng thái mới: " + auction.getStatus()); // Nó sẽ in FINISHED ở đây
+        System.out.println("--------------------------------------");
+    }
+// Tạo luồng test Status thay đổi
+    private void startStatusMonitor() {
+        new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(1000); // 10 giây in một lần
+                    System.out.println("\n===== BẢNG TRẠNG THÁI HIỆN TẠI =====");
+                    auctionStore.values().forEach(a -> {
+                        System.out.printf("ID: %s | Item: %s | Status: %s\n", 
+                            a.getId().substring(0, 8), a.getItem().getName(), a.getStatus());
+                    });
+                    System.out.println("====================================\n");
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
     private void seedDemoData() throws Exception {
         Item item = new DemoItem("Ban phim co", "Demo keyboard", 100000);
 
         Auction auction = auctionService.createAuction(
                 item,
                 LocalDateTime.now().minusMinutes(1),
-                LocalDateTime.now().plusMinutes(30)
+                LocalDateTime.now().plusMinutes(10)
         );
         auction.setId(DEMO_AUCTION_ID);
 
@@ -112,6 +184,7 @@ public class Server {
         System.out.println("bidderId = " + BIDDER_BOB_ID + " | name = Bob");
         System.out.println("bidderId = " + BIDDER_CHARLIE_ID + " | name = Charlie");
     }
+
 
     public static void main(String[] args) throws Exception {
         new Server().start();

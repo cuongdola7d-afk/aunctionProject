@@ -5,11 +5,12 @@ import java.io.IOException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 
 public class Logout {
     @FXML
@@ -32,17 +33,24 @@ public class Logout {
 
         // 3. Đóng cái Popup trước
         popupStage.close();
+        primaryStage.close();
 
         // 4. Tải giao diện Login vào Stage chính (primaryStage)
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/ddc/client/views/loginregister/Login.fxml"));
         Parent root = loader.load();
+        
+        Stage stage = new Stage();
+        
+        Image icon = new Image(getClass().getResourceAsStream("/ddc/client/views/DDCAuction.png"));
 
-        // Thiết lập lại Scene cho Stage chính với đúng kích thước 400x500
         Scene scene = new Scene(root, 400, 500);
-        primaryStage.setScene(scene);
-        primaryStage.setResizable(false);
-        primaryStage.centerOnScreen();
-        primaryStage.show();
+
+        stage.getIcons().add(icon);
+
+        stage.setTitle("DDC Auction");
+        stage.setScene(scene);
+        stage.setResizable(false);
+        stage.show();
 
     } catch (IOException e) {
         System.out.println("Lỗi: Không tìm thấy file Login.fxml");
