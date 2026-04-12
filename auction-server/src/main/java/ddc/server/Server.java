@@ -156,6 +156,32 @@ public class Server {
         System.out.println("Trạng thái mới: " + auction.getStatus()); // Nó sẽ in FINISHED ở đây
         System.out.println("--------------------------------------");
     }
+
+    private void processAuctionCancel(Auction auction) {
+        // 1. Đổi trạng thái sang CANCELLED
+        auction.cancelAuction();
+
+        // 2. Tạo sự kiện để báo cho Client
+        AuctionEvent cancelEvent = new AuctionEvent(
+            AuctionEventType.AUCTION_CANCELLED,
+            auction.getId(),
+            auction.getItem().getId(),
+            auction.getItem().getName(),
+            "Hệ thống",
+            0,
+            auction.getCurrentPrice(),
+            AuctionStatus.CANCELLED,
+            LocalDateTime.now(),
+            "THÔNG BÁO: Phiên đấu giá này đã bị hủy bởi quản trị viên!"
+        );
+
+        // 3. Bắn tin cho tất cả Client đang kết nối
+        if (dispatcher != null) {
+            dispatcher.dispatch(cancelEvent);
+        }
+        System.out.println(">>> ĐÃ HỦY PHIÊN: " + auction.getItem().getName());
+    }
+    
 // Tạo luồng test Status thay đổi
     private void startStatusMonitor() {
         new Thread(() -> {
