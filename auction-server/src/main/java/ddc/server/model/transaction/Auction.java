@@ -69,20 +69,13 @@ public class Auction extends BaseEntity {
         }
         this.status = AuctionStatus.FINISHED;
     }
-
-    public void markPaid() {
-        if (status != AuctionStatus.FINISHED) {
-            throw new IllegalStateException("Auction can only be marked PAID after FINISHED");
-        }
-        this.status = AuctionStatus.PAID;
-    }
-
+    
     public void cancelAuction() {
-        if (status == AuctionStatus.PAID) {
-            throw new IllegalStateException("Paid auction cannot be canceled");
-        }
-        this.status = AuctionStatus.CANCELLED;
+    if (status == AuctionStatus.FINISHED) {
+        throw new IllegalStateException("Phiên đấu giá đã kết thúc, không thể hủy!");
     }
+    this.status = AuctionStatus.CANCELLED;
+}
 
     public boolean hasStarted() {
         return startTime != null && !LocalDateTime.now().isBefore(startTime);

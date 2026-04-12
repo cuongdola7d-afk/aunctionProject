@@ -160,29 +160,12 @@ public class AuctionService implements AuctionSubject {
         auction.getLock().lock();
         try {
             if (auction.getStatus() == AuctionStatus.CANCELLED
-                    || auction.getStatus() == AuctionStatus.PAID
                     || auction.getStatus() == AuctionStatus.FINISHED) {
                 return;
             }
 
             auction.finishAuction();
             pendingEvents.add(AuctionEvent.auctionFinished(auction));
-        } finally {
-            auction.getLock().unlock();
-        }
-
-        notifyAllPending(pendingEvents);
-    }
-
-    public void markPaid(Auction auction) throws InvalidBidException {
-        validateAuction(auction);
-
-        List<AuctionEvent> pendingEvents = new ArrayList<>();
-
-        auction.getLock().lock();
-        try {
-            auction.markPaid();
-            pendingEvents.add(AuctionEvent.auctionPaid(auction));
         } finally {
             auction.getLock().unlock();
         }
@@ -253,7 +236,7 @@ public class AuctionService implements AuctionSubject {
             return null;
         }
 
-        if (auction.getStatus() == AuctionStatus.CANCELLED || auction.getStatus() == AuctionStatus.PAID) {
+        if (auction.getStatus() == AuctionStatus.CANCELLED) {
             return null;
         }
 
