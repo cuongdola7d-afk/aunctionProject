@@ -51,9 +51,6 @@ public class Auction extends BaseEntity {
         if (status == AuctionStatus.CANCELLED) {
             throw new IllegalStateException("Auction has been canceled");
         }
-        if (status == AuctionStatus.PAID) {
-            throw new IllegalStateException("Auction has already been paid");
-        }
         if (status == AuctionStatus.FINISHED) {
             throw new IllegalStateException("Auction has already finished");
         }
@@ -64,12 +61,9 @@ public class Auction extends BaseEntity {
         if (status == AuctionStatus.CANCELLED) {
             throw new IllegalStateException("Canceled auction cannot be finished");
         }
-        if (status == AuctionStatus.PAID) {
-            throw new IllegalStateException("Paid auction cannot be finished again");
-        }
         this.status = AuctionStatus.FINISHED;
     }
-    
+
     public void cancelAuction() {
     if (status == AuctionStatus.FINISHED) {
         throw new IllegalStateException("Phiên đấu giá đã kết thúc, không thể hủy!");

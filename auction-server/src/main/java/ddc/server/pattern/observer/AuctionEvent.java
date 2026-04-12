@@ -89,15 +89,6 @@ public class AuctionEvent {
         );
     }
 
-    public static AuctionEvent auctionPaid(Auction auction) {
-        return baseEvent(
-                AuctionEventType.AUCTION_PAID,
-                auction,
-                null,
-                "Auction paid"
-        );
-    }
-
     public static AuctionEvent auctionCANCELLED(Auction auction) {
         return baseEvent(
                 AuctionEventType.AUCTION_CANCELLED,
