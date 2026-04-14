@@ -4,11 +4,19 @@
 //     private String artist;
 //     private int year;
 
+<<<<<<< HEAD
 //     public Art(String name, String description, double startingPrice,String artist, int year){
 //         super(name, description, startingPrice);
 //          this.artist = artist;
 //          this.year = year;
 //     }
+=======
+    public Art(String name, String description, double startingPrice,String artist, int year){
+         super(name, description, startingPrice);
+         this.artist = artist;
+         this.year = year;
+    }
+>>>>>>> origin/master
 
 //     @Override
 //     public String getCategory() {

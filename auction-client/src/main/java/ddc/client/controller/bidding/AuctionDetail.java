@@ -1,17 +1,24 @@
 package ddc.client.controller.bidding;
 
+import ddc.client.controller.SceneSwitcher;
+import ddc.client.network.client.AuctionSocketClient;
+import ddc.client.network.listener.ServerMessageListener;
+import ddc.client.network.response.AuctionEventResponse;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 
-public class AuctionDetail {
+public class AuctionDetail implements ServerMessageListener {
 
-    @FXML 
+    @FXML
     private Label lblStartTime;
 
-    @FXML 
+    @FXML
     private Label lblEndTime;
 
     @FXML
@@ -21,21 +28,181 @@ public class AuctionDetail {
     private Label lblPrice;
 
     @FXML
+    private Label lblCountdown;
+
+    @FXML
+    private Label lblMessage;
+
+    @FXML
+    private TextField txtBidAmount;
+
+    @FXML
     private FlowPane thumbnailContainer;
+
+    private AuctionSocketClient socketClient;
+    private String currentAuctionId;
+    private String currentBidderId;
 
     @FXML
     public void initialize() {
-        // Bạn sẽ nhận dữ liệu từ AuctionCard truyền sang tại đây
-        // Tạm thời set cứng dữ liệu để test giao diện
+        socketClient = new AuctionSocketClient("localhost", 5555);
+        socketClient.setListener(this);
+
+        if (lblMessage != null) {
+            lblMessage.setText("Chưa có cập nhật.");
+        }
     }
-    
-    // Hàm này dùng để cập nhật thông tin sản phẩm
-    public void setProductData(String name, String price, String imagePath) {
+
+public void setProductData(String name, String price, String imagePath) {
+    if (lblPrice != null) {
         lblPrice.setText(price);
+    }
+
+    try {
+        var imageUrl = getClass().getResource(imagePath);
+        if (imageUrl != null) {
+            // load ảnh nền, không chặn UI
+            mainImage.setImage(new Image(imageUrl.toExternalForm(), true));
+        }
+    } catch (Exception e) {
+        System.out.println("Lỗi load ảnh chi tiết");
+    }
+}
+
+public void setupAuctionContext(String auctionId, String bidderId) {
+    this.currentAuctionId = auctionId;
+    this.currentBidderId = bidderId;
+
+    setMessage("Đang kết nối tới phiên đấu giá...");
+
+    Thread thread = new Thread(() -> {
         try {
-            mainImage.setImage(new Image(getClass().getResourceAsStream(imagePath)));
+            if (!socketClient.isConnected()) {
+                socketClient.connect();
+            }
+
+            socketClient.subscribeAuction(auctionId);
+
+            Platform.runLater(() ->
+                    setMessage("Đã kết nối tới phiên đấu giá."));
         } catch (Exception e) {
-            System.out.println("Lỗi load ảnh chi tiết");
+            e.printStackTrace();
+            Platform.runLater(() ->
+                    setMessage("Không kết nối được server: " + e.getMessage()));
+        }
+    });
+
+    thread.setDaemon(true);
+    thread.start();
+}
+
+@FXML
+private void handlePlaceBid() {
+    if (currentAuctionId == null || currentBidderId == null) {
+        setMessage("Thiếu auctionId hoặc bidderId.");
+        return;
+    }
+
+    if (txtBidAmount == null || txtBidAmount.getText() == null || txtBidAmount.getText().isBlank()) {
+        setMessage("Vui lòng nhập số tiền ra giá.");
+        return;
+    }
+
+    final double amount;
+    try {
+        amount = Double.parseDouble(txtBidAmount.getText().trim());
+    } catch (NumberFormatException e) {
+        setMessage("Số tiền không hợp lệ.");
+        return;
+    }
+
+    if (amount <= 0) {
+        setMessage("Số tiền phải lớn hơn 0.");
+        return;
+    }
+
+    setMessage("Đang gửi yêu cầu ra giá...");
+
+    Thread thread = new Thread(() -> {
+        try {
+            socketClient.placeBid(currentAuctionId, currentBidderId, amount);
+
+            Platform.runLater(() -> {
+                txtBidAmount.clear();
+                setMessage("Đã gửi yêu cầu ra giá.");
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            Platform.runLater(() ->
+                    setMessage("Không gửi được bid: " + e.getMessage()));
+        }
+    });
+
+    thread.setDaemon(true);
+    thread.start();
+}
+    @Override
+    public void onAuctionEvent(AuctionEventResponse event) {
+        if (event == null) {
+            return;
+        }
+
+        if (currentAuctionId != null
+                && event.getAuctionId() != null
+                && !currentAuctionId.equals(event.getAuctionId())) {
+            return;
+        }
+
+        Platform.runLater(() -> {
+            if (lblPrice != null) {
+                lblPrice.setText(formatPrice(event.getCurrentPrice()));
+            }
+
+            String eventType = event.getEventType();
+            if ("SNAPSHOT".equals(eventType)) {
+                setMessage("Đã tải dữ liệu phiên đấu giá.");
+            } else if ("NEW_BID".equals(eventType)) {
+                setMessage("Bid mới từ " + event.getBidderName() + ": " + formatPrice(event.getBidAmount()));
+            } else {
+                setMessage(event.getMessage() != null ? event.getMessage() : "Có cập nhật mới.");
+            }
+        });
+    }
+
+    @Override
+    public void onError(String message) {
+        Platform.runLater(() -> setMessage(message));
+    }
+
+    @Override
+    public void onDisconnected(String message) {
+        Platform.runLater(() -> setMessage(message));
+    }
+
+    private void setMessage(String message) {
+        if (lblMessage != null) {
+            lblMessage.setText(message);
+        } else {
+            System.out.println(message);
+        }
+    }
+
+    private String formatPrice(double value) {
+        return String.format("%,.0f đ", value);
+    }
+
+    @FXML
+    private void handleBackToBidding(MouseEvent event) {
+        if (socketClient != null) {
+            socketClient.disconnect();
+        }
+
+        SceneSwitcher.goTo(event, "/ddc/client/views/bidding/bidding.fxml");
+    }
+
+    public void cleanup() {
+        if (socketClient != null) {
+            socketClient.disconnect();
         }
     }
 }

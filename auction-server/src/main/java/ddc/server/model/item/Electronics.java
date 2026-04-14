@@ -3,11 +3,19 @@
 //     private String brand;
 //     private int warrantyMonths;
 
+<<<<<<< HEAD
 //     public Electronics(String id, String name, String desc, double price, String brand, int warrantyMonths) {
 //         super(name, desc, price);
 //         this.brand = brand;
 //         this.warrantyMonths = warrantyMonths;
 //     }
+=======
+    public Electronics(String name, String desc, double price, String brand, int warrantyMonths) {
+        super(name, desc, price);
+        this.brand = brand;
+        this.warrantyMonths = warrantyMonths;
+    }
+>>>>>>> origin/master
 
 //     @Override
 //     public String getCategory() {

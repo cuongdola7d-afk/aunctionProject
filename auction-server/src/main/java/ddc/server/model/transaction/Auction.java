@@ -85,6 +85,11 @@
 //         }
 //     }
 
+    // public void extendTimeIfNeeded() {
+    //     if (endTime != null && endTime.minusSeconds(10).isBefore(LocalDateTime.now())) {
+    //         endTime = endTime.plusSeconds(60);
+    //     }
+    // }
 
 //     public Item getItem() {
 //         return item;

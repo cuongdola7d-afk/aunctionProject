@@ -2,6 +2,7 @@ package ddc.client;
 
 import java.io.IOException;
 
+import ddc.client.controller.bidding.Bidding;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -12,8 +13,13 @@ import javafx.stage.Stage;
 public class Client extends Application{
     @Override
     public void start (Stage stage) throws IOException{
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("views/loginregister/Login.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/ddc/client/views/loginregister/login.fxml"));
+
         Parent root = loader.load();
+
+        /*Bidding controller = loader.getController();
+        String currentUserBidderId = "BIDDER-BOB";
+        controller.setupBidderContext(currentUserBidderId);*/
 
         Image icon = new Image(getClass().getResourceAsStream("views/DDCAuction.png"));
 
@@ -23,7 +29,7 @@ public class Client extends Application{
 
         stage.setTitle("DDC Auction");
         stage.setScene(scene);
-        stage.setResizable(false);
+        stage.setResizable(true);
         stage.show();
     }
 

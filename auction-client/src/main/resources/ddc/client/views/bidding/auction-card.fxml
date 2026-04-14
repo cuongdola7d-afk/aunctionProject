@@ -17,6 +17,7 @@
             <Label fx:id="lblName" maxWidth="120.0" styleClass="card-title" wrapText="true" />
             <Label fx:id="lblPrice" styleClass="card-price" />
             <Label fx:id="lblTimeLeft" styleClass="card-time" />
+            <Label fx:id="lblCategory" text="Label" />
          </children>
       </VBox>
    </children>

@@ -1,18 +1,23 @@
 package ddc.client.controller.bidding;
 
-import ddc.client.controller.SceneSwitcher;
+import java.io.IOException;
+
 import ddc.client.model.AuctionItemViewModel;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox; // Phải là HBox
+import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
 
 public class AuctionCard {
 
     @FXML
-    private HBox cardRoot; // Khớp với thẻ <HBox> trong FXML
+    private HBox cardRoot;
 
     @FXML
     private ImageView imgItem;
@@ -26,32 +31,75 @@ public class AuctionCard {
     @FXML
     private Label lblTimeLeft;
 
-    private AuctionItemViewModel item;
+    @FXML
+    private Label lblCategory;
 
-public void setData(AuctionItemViewModel item) {
-    this.item = item;
-    lblName.setText(item.getName());
-    lblPrice.setText(item.getPrice());
-    lblTimeLeft.setText("◷ " + item.getTimeLeft());
+    private AuctionItemViewModel item;
+    private String currentBidderId;
+
+    public void setData(AuctionItemViewModel item, String currentBidderId) {
+        this.item = item;
+        this.currentBidderId = currentBidderId;
+
+        lblName.setText(item.getName());
+        lblPrice.setText(item.getPrice());
+        lblTimeLeft.setText("◷ " + item.getTimeLeft());
+        lblCategory.setText(item.getCategory());
+
+        try {
+            var imageUrl = getClass().getResource(item.getImagePath());
+            if (imageUrl != null) {
+                imgItem.setImage(new Image(imageUrl.toExternalForm()));
+            } else {
+                System.err.println("LỖI: Không tìm thấy ảnh tại: " + item.getImagePath());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+@FXML
+private void handleCardClick(MouseEvent event) {
+    if (item == null) {
+        System.out.println("Item chưa được gán.");
+        return;
+    }
+
+    if (item.getAuctionId() == null || item.getAuctionId().isBlank()) {
+        System.out.println("Thiếu auctionId.");
+        return;
+    }
+
+    if (currentBidderId == null || currentBidderId.isBlank()) {
+        System.out.println("Thiếu bidderId hiện tại.");
+        return;
+    }
 
     try {
-        // Sử dụng getResource thay vì getResourceAsStream để dễ kiểm tra URL
-        var imageUrl = getClass().getResource(item.getImagePath());
-        if (imageUrl != null) {
-            imgItem.setImage(new Image(imageUrl.toExternalForm()));
-        } else {
-            // Dòng này sẽ in ra Terminal nếu đường dẫn bị sai
-            System.err.println("LỖI: Không tìm thấy ảnh tại: " + item.getImagePath());
-        }
-    } catch (Exception e) {
+        FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("/ddc/client/views/bidding/auction-detail.fxml")
+        );
+
+        Parent root = loader.load();
+
+        AuctionDetail controller = loader.getController();
+        controller.setProductData(
+                item.getName(),
+                item.getPrice(),
+                item.getImagePath()
+        );
+
+        Stage stage = (Stage) cardRoot.getScene().getWindow();
+        stage.setScene(new Scene(root));
+        stage.show();
+
+        // đẩy subscribe sang sau khi scene đã hiện
+        javafx.application.Platform.runLater(() ->
+                controller.setupAuctionContext(item.getAuctionId(), currentBidderId));
+
+    } catch (IOException e) {
         e.printStackTrace();
+        System.out.println("Không mở được trang chi tiết đấu giá.");
     }
 }
-
-    @FXML
-    private void handleCardClick(MouseEvent event) {
-        // Gọi SceneSwitcher để chuyển trang
-        //System.out.println("Đã click vào sản phẩm!");
-        SceneSwitcher.goTo(event, "/ddc/client/views/bidding/auction-detail.fxml");
-    }
 }

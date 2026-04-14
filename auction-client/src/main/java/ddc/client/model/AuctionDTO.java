@@ -20,7 +20,7 @@ public class AuctionDTO {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
 
-    private String status; // OPEN, RUNNING, FINISHED, PAID, CANCELED
+    private String status; // OPEN, RUNNING, FINISHED,, CANCELED
 
     public AuctionDTO() {
     }
