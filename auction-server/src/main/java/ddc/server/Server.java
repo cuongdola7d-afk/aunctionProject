@@ -82,10 +82,14 @@ public class Server {
 
     private void startAutoSchedule() {
         scheduler.scheduleAtFixedRate(() -> {
+            try{
             LocalDateTime now = LocalDateTime.now();
-            
+            System.out.println("DEBUG: Đang quét " + auctionStore.size());
             // Duyệt qua tất cả phiên đấu giá trong kho
             auctionStore.values().forEach(auction -> {
+                if (auction.getStatus() == AuctionStatus.OPEN && !auction.getStartTime().isAfter(now)) {
+                processAuctionStart(auction);
+                }
                 // Nếu phiên đang chạy mà đã quá giờ kết thúc
                 if (auction.getStatus() == AuctionStatus.RUNNING && 
                     auction.getEndTime().isBefore(now)) {
@@ -93,8 +97,40 @@ public class Server {
                     processAuctionEnd(auction);
                 }
             });
+        }
+        catch (Exception e) {
+        e.printStackTrace(); // In lỗi ra để biết tại sao nó chết
+    }
         }, 0, 1, TimeUnit.SECONDS); // Chạy ngay lập tức, lặp lại mỗi 1 giây
         System.out.println(">>> Hệ thống quét tự động đã kích hoạt.");
+    }
+
+    
+    private void processAuctionStart(Auction auction) {
+        // 1. Cập nhật trạng thái trong đối tượng Auction trên RAM
+        auction.setStatus(AuctionStatus.RUNNING);
+
+        // 2. Log ra Terminal để bạn test (Check status chuyển từ OPEN -> RUNNING)
+        System.out.println("[KÍCH HOẠT] Phiên đấu giá đã chính thức bắt đầu!");
+    
+
+        AuctionEvent startEvent = new AuctionEvent(
+            AuctionEventType.AUCTION_STARTED,      // 1. type
+            auction.getId(),                        // 2. auctionId
+            auction.getItem().getId(),              // 3. itemId
+            auction.getItem().getName(),            // 4. itemName
+            "Hệ thống",                             // 5. bidderName (Chưa có ai bid)
+            auction.getItem().getStartingPrice(),   // 6. bidAmount
+            auction.getItem().getStartingPrice(),   // 7. currentPrice
+            AuctionStatus.RUNNING,                  // 8. status
+            LocalDateTime.now(),                    // 9. eventTime
+            "Phiên đấu giá đã bắt đầu! Mời các bạn đặt giá." // 10. message
+        );
+
+        // 4. Gửi sự kiện này tới Dispatcher để báo cho các Client đang hóng
+        if (dispatcher != null) {
+            dispatcher.dispatch(startEvent);
+        }
     }
 
     private void processAuctionEnd(Auction auction) {
@@ -126,13 +162,39 @@ public class Server {
         System.out.println("Trạng thái mới: " + auction.getStatus()); // Nó sẽ in FINISHED ở đây
         System.out.println("--------------------------------------");
     }
+
+    private void processAuctionCancel(Auction auction) {
+        // 1. Đổi trạng thái sang CANCELLED
+        auction.cancelAuction();
+
+        // 2. Tạo sự kiện để báo cho Client
+        AuctionEvent cancelEvent = new AuctionEvent(
+            AuctionEventType.AUCTION_CANCELLED,
+            auction.getId(),
+            auction.getItem().getId(),
+            auction.getItem().getName(),
+            "Hệ thống",
+            0,
+            auction.getCurrentPrice(),
+            AuctionStatus.CANCELLED,
+            LocalDateTime.now(),
+            "THÔNG BÁO: Phiên đấu giá này đã bị hủy bởi quản trị viên!"
+        );
+
+        // 3. Bắn tin cho tất cả Client đang kết nối
+        if (dispatcher != null) {
+            dispatcher.dispatch(cancelEvent);
+        }
+        System.out.println(">>> ĐÃ HỦY PHIÊN: " + auction.getItem().getName());
+    }
+    
 // Tạo luồng test Status thay đổi
     private void startStatusMonitor() {
         new Thread(() -> {
             while (true) {
                 try {
                     Thread.sleep(1000); // 10 giây in một lần
-                    System.out.println("\n===== BẢNG TRẠNG THÁI HIỆN TẠI =====");
+                    System.out.println("\n===== BANG TRANG THAI HIEN TAI =====");
                     auctionStore.values().forEach(a -> {
                         System.out.printf("ID: %s | Item: %s | Status: %s\n", 
                             a.getId().substring(0, 8), a.getItem().getName(), a.getStatus());
@@ -149,10 +211,16 @@ public class Server {
 
         Auction auction = auctionService.createAuction(
                 item,
-                LocalDateTime.now().minusMinutes(1),
-                LocalDateTime.now().plusMinutes(10)
+                LocalDateTime.now().minusSeconds(1),
+                LocalDateTime.now().plusSeconds(10)
         );
         auction.setId(DEMO_AUCTION_ID);
+
+        // Đưa vào kho lưu trữ của Server để Scheduler nhìn thấy
+        auctionStore.put(auction.getId(), auction); 
+        
+        // Đặt trạng thái ban đầu là OPEN để nó có thể chuyển sang RUNNING
+        auction.setStatus(AuctionStatus.OPEN);
 
         Bidder alice = new Bidder();
         alice.setId(BIDDER_ALICE_ID);

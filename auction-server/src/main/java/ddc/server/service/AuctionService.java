@@ -160,7 +160,6 @@ public class AuctionService implements AuctionSubject {
         auction.getLock().lock();
         try {
             if (auction.getStatus() == AuctionStatus.CANCELLED
-                    || auction.getStatus() == AuctionStatus.PAID
                     || auction.getStatus() == AuctionStatus.FINISHED) {
                 return;
             }
@@ -237,7 +236,7 @@ public class AuctionService implements AuctionSubject {
             return null;
         }
 
-        if (auction.getStatus() == AuctionStatus.CANCELLED || auction.getStatus() == AuctionStatus.PAID) {
+        if (auction.getStatus() == AuctionStatus.CANCELLED) {
             return null;
         }
 
