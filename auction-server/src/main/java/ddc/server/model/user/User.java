@@ -7,7 +7,7 @@ public class User {
     private final String email;
     private final String password;
 
-    protected User(Builder builder) {
+    protected User(UserBuilder<?, ?> builder) {
         this.action = builder.action;
         this.username = builder.username;
         this.name = builder.name;
@@ -32,38 +32,47 @@ public class User {
                 '}';
     }
 
-    public static class Builder {
+    public static abstract class UserBuilder<C extends User, B extends UserBuilder<C, B>> {
         private String action;
         private String username;
         private String name;
         private String email;
         private String password;
 
-        public Builder action (String action) {
+        public B action (String action) {
             this.action = action;
-            return this;
+            return self();
         }
 
-        public Builder username (String username) {
+        public B username (String username) {
             this.username = username;
-            return this;
+            return self();
         }
 
-        public Builder name (String name) {
+        public B name (String name) {
             this.name = name;
-            return this;
+            return self();
         }
 
-        public Builder email (String email) {
+        public B email (String email) {
             this.email = email;
-            return this;
+            return self();
         }
 
-        public Builder password (String password) {
+        public B password (String password) {
             this.password = password;
-            return this;
+            return self();
         }
 
+        protected B self() {
+            return (B) this;
+        }
+
+        public abstract C build();
+    }
+
+    public static class Builder extends UserBuilder<User, Builder> {
+        @Override
         public User build () {
             return new User(this);
         }

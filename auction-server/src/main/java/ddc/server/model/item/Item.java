@@ -1,63 +1,141 @@
 package ddc.server.model.item;
 
-import ddc.server.model.entity.*;
-import ddc.server.model.user.*;
+import java.time.LocalDateTime;
 
-public abstract class Item extends BaseEntity {
-    protected String name;
-    protected String description;
-    protected double startingPrice;
-    protected double currentPrice;
-    protected Seller seller;
-    
-    public Item(String name, String description, double startingPrice){
-        super();
-        this.name = name;
-        this.description = description;
-        this.startingPrice = startingPrice;
+public class Item {
+    private int id;
+    private String item;
+    private String category;
+    private String description;
+    private String seller;
+    private double startingPrice;
+    private double currentPrice;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
+    private String status;
+
+    protected Item(ItemBuilder builder) {
+        this.id = builder.id;
+        this.item = builder.item;
+        this.category = builder.category;
+        this.description = builder.description;
+        this.seller = builder.seller;
+        this.startingPrice = builder.startingPrice;
+        this.currentPrice = builder.currentPrice;
+        this.startTime = builder.startTime;
+        this.endTime = builder.endTime;
+        this.status = builder.status;
     }
 
-    public Item(){}
-
-    public abstract String getCategory();
-
-    public String getName() {
-        return name;
+    public int getId() {
+        return id;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getitem() {
+        return item;
+    }
+
+    public String getCategory() {
+        return category;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public String getSeller() {
+        return seller;
     }
 
     public double getStartingPrice() {
         return startingPrice;
     }
 
-    public void setStartingPrice(double startingPrice) {
-        this.startingPrice = startingPrice;
-    }
-
-    public double getCurrentPrice() {
+    public double getcurrentPrice() {
         return currentPrice;
     }
 
-    public void setCurrentPrice(double currentPrice) {
-        this.currentPrice = currentPrice;
+    public LocalDateTime getStartTime() {
+        return startTime;
     }
 
-    public Seller getSeller() {
-        return seller;
+    public LocalDateTime getEndTime() {
+        return endTime;
     }
 
-    public void setSeller(Seller seller) {
-        this.seller = seller;
+    public String getStatus() {
+        return status;
     }
+
+    public static abstract class ItemBuilder<C extends Item, B extends ItemBuilder<C, B>> {
+        private int id;
+        private String item;
+        private String category;
+        private String description;
+        private String seller;
+        private double startingPrice;
+        private double currentPrice;
+        private LocalDateTime startTime;
+        private LocalDateTime endTime;
+        private String status;
+
+        public B id(int id) {
+            this.id = id;
+            return self();
+        }
+
+        public B item(String item) {
+            this.item = item;
+            return self();
+        }
+
+        public B category(String category) {
+            this.category = category;
+            return self();
+        }
+
+        public B description(String description) {
+            this.description = description;
+            return self();
+        }
+
+        public B seller(String seller) {
+            this.seller = seller;
+            return self();
+        }
+
+        public B startingPrice(double startingPrice) {
+            this.startingPrice = startingPrice;
+            return self();
+        }
+
+        public B startTime(LocalDateTime startTime) {
+            this.startTime = startTime;
+            return self();
+        }
+
+        public B endTime(LocalDateTime endTime) {
+            this.endTime = endTime;
+            return self();
+        }
+
+        public B status(String status) {
+            this.status = status;
+            return self();
+        }
+
+        protected B self() {
+            return (B) this;
+        }
+
+        public abstract C build();
+    }
+
+    public static class Builder extends ItemBuilder<Item, Builder> {
+        @Override
+        public Item build() {
+            return new Item(this);
+        }
+    }
+    
 }
