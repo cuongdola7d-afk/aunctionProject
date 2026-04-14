@@ -1,57 +1,69 @@
 package ddc.server.pattern.Singleton;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import ddc.server.exception.AuctionNotFoundException;
+import ddc.server.exception.BidderNotFoundException;
 import ddc.server.model.transaction.Auction;
 import ddc.server.model.user.Bidder;
 
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.Map;
-
 public class AuctionManager {
-    private static volatile AuctionManager instance;  
-    // 2. Danh sách lưu trữ các phiên đấu giá đang chạy
-    private final Map<String, Auction> auctionStore;
-    private final Map<String, Bidder> bidderStore;
+    private static final AuctionManager INSTANCE = new AuctionManager();
+
+    private final Map<String, Auction> auctions = new ConcurrentHashMap<>();
+    private final Map<String, Bidder> bidders = new ConcurrentHashMap<>();
 
     private AuctionManager() {
-        auctionStore = new ConcurrentHashMap<>();
-        bidderStore = new ConcurrentHashMap<>();
     }
 
     public static AuctionManager getInstance() {
-        if (instance == null) {
-            synchronized (AuctionManager.class) {
-                if (instance == null) {
-                    instance = new AuctionManager();
-                }
-            }
-        }
-        return instance;
+        return INSTANCE;
     }
 
-    
     public void addAuction(Auction auction) {
-        auctionStore.put(auction.getItem().getId(), auction);
-    }
-
-    public Auction getAuction(String itemId) {
-        return auctionStore.get(itemId);
-    }
-   
-    public Map<String, Auction> getAllauctionStore() {
-        return auctionStore;
+        if (auction != null && auction.getId() != null) {
+            auctions.put(auction.getId(), auction);
+        }
     }
 
     public void addBidder(Bidder bidder) {
         if (bidder != null && bidder.getId() != null) {
-            bidderStore.put(bidder.getId(), bidder);
+            bidders.put(bidder.getId(), bidder);
         }
     }
 
-    public Bidder getBidder(String bidderId) {
-        return bidderStore.get(bidderId);
+    public Auction getAuction(String auctionId) {
+        return auctions.get(auctionId);
     }
 
-    public Map<String, Bidder> getAllBidders() {
-        return bidderStore;
+    public Bidder getBidder(String bidderId) {
+        return bidders.get(bidderId);
+    }
+
+    public Auction getAuctionOrThrow(String auctionId) throws AuctionNotFoundException {
+        if (auctionId == null || auctionId.isBlank()) {
+            throw new AuctionNotFoundException("auctionId không hợp lệ.");
+        }
+
+        Auction auction = auctions.get(auctionId);
+        if (auction == null) {
+            throw new AuctionNotFoundException("Không tìm thấy phiên đấu giá: " + auctionId);
+        }
+
+        return auction;
+    }
+
+    public Bidder getBidderOrThrow(String bidderId) throws BidderNotFoundException {
+        if (bidderId == null || bidderId.isBlank()) {
+            throw new BidderNotFoundException("bidderId không hợp lệ.");
+        }
+
+        Bidder bidder = bidders.get(bidderId);
+        if (bidder == null) {
+            throw new BidderNotFoundException("Không tìm thấy bidder: " + bidderId);
+        }
+
+        return bidder;
     }
 }

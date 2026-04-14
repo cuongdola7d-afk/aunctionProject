@@ -8,6 +8,10 @@ import java.util.Map;
 import com.google.gson.Gson;
 
 import ddc.server.controller.AuctionController;
+import ddc.server.exception.AuctionClosedException;
+import ddc.server.exception.AuctionNotFoundException;
+import ddc.server.exception.BidderNotFoundException;
+import ddc.server.exception.InvalidBidException;
 import ddc.server.model.transaction.Auction;
 import ddc.server.model.user.Bidder;
 import ddc.server.network.message.MessageType;
@@ -72,52 +76,49 @@ public class ClientHandler implements Runnable {
     }
 
 private void handleSubscribe(String payloadJson) {
+    try {
         SubscribeAuctionRequest request = gson.fromJson(payloadJson, SubscribeAuctionRequest.class);
         if (request == null || request.getAuctionId() == null) {
             sendError("auctionId is required.");
             return;
         }
 
-        // THAY THẾ: Gọi qua Manager thay vì dùng Map trực tiếp
-        Auction auction = AuctionManager.getInstance().getAuction(request.getAuctionId());
-        
-        if (auction == null) {
-            sendError("Auction not found: " + request.getAuctionId());
-            return;
-        }
+        Auction auction = AuctionManager.getInstance().getAuctionOrThrow(request.getAuctionId());
 
         auctionController.handleRefreshStatus(auction);
         dispatcher.subscribe(request.getAuctionId(), connection);
 
         AuctionEventResponse snapshot = AuctionEventResponse.fromAuctionState(auction);
         connection.send(MessageType.AUCTION_EVENT, snapshot, gson);
-    }
 
-    private void handlePlaceBid(String payloadJson) {
+    } catch (AuctionNotFoundException e) {
+        sendError(e.getMessage());
+    } catch (Exception e) {
+        sendError("Không thể subscribe auction: " + e.getMessage());
+    }
+}
+
+ private void handlePlaceBid(String payloadJson) {
+    try {
         PlaceBidRequest request = gson.fromJson(payloadJson, PlaceBidRequest.class);
         if (request == null) {
             sendError("Invalid place bid request.");
             return;
         }
 
-        // THAY THẾ: Lấy dữ liệu thông qua Manager
-        Auction auction = AuctionManager.getInstance().getAuction(request.getAuctionId());
-        // Giả sử bạn cũng có UserManager hoặc làm tương tự cho Bidder
-        Bidder bidder = AuctionManager.getInstance().getBidder(request.getBidderId()); 
+        Auction auction = AuctionManager.getInstance().getAuctionOrThrow(request.getAuctionId());
+        Bidder bidder = AuctionManager.getInstance().getBidderOrThrow(request.getBidderId());
 
-        if (auction == null || bidder == null) {
-            sendError("Auction or Bidder not found.");
-            return;
-        }
+        auctionController.handlePlaceBid(auction, bidder, request.getAmount());
 
-        try {
-            // Logic xử lý đặt giá (nơi sẽ tung ra Exception ở tuần 8)
-            auctionController.handlePlaceBid(auction, bidder, request.getAmount());
-        } catch (Exception e) {
-            sendError(e.getMessage()); // Trả lỗi về Client (ví dụ: "Giá thấp hơn hiện tại")
-        }
+    } catch (AuctionNotFoundException | BidderNotFoundException e) {
+        sendError(e.getMessage());
+    } catch (InvalidBidException | AuctionClosedException e) {
+        sendError(e.getMessage());
+    } catch (Exception e) {
+        sendError("Đặt giá thất bại: " + e.getMessage());
     }
-
+}
     private void sendError(String message) {
         connection.send(MessageType.ERROR, new ErrorResponse(message), gson);
     }

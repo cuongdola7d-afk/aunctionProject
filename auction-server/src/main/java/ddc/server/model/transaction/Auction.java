@@ -89,45 +89,23 @@ public class Auction extends BaseEntity {
                 && amount > currentPrice;
     }
 
-    public void placeBid(BidTransaction bid) {
-        validateBid(bid);
-
-        if (bid.getAuctionId() == null || bid.getAuctionId().isBlank()) {
-            bid.setAuctionId(this.getId());
-        }
-
-        bids.add(bid);
-        currentPrice = bid.getAmount();
-        highestBidder = bid.getBidder();
-
-        if (item != null) {
-            item.setCurrentPrice(currentPrice);
-        }
+ public void placeBid(BidTransaction bid) {
+    if (bid == null) {
+        throw new IllegalArgumentException("Bid must not be null");
     }
 
-    private void validateBid(BidTransaction bid) {
-        if (bid == null) {
-            throw new IllegalArgumentException("Bid must not be null");
-        }
-
-        if (status != AuctionStatus.RUNNING) {
-            throw new IllegalStateException("Auction is not running");
-        }
-
-        if (hasEnded()) {
-            this.status = AuctionStatus.FINISHED;
-            throw new IllegalStateException("Auction has ended");
-        }
-
-        if (bid.getBidder() == null) {
-            throw new IllegalArgumentException("Bidder must not be null");
-        }
-
-        if (bid.getAmount() <= currentPrice) {
-            throw new IllegalArgumentException("Bid amount must be greater than current price");
-        }
+    if (bid.getAuctionId() == null || bid.getAuctionId().isBlank()) {
+        bid.setAuctionId(this.getId());
     }
 
+    bids.add(bid);
+    currentPrice = bid.getAmount();
+    highestBidder = bid.getBidder();
+
+    if (item != null) {
+        item.setCurrentPrice(currentPrice);
+    }
+}
     public void addBid(BidTransaction bidTransaction) {
         if (bidTransaction != null) {
             bids.add(bidTransaction);
