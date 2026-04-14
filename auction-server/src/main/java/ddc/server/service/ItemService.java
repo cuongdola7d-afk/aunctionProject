@@ -1,5 +1,6 @@
 package ddc.server.service;
 import ddc.server.dao.*;
+import ddc.server.exception.ItemValidationException;
 import ddc.server.model.item.*;
 
 
@@ -14,14 +15,14 @@ public class ItemService {
     }
 
    
-    public void createItem(Item item) {
-        validateItem(item);
+    public void createItem(Item item) throws ItemValidationException {
+        validateProduct(item.getName(),item.getStartingPrice());
         itemDAO.addItem(item);
     }
 
    
-    public void updateItem(Item updatedItem) {
-        validateItem(updatedItem);
+    public void updateItem(Item updatedItem) throws ItemValidationException {
+        validateProduct(updatedItem.getName(),updatedItem.getStartingPrice());
 
         Item existing = itemDAO.getItemById(updatedItem.getId());
         if (existing == null) {
@@ -51,14 +52,13 @@ public class ItemService {
         return itemDAO.getItemById(id);
     }
 
-    
-    private void validateItem(Item item) {
-        if (item.getName() == null || item.getName().isEmpty()) {
-            throw new IllegalArgumentException("Item name is required");
-        }
 
-        if (item.getStartingPrice() <= 0) {
-            throw new IllegalArgumentException("Start price must be > 0");
-        }
+    public void validateProduct(String name, double price) throws ItemValidationException {
+    if (name == null || name.isEmpty()) {
+        throw new ItemValidationException.MissingFieldException("Tên sản phẩm không được để trống!");
     }
+    if (price <= 0) {
+        throw new ItemValidationException.InvalidPriceException("Giá khởi điểm phải lớn hơn 0!");
+    }
+}
 }

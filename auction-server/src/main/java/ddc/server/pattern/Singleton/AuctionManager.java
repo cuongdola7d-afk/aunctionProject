@@ -2,7 +2,7 @@ package ddc.server.pattern.Singleton;
 
 import ddc.server.model.transaction.Auction;
 import ddc.server.model.user.Bidder;
-
+import ddc.server.exception.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 

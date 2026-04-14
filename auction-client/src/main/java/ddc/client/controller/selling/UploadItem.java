@@ -10,6 +10,7 @@ import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
@@ -20,6 +21,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import ddc.client.exception.*;
 
 public class UploadItem implements Initializable {
 
@@ -35,6 +37,7 @@ public class UploadItem implements Initializable {
     // @FXML private ImageView mainImageView;
     @FXML private Button registerButton;
     private List<TextField> dynamicTextFields = new ArrayList<>();
+    private List<Label> dynamicErrorLabels = new ArrayList<>();
 
     
     @Override
@@ -101,22 +104,46 @@ public class UploadItem implements Initializable {
             }
         });
     }
+    
     @FXML
     private void handleNextStep() {
-        // 1. Ẩn Step 1
+        boolean hasError = false;
+
+        // 1. Kiểm tra các ô động (dynamic)
+        for (int i = 0; i < dynamicTextFields.size(); i++) {
+            TextField tf = dynamicTextFields.get(i);
+            Label errLabel = dynamicErrorLabels.get(i);
+
+            if (tf.getText().trim().isEmpty()) {
+                errLabel.setText("Vui lòng điền thông tin này!");
+                errLabel.setVisible(true);
+                errLabel.setManaged(true);
+                tf.setStyle("-fx-border-color: red;");
+                hasError = true;
+            }
+        }
+
+        // 2. Kiểm tra ô Tên sản phẩm (Vì nó cố định, nếu chưa có label lỗi thì bạn hiện Alert tạm)
+        if (itemNameField.getText().trim().isEmpty()) {
+            itemNameField.setStyle("-fx-border-color: red;");
+            hasError = true;
+        }
+
+        // NẾU CÓ LỖI THÌ DỪNG LẠI TẠI ĐÂY
+        if (hasError) {
+            return; 
+        }
+
         step1Container.setVisible(false);
         step1Container.setManaged(false);
-
-        // 2. Hiện Step 2
         step2Container.setVisible(true);
         step2Container.setManaged(true);
 
-        // 3. (Tùy chọn) Thêm hiệu ứng Fade cho xịn
         FadeTransition ft = new FadeTransition(Duration.millis(500), step2Container);
         ft.setFromValue(0.0);
         ft.setToValue(1.0);
         ft.play();
-}
+    }
 
     @FXML
     private void handleInitialize() {
@@ -145,12 +172,10 @@ public class UploadItem implements Initializable {
 }
 
     private void updateNextButtonState() {
-        // 1. Kiểm tra các ô cố định
         boolean isBasicInfoValid = !itemNameField.getText().trim().isEmpty() 
-                                && !itemDescriptionArea.getText().trim().isEmpty() 
-                                && categoryComboBox.getValue() != null;
+                                    && !itemDescriptionArea.getText().trim().isEmpty() 
+                                    && categoryComboBox.getValue() != null;
 
-        // 2. Kiểm tra tất cả các ô động (phải điền hết)
         boolean areExtraFieldsValid = true;
         for (TextField tf : dynamicTextFields) {
             if (tf.getText().trim().isEmpty()) {
@@ -159,45 +184,91 @@ public class UploadItem implements Initializable {
             }
         }
 
-        // 3. Quyết định bật hay tắt nút
         boolean canProceed = isBasicInfoValid && areExtraFieldsValid;
         
-        btnNext.setDisable(!canProceed);
+        // QUAN TRỌNG: Không bao giờ dùng setDisable nữa để có thể bắt sự kiện Click
+        btnNext.setDisable(false); 
 
-        // Cập nhật màu sắc
         if (!canProceed) {
-            btnNext.setStyle("-fx-background-color: #cccccc; -fx-text-fill: #666666;");
+            // Màu xám giả lập disable
+            btnNext.setStyle("-fx-background-color: #cccccc; -fx-text-fill: #666666; -fx-cursor: default;");
         } else {
-            btnNext.setStyle("-fx-background-color: #00008b; -fx-cursor: hand;");
+            // Màu xanh đậm khi đã sẵn sàng
+            btnNext.setStyle("-fx-background-color: #00008b; -fx-text-fill: white; -fx-cursor: hand;");
         }
-}
+    }
+    private void updateRegisterButtonState() {
+        // Kiểm tra: giá không trống VÀ ngày đã được chọn
+        boolean isPriceEntered = priceField.getText() != null && !priceField.getText().trim().isEmpty();
+        boolean isDateSelected = auctionDatePicker.getValue() != null;
+        boolean canProceed = isPriceEntered && isDateSelected;
+        // Nếu cả 2 đều thỏa mãn thì enable nút, ngược lại thì disable
+        registerButton.setDisable(!canProceed);
 
-private void updateRegisterButtonState() {
-    // Kiểm tra: giá không trống VÀ ngày đã được chọn
-    boolean isPriceEntered = priceField.getText() != null && !priceField.getText().trim().isEmpty();
-    boolean isDateSelected = auctionDatePicker.getValue() != null;
-    boolean canProceed = isPriceEntered && isDateSelected;
-    // Nếu cả 2 đều thỏa mãn thì enable nút, ngược lại thì disable
-    registerButton.setDisable(!canProceed);
-
-        // Cập nhật màu sắc
-        if (!canProceed) {
-            btnNext.setStyle("-fx-background-color: #cccccc; -fx-text-fill: #666666;");
-        } else {
-            btnNext.setStyle("-fx-background-color: #00008b; -fx-cursor: hand;");
-}
-}
+            // Cập nhật màu sắc
+            if (!canProceed) {
+                btnNext.setStyle("-fx-background-color: #cccccc; -fx-text-fill: #666666;");
+            } else {
+                btnNext.setStyle("-fx-background-color: #00008b; -fx-cursor: hand;");
+    }
+    }
     private void addTextField(String labelText, String promptText) {
         Label label = new Label(labelText);
         TextField textField = new TextField();
         textField.setPromptText(promptText);
-
-            // Lưu vào danh sách để quản lý
-        dynamicTextFields.add(textField);
         
-        // Mỗi khi gõ chữ vào ô này, gọi hàm kiểm tra để bật/tắt nút
-        textField.textProperty().addListener((obs, oldVal, newVal) -> updateNextButtonState());
+        // Tạo Label lỗi (mặc định để trống và ẩn đi)
+        Label errorLabel = new Label("Vui lòng điền tên sản phẩm"); // Đừng để rỗng, hãy đặt text mặc định là ""
+        errorLabel.setStyle("-fx-text-fill: red; -fx-font-size: 10px;");
+        errorLabel.setManaged(false); // Quan trọng: Mặc định không chiếm diện tích
+        errorLabel.setVisible(false);
 
-        dynamicFieldsContainer.getChildren().addAll(label, textField);
+        dynamicTextFields.add(textField);
+        dynamicErrorLabels.add(errorLabel); 
+
+        textField.textProperty().addListener((obs, old, newVal) -> {
+            if (!newVal.trim().isEmpty()) {
+                // Tắt viền đỏ và ẩn label lỗi ngay khi gõ lại
+                textField.setStyle(""); 
+                errorLabel.setVisible(false);
+                errorLabel.setManaged(false);
+            }
+            updateNextButtonState();
+        });
+
+        // BỌC CẢ 3 VÀO VBOX ĐỂ TẠO CỤM RIÊNG
+        VBox fieldGroup = new VBox(5, label, textField, errorLabel);
+        
+        // THÊM CẢ CỤM VÀO CONTAINER CHA
+        dynamicFieldsContainer.getChildren().add(fieldGroup);
+    }
+
+    private void showErrorAlert(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+
+    // 2. Trong hàm xử lý nút bấm
+    @FXML
+    private void onUploadButtonClick() {
+        try {
+            String name = itemNameField.getText();
+            String priceStr = priceField.getText();
+
+            // THAY THẾ dòng AuctionManager bị lỗi bằng logic kiểm tra tại chỗ
+            if (name.isEmpty()) throw new ItemValidationException("Tên không được trống");
+            double price = Double.parseDouble(priceStr);
+            if (price <= 0) throw new ItemValidationException("Giá phải > 0");
+
+            // Nếu ok thì gửi đi
+            System.out.println("Gửi dữ liệu lên Server...");
+
+        } catch (ItemValidationException e) {
+            showErrorAlert("Lỗi nhập liệu", e.getMessage());
+        } catch (NumberFormatException e) {
+            showErrorAlert("Lỗi định dạng", "Giá phải là số!");
+        }
     }
 }
