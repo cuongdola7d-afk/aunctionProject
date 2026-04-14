@@ -16,13 +16,12 @@ import ddc.server.network.request.PlaceBidRequest;
 import ddc.server.network.request.SubscribeAuctionRequest;
 import ddc.server.network.response.AuctionEventResponse;
 import ddc.server.network.response.ErrorResponse;
+import ddc.server.pattern.Singleton.AuctionManager;
 
 public class ClientHandler implements Runnable {
     private final ClientConnection connection;
     private final AuctionController auctionController;
     private final AuctionEventDispatcher dispatcher;
-    private final Map<String, Auction> auctionStore;
-    private final Map<String, Bidder> bidderStore;
     private final Gson gson = new Gson();
 
     public ClientHandler(
@@ -30,15 +29,11 @@ public class ClientHandler implements Runnable {
             BufferedReader reader,
             PrintWriter writer,
             AuctionController auctionController,
-            AuctionEventDispatcher dispatcher,
-            Map<String, Auction> auctionStore,
-            Map<String, Bidder> bidderStore
+            AuctionEventDispatcher dispatcher
     ) {
         this.connection = new ClientConnection(socket, reader, writer);
         this.auctionController = auctionController;
         this.dispatcher = dispatcher;
-        this.auctionStore = auctionStore;
-        this.bidderStore = bidderStore;
     }
 
     @Override
@@ -77,61 +72,49 @@ public class ClientHandler implements Runnable {
     }
 
 private void handleSubscribe(String payloadJson) {
-    SubscribeAuctionRequest request = gson.fromJson(payloadJson, SubscribeAuctionRequest.class);
-
-    if (request == null || request.getAuctionId() == null || request.getAuctionId().isBlank()) {
-        sendError("auctionId is required.");
-        return;
-    }
-
-    System.out.println("=== DEBUG SUBSCRIBE ===");
-    System.out.println("request auctionId = [" + request.getAuctionId() + "]");
-    System.out.println("request length    = " + request.getAuctionId().length());
-    System.out.println("available auction ids:");
-    for (String id : auctionStore.keySet()) {
-        System.out.println("[" + id + "] len=" + id.length());
-    }
-    System.out.println("containsKey = " + auctionStore.containsKey(request.getAuctionId()));
-
-    Auction auction = auctionStore.get(request.getAuctionId());
-    if (auction == null) {
-        sendError("Auction not found: " + request.getAuctionId());
-        return;
-    }
-
-    auctionController.handleRefreshStatus(auction);
-    dispatcher.subscribe(request.getAuctionId(), connection);
-
-    AuctionEventResponse snapshot = AuctionEventResponse.fromAuctionState(auction);
-    connection.send(MessageType.AUCTION_EVENT, snapshot, gson);
-}
-     
-    
-
-    private void handlePlaceBid(String payloadJson) {
-        PlaceBidRequest request = gson.fromJson(payloadJson, PlaceBidRequest.class);
-
-        if (request == null) {
-            sendError("Invalid place bid request.");
+        SubscribeAuctionRequest request = gson.fromJson(payloadJson, SubscribeAuctionRequest.class);
+        if (request == null || request.getAuctionId() == null) {
+            sendError("auctionId is required.");
             return;
         }
 
-        Auction auction = auctionStore.get(request.getAuctionId());
+        // THAY THẾ: Gọi qua Manager thay vì dùng Map trực tiếp
+        Auction auction = AuctionManager.getInstance().getAuction(request.getAuctionId());
+        
         if (auction == null) {
             sendError("Auction not found: " + request.getAuctionId());
             return;
         }
 
-        Bidder bidder = bidderStore.get(request.getBidderId());
-        if (bidder == null) {
-            sendError("Bidder not found: " + request.getBidderId());
+        auctionController.handleRefreshStatus(auction);
+        dispatcher.subscribe(request.getAuctionId(), connection);
+
+        AuctionEventResponse snapshot = AuctionEventResponse.fromAuctionState(auction);
+        connection.send(MessageType.AUCTION_EVENT, snapshot, gson);
+    }
+
+    private void handlePlaceBid(String payloadJson) {
+        PlaceBidRequest request = gson.fromJson(payloadJson, PlaceBidRequest.class);
+        if (request == null) {
+            sendError("Invalid place bid request.");
+            return;
+        }
+
+        // THAY THẾ: Lấy dữ liệu thông qua Manager
+        Auction auction = AuctionManager.getInstance().getAuction(request.getAuctionId());
+        // Giả sử bạn cũng có UserManager hoặc làm tương tự cho Bidder
+        Bidder bidder = AuctionManager.getInstance().getBidder(request.getBidderId()); 
+
+        if (auction == null || bidder == null) {
+            sendError("Auction or Bidder not found.");
             return;
         }
 
         try {
+            // Logic xử lý đặt giá (nơi sẽ tung ra Exception ở tuần 8)
             auctionController.handlePlaceBid(auction, bidder, request.getAmount());
         } catch (Exception e) {
-            sendError(e.getMessage());
+            sendError(e.getMessage()); // Trả lỗi về Client (ví dụ: "Giá thấp hơn hiện tại")
         }
     }
 
@@ -139,27 +122,3 @@ private void handleSubscribe(String payloadJson) {
         connection.send(MessageType.ERROR, new ErrorResponse(message), gson);
     }
 }
-// public class ClientHandler implements Runnable {
-//     private Socket socket; // Đường dây liên lạc riêng với 1 khách
-//     private AuctionServer server; // Để báo cáo lại cho Server
-
-//     public ClientHandler(Socket socket, AuctionServer server) {
-//         this.socket = socket;
-//         this.server = server;
-//     }
-
-//     @Override
-//     public void run() {
-//         try {
-//             // 1. Tạo bộ đọc và bộ ghi dữ liệu qua Socket
-//             // 2. Vòng lặp while(true) để đợi lệnh từ Client
-//             // 3. Nếu Client gửi lệnh BID -> Xử lý và gọi server.broadcast()
-//         } catch (IOException e) {
-//             // Xử lý khi khách hàng ngắt kết nối (tắt app)
-//         }
-//     }
-
-//     public void sendMessage(String message) {
-//         // Hàm này dùng để Server "nhắn tin" xuống máy Client (Real-time update)
-//     }
-// }

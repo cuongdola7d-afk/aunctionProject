@@ -1,16 +1,20 @@
 package ddc.server.pattern.Singleton;
 
 import ddc.server.model.transaction.Auction;
+import ddc.server.model.user.Bidder;
+
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 
 public class AuctionManager {
     private static volatile AuctionManager instance;  
     // 2. Danh sách lưu trữ các phiên đấu giá đang chạy
-    private Map<String, Auction> auctions;
+    private final Map<String, Auction> auctionStore;
+    private final Map<String, Bidder> bidderStore;
 
     private AuctionManager() {
-        auctions = new ConcurrentHashMap<>();
+        auctionStore = new ConcurrentHashMap<>();
+        bidderStore = new ConcurrentHashMap<>();
     }
 
     public static AuctionManager getInstance() {
@@ -26,14 +30,28 @@ public class AuctionManager {
 
     
     public void addAuction(Auction auction) {
-        auctions.put(auction.getItem().getId(), auction);
+        auctionStore.put(auction.getItem().getId(), auction);
     }
 
     public Auction getAuction(String itemId) {
-        return auctions.get(itemId);
+        return auctionStore.get(itemId);
+    }
+   
+    public Map<String, Auction> getAllauctionStore() {
+        return auctionStore;
     }
 
-    public Map<String, Auction> getAllAuctions() {
-        return auctions;
+    public void addBidder(Bidder bidder) {
+        if (bidder != null && bidder.getId() != null) {
+            bidderStore.put(bidder.getId(), bidder);
+        }
+    }
+
+    public Bidder getBidder(String bidderId) {
+        return bidderStore.get(bidderId);
+    }
+
+    public Map<String, Bidder> getAllBidders() {
+        return bidderStore;
     }
 }

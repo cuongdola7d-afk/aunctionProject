@@ -70,9 +70,7 @@ public class Server {
                         reader,
                         writer,
                         auctionController,
-                        dispatcher,
-                        auctionStore,
-                        bidderStore
+                        dispatcher
                 );
 
                 executor.submit(handler);
