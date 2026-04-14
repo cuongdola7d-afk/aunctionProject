@@ -1,15 +1,11 @@
 package ddc.server.model.user;
 import java.util.List;
-import ddc.server.model.transaction.*;
-public class Bidder extends User {
+
+import ddc.server.model.transaction.BidTransaction;
+public class Bidder{
     private List<BidTransaction> bidHistory;
 
     public void addBid(BidTransaction bid) {
         bidHistory.add(bid);
-    }
-
-    @Override
-    public void printInfo() {
-        System.out.println("Bidder: " + name);
     }
 }

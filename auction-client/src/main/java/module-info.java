@@ -2,6 +2,7 @@ module ddc.client {
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.graphics;
+    requires com.google.gson;
 
     exports ddc.client;
 
@@ -12,4 +13,8 @@ module ddc.client {
     opens ddc.client.controller.selling to javafx.fxml;
     opens ddc.client.controller.home to javafx.fxml;
     opens ddc.client.controller.profile to javafx.fxml;
+
+    opens ddc.client.model to com.google.gson;
+
+    opens ddc.client.network to com.google.gson;
 }

@@ -1,33 +1,71 @@
 package ddc.server.model.user;
-import ddc.server.model.entity.*;
-public abstract class User extends BaseEntity {
-    protected String name;
-    protected String email;
-    protected String password;
 
-    public abstract void printInfo();
+public class User {
+    private final String action;
+    private final String username;
+    private final String name;
+    private final String email;
+    private final String password;
 
-    public String getName() {
-        return name;
+    protected User(Builder builder) {
+        this.action = builder.action;
+        this.username = builder.username;
+        this.name = builder.name;
+        this.email = builder.email;
+        this.password = builder.password;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    //Getter
+    public String getAction() {return action;}
+    public String getUsername() { return username; }
+    public String getName() { return name; }
+    public String getEmail() { return email; }
+    public String getPassword() { return password; }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "username='" + username + '\'' +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", password='[PROTECTED]'" +
+                '}';
     }
 
-    public String getEmail() {
-        return email;
-    }
+    public static class Builder {
+        private String action;
+        private String username;
+        private String name;
+        private String email;
+        private String password;
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+        public Builder action (String action) {
+            this.action = action;
+            return this;
+        }
 
-    public String getPassword() {
-        return password;
-    }
+        public Builder username (String username) {
+            this.username = username;
+            return this;
+        }
 
-    public void setPassword(String password) {
-        this.password = password;
+        public Builder name (String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder email (String email) {
+            this.email = email;
+            return this;
+        }
+
+        public Builder password (String password) {
+            this.password = password;
+            return this;
+        }
+
+        public User build () {
+            return new User(this);
+        }
     }
 }

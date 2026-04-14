@@ -2,9 +2,8 @@ package ddc.server.model.transaction;
 
 import java.time.LocalDateTime;
 
-
-import ddc.server.model.entity.*;
-import ddc.server.model.user.*;
+import ddc.server.model.entity.BaseEntity;
+import ddc.server.model.user.Bidder;
 
 public class BidTransaction extends BaseEntity {
     private Bidder bidder;
@@ -44,7 +43,7 @@ public class BidTransaction extends BaseEntity {
 
     @Override
     public String toString() {
-        String bidderName = (bidder != null) ? bidder.getName() : "Unknown";
+        String bidderName = "Unknown";
         return "BidTransaction{" +
                 "bidder=" + bidderName +
                 ", amount=" + amount +
