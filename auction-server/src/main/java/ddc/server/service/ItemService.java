@@ -14,16 +14,16 @@
 //     }
 
    
-//     public void createItem(ItemGeneric item) {
+//     public void createItem(Item item) {
 //         validateItem(item);
 //         itemDAO.addItem(item);
 //     }
 
    
-//     public void updateItem(ItemGeneric updatedItem) {
+//     public void updateItem(Item updatedItem) {
 //         validateItem(updatedItem);
 
-//         ItemGeneric existing = itemDAO.getItemById(updatedItem.getId());
+//         Item existing = itemDAO.getItemById(updatedItem.getId());
 //         if (existing == null) {
 //             throw new RuntimeException("Item not found");
 //         }
@@ -33,7 +33,7 @@
 
     
 //     public void deleteItem(String itemId) {
-//         ItemGeneric existing = itemDAO.getItemById(itemId);
+//         Item existing = itemDAO.getItemById(itemId);
 //         if (existing == null) {
 //             throw new RuntimeException("Item not found");
 //         }
@@ -42,17 +42,17 @@
 //     }
 
     
-//     public List<ItemGeneric> getAllItems() {
+//     public List<Item> getAllItems() {
 //         return itemDAO.getAllItems();
 //     }
 
     
-//     public ItemGeneric getItemById(String id) {
+//     public Item getItemById(String id) {
 //         return itemDAO.getItemById(id);
 //     }
 
     
-//     private void validateItem(ItemGeneric item) {
+//     private void validateItem(Item item) {
 //         if (item.getName() == null || item.getName().isEmpty()) {
 //             throw new IllegalArgumentException("Item name is required");
 //         }

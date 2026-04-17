@@ -13,7 +13,7 @@
 
 // public class ManualConcurrencyTest {
 
-//     static class DemoItem extends ItemGeneric {
+//     static class DemoItem extends Item {
 //         public DemoItem(String name, String description, double startingPrice) {
 //             super(name, description, startingPrice);
 //             setCurrentPrice(startingPrice);
@@ -30,7 +30,7 @@
 //             AuctionService service = new AuctionService();
 //             service.addObserver(new LoggingAuctionObserver());
 
-//             ItemGeneric item = new DemoItem("Ban phim co", "Test concurrency", 100000);
+//             Item item = new DemoItem("Ban phim co", "Test concurrency", 100000);
 
 //             Auction auction = service.createAuction(
 //                     item,
@@ -86,7 +86,7 @@
 //     private static Runnable createBidTask(
 //             AuctionService service,
 //             Auction auction,
-//             Bidder bidder,
+//             User bidder,
 //             double amount,
 //             CountDownLatch ready,
 //             CountDownLatch start,
