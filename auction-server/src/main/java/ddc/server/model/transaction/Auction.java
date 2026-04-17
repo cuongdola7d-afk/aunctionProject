@@ -21,7 +21,6 @@ public class Auction extends BaseEntity {
     private Bidder highestBidder;
     private double currentPrice;
 
-    // Lock riêng cho từng phiên đấu giá
     private final ReentrantLock lock = new ReentrantLock(true);
 
     public Auction() {
@@ -65,11 +64,11 @@ public class Auction extends BaseEntity {
     }
 
     public void cancelAuction() {
-    if (status == AuctionStatus.FINISHED) {
-        throw new IllegalStateException("Phiên đấu giá đã kết thúc, không thể hủy!");
+        if (status == AuctionStatus.FINISHED) {
+            throw new IllegalStateException("Phiên đấu giá đã kết thúc, không thể hủy!");
+        }
+        this.status = AuctionStatus.CANCELLED;
     }
-    this.status = AuctionStatus.CANCELLED;
-}
 
     public boolean hasStarted() {
         return startTime != null && !LocalDateTime.now().isBefore(startTime);
@@ -89,28 +88,35 @@ public class Auction extends BaseEntity {
                 && amount > currentPrice;
     }
 
- public void placeBid(BidTransaction bid) {
-    if (bid == null) {
-        throw new IllegalArgumentException("Bid must not be null");
+    /**
+     * Chỉ update state. Business validation nằm ở AuctionService.
+     */
+    public void placeBid(BidTransaction bid) {
+        if (bid == null) {
+            throw new IllegalArgumentException("Bid must not be null");
+        }
+
+        if (bid.getAuctionId() == null || bid.getAuctionId().isBlank()) {
+            bid.setAuctionId(this.getId());
+        }
+
+        bids.add(bid);
+        currentPrice = bid.getAmount();
+        highestBidder = bid.getBidder();
+
+        if (item != null) {
+            item.setCurrentPrice(currentPrice);
+        }
     }
 
-    if (bid.getAuctionId() == null || bid.getAuctionId().isBlank()) {
-        bid.setAuctionId(this.getId());
-    }
-
-    bids.add(bid);
-    currentPrice = bid.getAmount();
-    highestBidder = bid.getBidder();
-
-    if (item != null) {
-        item.setCurrentPrice(currentPrice);
-    }
-}
-    /*public void addBid(BidTransaction bidTransaction) {
+    /**
+     * Compatibility cho code cũ. Hạn chế dùng nếu đã dùng placeBid().
+     */
+    public void addBid(BidTransaction bidTransaction) {
         if (bidTransaction != null) {
             bids.add(bidTransaction);
         }
-    }*/
+    }
 
     public void extendTimeIfNeeded() {
         if (endTime != null && endTime.minusSeconds(10).isBefore(LocalDateTime.now())) {

@@ -430,7 +430,7 @@ void cancelAuction_shouldThrowWhenAuctionAlreadyFinished() throws InvalidBidExce
     auction.setStatus(AuctionStatus.FINISHED);
 
     assertThrows(
-            IllegalStateException.class,
+            AuctionClosedException.class,
             () -> auctionService.cancelAuction(auction)
     );
 }

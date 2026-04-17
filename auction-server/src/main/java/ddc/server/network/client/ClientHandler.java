@@ -1,8 +1,11 @@
 package ddc.server.network.client;
+
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+
 import com.google.gson.Gson;
+
 import ddc.server.controller.AuctionController;
 import ddc.server.exception.AuctionClosedException;
 import ddc.server.exception.AuctionNotFoundException;
@@ -71,50 +74,51 @@ public class ClientHandler implements Runnable {
         }
     }
 
-private void handleSubscribe(String payloadJson) {
-    try {
-        SubscribeAuctionRequest request = gson.fromJson(payloadJson, SubscribeAuctionRequest.class);
-        if (request == null || request.getAuctionId() == null) {
-            sendError("auctionId is required.");
-            return;
+    private void handleSubscribe(String payloadJson) {
+        try {
+            SubscribeAuctionRequest request = gson.fromJson(payloadJson, SubscribeAuctionRequest.class);
+            if (request == null || request.getAuctionId() == null) {
+                sendError("auctionId is required.");
+                return;
+            }
+
+            Auction auction = AuctionManager.getInstance().getAuctionOrThrow(request.getAuctionId());
+
+            auctionController.handleRefreshStatus(auction);
+            dispatcher.subscribe(request.getAuctionId(), connection);
+
+            AuctionEventResponse snapshot = AuctionEventResponse.fromAuctionState(auction);
+            connection.send(MessageType.AUCTION_EVENT, snapshot, gson);
+
+        } catch (AuctionNotFoundException e) {
+            sendError(e.getMessage());
+        } catch (Exception e) {
+            sendError("Không thể subscribe auction: " + e.getMessage());
         }
-
-        Auction auction = AuctionManager.getInstance().getAuctionOrThrow(request.getAuctionId());
-
-        auctionController.handleRefreshStatus(auction);
-        dispatcher.subscribe(request.getAuctionId(), connection);
-
-        AuctionEventResponse snapshot = AuctionEventResponse.fromAuctionState(auction);
-        connection.send(MessageType.AUCTION_EVENT, snapshot, gson);
-
-    } catch (AuctionNotFoundException e) {
-        sendError(e.getMessage());
-    } catch (Exception e) {
-        sendError("Không thể subscribe auction: " + e.getMessage());
     }
-}
 
- private void handlePlaceBid(String payloadJson) {
-    try {
-        PlaceBidRequest request = gson.fromJson(payloadJson, PlaceBidRequest.class);
-        if (request == null) {
-            sendError("Invalid place bid request.");
-            return;
+    private void handlePlaceBid(String payloadJson) {
+        try {
+            PlaceBidRequest request = gson.fromJson(payloadJson, PlaceBidRequest.class);
+            if (request == null) {
+                sendError("Invalid place bid request.");
+                return;
+            }
+
+            Auction auction = AuctionManager.getInstance().getAuctionOrThrow(request.getAuctionId());
+            Bidder bidder = AuctionManager.getInstance().getBidderOrThrow(request.getBidderId());
+
+            auctionController.handlePlaceBid(auction, bidder, request.getAmount());
+
+        } catch (AuctionNotFoundException | BidderNotFoundException e) {
+            sendError(e.getMessage());
+        } catch (InvalidBidException | AuctionClosedException e) {
+            sendError(e.getMessage());
+        } catch (Exception e) {
+            sendError("Đặt giá thất bại: " + e.getMessage());
         }
-
-        Auction auction = AuctionManager.getInstance().getAuctionOrThrow(request.getAuctionId());
-        Bidder bidder = AuctionManager.getInstance().getBidderOrThrow(request.getBidderId());
-
-        auctionController.handlePlaceBid(auction, bidder, request.getAmount());
-
-    } catch (AuctionNotFoundException | BidderNotFoundException e) {
-        sendError(e.getMessage());
-    } catch (InvalidBidException | AuctionClosedException e) {
-        sendError(e.getMessage());
-    } catch (Exception e) {
-        sendError("Đặt giá thất bại: " + e.getMessage());
     }
-}
+
     private void sendError(String message) {
         connection.send(MessageType.ERROR, new ErrorResponse(message), gson);
     }

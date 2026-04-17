@@ -58,11 +58,12 @@ public class AuctionService implements AuctionSubject {
             auction.getLock().unlock();
         }
 
-        notifyAllPending(pendingEvents);
+        dispatchPendingEvents(pendingEvents);
     }
 
     public void startAuction(Auction auction) throws AuctionClosedException, InvalidBidException {
-        validateAuction(auction);
+        validateAuctionStructure(auction);
+        normalizeAuctionPriceIfNeeded(auction);
 
         List<AuctionEvent> pendingEvents = new ArrayList<>();
 
@@ -95,13 +96,14 @@ public class AuctionService implements AuctionSubject {
             auction.getLock().unlock();
         }
 
-        notifyAllPending(pendingEvents);
+        dispatchPendingEvents(pendingEvents);
     }
 
     public void placeBid(Auction auction, Bidder bidder, double amount)
             throws InvalidBidException, AuctionClosedException {
 
-        validateAuction(auction);
+        validateAuctionStructure(auction);
+        normalizeAuctionPriceIfNeeded(auction);
 
         if (bidder == null) {
             throw new InvalidBidException("Người đấu giá không hợp lệ.");
@@ -149,11 +151,12 @@ public class AuctionService implements AuctionSubject {
             auction.getLock().unlock();
         }
 
-        notifyAllPending(pendingEvents);
+        dispatchPendingEvents(pendingEvents);
     }
 
     public void finishAuction(Auction auction) throws InvalidBidException {
-        validateAuction(auction);
+        validateAuctionStructure(auction);
+        normalizeAuctionPriceIfNeeded(auction);
 
         List<AuctionEvent> pendingEvents = new ArrayList<>();
 
@@ -170,23 +173,32 @@ public class AuctionService implements AuctionSubject {
             auction.getLock().unlock();
         }
 
-        notifyAllPending(pendingEvents);
+        dispatchPendingEvents(pendingEvents);
     }
 
-    public void cancelAuction(Auction auction) throws InvalidBidException {
-        validateAuction(auction);
+    public void cancelAuction(Auction auction) throws InvalidBidException, AuctionClosedException {
+        validateAuctionStructure(auction);
+        normalizeAuctionPriceIfNeeded(auction);
 
         List<AuctionEvent> pendingEvents = new ArrayList<>();
 
         auction.getLock().lock();
         try {
+            if (auction.getStatus() == AuctionStatus.FINISHED) {
+                throw new AuctionClosedException("Phiên đấu giá đã kết thúc, không thể hủy!");
+            }
+
+            if (auction.getStatus() == AuctionStatus.CANCELLED) {
+                return;
+            }
+
             auction.cancelAuction();
             pendingEvents.add(AuctionEvent.auctionCANCELLED(auction));
         } finally {
             auction.getLock().unlock();
         }
 
-        notifyAllPending(pendingEvents);
+        dispatchPendingEvents(pendingEvents);
     }
 
     public Bidder getHighestBidder(Auction auction) {
@@ -258,13 +270,13 @@ public class AuctionService implements AuctionSubject {
         return null;
     }
 
-    private void notifyAllPending(List<AuctionEvent> pendingEvents) {
+    private void dispatchPendingEvents(List<AuctionEvent> pendingEvents) {
         for (AuctionEvent event : pendingEvents) {
             notifyObservers(event);
         }
     }
 
-    private void validateAuction(Auction auction) throws InvalidBidException {
+    private void validateAuctionStructure(Auction auction) throws InvalidBidException {
         if (auction == null) {
             throw new InvalidBidException("Auction không được null.");
         }
@@ -280,8 +292,12 @@ public class AuctionService implements AuctionSubject {
         if (!auction.getEndTime().isAfter(auction.getStartTime())) {
             throw new InvalidBidException("endTime phải sau startTime.");
         }
+    }
 
-        if (auction.getCurrentPrice() <= 0) {
+    private void normalizeAuctionPriceIfNeeded(Auction auction) {
+        if (auction != null
+                && auction.getItem() != null
+                && auction.getCurrentPrice() <= 0) {
             auction.setCurrentPrice(auction.getItem().getStartingPrice());
         }
     }
