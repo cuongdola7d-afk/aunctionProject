@@ -16,10 +16,10 @@ public class ItemDAO {
       try (Connection con = DatabaseConnection.getConnection();
             PreparedStatement pst = con.prepareStatement(sql)) {
                
-               pst.setString(1, item.getitem());
+               pst.setString(1, item.getItemName());
                pst.setString(2, item.getCategory());
                pst.setString(3, item.getDescription());
-               pst.setString(4, item.getSeller());
+               pst.setString(4, item.getSellerName());
 
                int insert = pst.executeUpdate();
                return insert > 0;

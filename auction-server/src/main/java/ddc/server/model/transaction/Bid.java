@@ -2,9 +2,10 @@ package ddc.server.model.transaction;
 
 import java.time.LocalDateTime;
 
+import ddc.server.model.entity.Entity;
 import ddc.server.model.user.User;
 
-public class Bid {
+public class Bid extends Entity {
     private User bidder;
     private double amount;
     private LocalDateTime time;
