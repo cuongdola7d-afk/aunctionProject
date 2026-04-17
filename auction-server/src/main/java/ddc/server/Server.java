@@ -1,34 +1,34 @@
-// package ddc.server;
+package ddc.server;
 
 // import java.io.BufferedReader;
 // import java.io.InputStreamReader;
 // import java.io.PrintWriter;
-// import java.net.ServerSocket;
-// import java.net.Socket;
+import java.net.ServerSocket;
+import java.net.Socket;
 
-// import ddc.server.network.ClientHandler;
+import ddc.server.network.ClientHandler;
 // import ddc.server.pattern.observer.AuctionEvent;
 // import ddc.server.pattern.observer.AuctionEventType;
 // import ddc.server.service.AuctionService;
 
-// public class Server {
-//     private static final int PORT = 8080;
+public class Server {
+    private static final int PORT = 8080;
 
-//     public static void main(String[] args) {
-//         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
-//             System.out.println("Server opened!");
+    public static void main(String[] args) {
+        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
+            System.out.println("Server opened!");
 
-//             while (true) {
-//                 Socket clientSocket = serverSocket.accept();
-//                 System.out.println("New Client Detected! - " + clientSocket.getInetAddress());
+            while (true) {
+                Socket clientSocket = serverSocket.accept();
+                System.out.println("New Client Detected! - " + clientSocket.getInetAddress());
                 
-//                 ClientHandler handler = new ClientHandler(clientSocket);
-//                 new Thread(handler).start();
-//             }
-//         } catch (Exception e) {
-//             System.out.println(e.getMessage());
-//         }
-//     }
+                ClientHandler handler = new ClientHandler(clientSocket);
+                new Thread(handler).start();
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
 //     ID cố định để test
 //     public static final String DEMO_AUCTION_ID = "AUCT-001";
@@ -270,4 +270,4 @@
 //             return "DEMO";
 //         }
 //     }
-// }
+}
