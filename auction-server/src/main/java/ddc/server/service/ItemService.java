@@ -5,60 +5,60 @@ import ddc.server.model.item.*;
 
 import java.util.List;
 
-public class ItemService {
+// public class ItemService {
 
-    private ItemDAO itemDAO;
+//     private ItemDAO itemDAO;
 
-    public ItemService() {
-        this.itemDAO = ItemDAO.getInstance(); // Singleton
-    }
-
-   
-    public void createItem(Item item) {
-        validateItem(item);
-        itemDAO.addItem(item);
-    }
+//     public ItemService() {
+//         this.itemDAO = ItemDAO.getInstance(); // Singleton
+//     }
 
    
-    public void updateItem(Item updatedItem) {
-        validateItem(updatedItem);
+//     public void createItem(Item item) {
+//         validateItem(item);
+//         itemDAO.addItem(item);
+//     }
 
-        Item existing = itemDAO.getItemById(updatedItem.getId());
-        if (existing == null) {
-            throw new RuntimeException("Item not found");
-        }
+   
+//     public void updateItem(Item updatedItem) {
+//         validateItem(updatedItem);
 
-        itemDAO.updateItem(updatedItem);
-    }
+//         Item existing = itemDAO.getItemById(updatedItem.getId());
+//         if (existing == null) {
+//             throw new RuntimeException("Item not found");
+//         }
 
-    
-    public void deleteItem(String itemId) {
-        Item existing = itemDAO.getItemById(itemId);
-        if (existing == null) {
-            throw new RuntimeException("Item not found");
-        }
-
-        itemDAO.deleteItem(Integer.parseInt(itemId));
-    }
+//         itemDAO.updateItem(updatedItem);
+//     }
 
     
-    public List<Item> getAllItems() {
-        return itemDAO.getAllItems();
-    }
+//     public void deleteItem(String itemId) {
+//         Item existing = itemDAO.getItemById(itemId);
+//         if (existing == null) {
+//             throw new RuntimeException("Item not found");
+//         }
+
+//         itemDAO.deleteItem(Integer.parseInt(itemId));
+//     }
 
     
-    public Item getItemById(String id) {
-        return itemDAO.getItemById(id);
-    }
+//     public List<Item> getAllItems() {
+//         return itemDAO.getAllItems();
+//     }
 
     
-    private void validateItem(Item item) {
-        if (item.getName() == null || item.getName().isEmpty()) {
-            throw new IllegalArgumentException("Item name is required");
-        }
+//     public Item getItemById(String id) {
+//         return itemDAO.getItemById(id);
+//     }
 
-        if (item.getStartingPrice() <= 0) {
-            throw new IllegalArgumentException("Start price must be > 0");
-        }
-    }
-}
+    
+//     private void validateItem(Item item) {
+//         if (item.getName() == null || item.getName().isEmpty()) {
+//             throw new IllegalArgumentException("Item name is required");
+//         }
+
+//         if (item.getStartingPrice() <= 0) {
+//             throw new IllegalArgumentException("Start price must be > 0");
+//         }
+//     }
+// }
