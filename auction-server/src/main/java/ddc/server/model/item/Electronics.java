@@ -1,32 +1,35 @@
 package ddc.server.model.item;
-public class Electronics extends Item {
-    private String brand;
-    private int warrantyMonths;
 
-    public Electronics(String name, String desc, double price, String brand, int warrantyMonths) {
-        super(name, desc, price);
-        this.brand = brand;
-        this.warrantyMonths = warrantyMonths;
+public class Electronics extends Item{
+    private final String brand;
+    private final int warrantyMonths;
+
+    public Electronics (Builder builder) {
+        super(builder);
+        this.brand = builder.brand;
+        this.warrantyMonths = builder.warrantyMonths;
     }
 
-    @Override
-    public String getCategory() {
-        return "Electronics";
-    }
+    public String getBrand() { return brand; }
+    public int getWarrantyMonths() { return warrantyMonths; }
 
-    public String getBrand() {
-        return brand;
-    }
+    public static class Builder extends ItemBuilder<Electronics, Builder> {
+        private String brand;
+        private int warrantyMonths;
 
-    public void setBrand(String brand) {
-        this.brand = brand;
-    }
+        public Builder brand (String brand) {
+            this.brand = brand;
+            return this;
+        }
 
-    public int getWarrantyMonths() {
-        return warrantyMonths;
-    }
+        public Builder warrantyMonths (int warrantyMonths) {
+            this.warrantyMonths = warrantyMonths;
+            return this;
+        }
 
-    public void setWarrantyMonths(int warrantyMonths) {
-        this.warrantyMonths = warrantyMonths;
+        @Override
+        public Electronics build() {
+            return new Electronics(this);
+        }
     }
 }
