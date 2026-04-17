@@ -9,10 +9,11 @@ module ddc.server {
     exports ddc.server.model.item;
     exports ddc.server.model.transaction;
     exports ddc.server.model.user;
+    exports ddc.server.network.client;
     exports ddc.server.pattern.observer;
     exports ddc.server.service;
 
-    exports ddc.server.network.client;
+
     //exports ddc.server.network.dispatcher;
     exports ddc.server.network.message;
     exports ddc.server.network.request;
@@ -22,9 +23,6 @@ module ddc.server {
     opens ddc.server.model.item to com.google.gson;
     opens ddc.server.model.transaction to com.google.gson;
     opens ddc.server.model.user to com.google.gson;
-
-    opens ddc.server.network.message to com.google.gson;
-    opens ddc.server.network.request to com.google.gson;
-    opens ddc.server.network.response to com.google.gson;
+    opens ddc.server.network.client to com.google.gson;
     opens ddc.server.pattern.observer to com.google.gson;
 }
