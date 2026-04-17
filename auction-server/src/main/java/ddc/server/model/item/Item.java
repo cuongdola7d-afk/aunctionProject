@@ -1,33 +1,23 @@
 package ddc.server.model.item;
 
-import java.time.LocalDateTime;
+import ddc.server.model.entity.Entity;
 
-public class Item {
-    private int id;
-    private String item;
-    private String category;
-    private String description;
-    private String seller;
-    private double startingPrice;
-    private double currentPrice;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
-    private String status;
+public class Item extends Entity {
+    private final String id;
+    private final String item;
+    private final String category;
+    private final String description;
+    private final String seller;
 
-    protected Item(ItemBuilder builder) {
+    protected Item(ItemBuilder<?, ?> builder) {
         this.id = builder.id;
         this.item = builder.item;
         this.category = builder.category;
         this.description = builder.description;
         this.seller = builder.seller;
-        this.startingPrice = builder.startingPrice;
-        this.currentPrice = builder.currentPrice;
-        this.startTime = builder.startTime;
-        this.endTime = builder.endTime;
-        this.status = builder.status;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -47,39 +37,14 @@ public class Item {
         return seller;
     }
 
-    public double getStartingPrice() {
-        return startingPrice;
-    }
-
-    public double getcurrentPrice() {
-        return currentPrice;
-    }
-
-    public LocalDateTime getStartTime() {
-        return startTime;
-    }
-
-    public LocalDateTime getEndTime() {
-        return endTime;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
     public static abstract class ItemBuilder<C extends Item, B extends ItemBuilder<C, B>> {
-        private int id;
+        private String id;
         private String item;
         private String category;
         private String description;
         private String seller;
-        private double startingPrice;
-        private double currentPrice;
-        private LocalDateTime startTime;
-        private LocalDateTime endTime;
-        private String status;
 
-        public B id(int id) {
+        public B id(String id) {
             this.id = id;
             return self();
         }
@@ -101,26 +66,6 @@ public class Item {
 
         public B seller(String seller) {
             this.seller = seller;
-            return self();
-        }
-
-        public B startingPrice(double startingPrice) {
-            this.startingPrice = startingPrice;
-            return self();
-        }
-
-        public B startTime(LocalDateTime startTime) {
-            this.startTime = startTime;
-            return self();
-        }
-
-        public B endTime(LocalDateTime endTime) {
-            this.endTime = endTime;
-            return self();
-        }
-
-        public B status(String status) {
-            this.status = status;
             return self();
         }
 

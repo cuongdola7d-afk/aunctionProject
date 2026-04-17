@@ -5,7 +5,7 @@ import ddc.server.model.user.User;
 
 public class UserController {
 
-    private UserDAO userDAO = new UserDAO();
+    private final UserDAO userDAO = new UserDAO();
 
     public String handleRegister (User user) {
 

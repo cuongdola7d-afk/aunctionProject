@@ -1,50 +1,55 @@
-// package ddc.server.dao;
+package ddc.server.dao;
 
-// import ddc.server.model.item.*;
-// import java.util.ArrayList;
-// import java.util.List;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
-// public class ItemDAO {
+import ddc.server.config.DatabaseConnection;
+import ddc.server.model.item.Item;
 
-//     private static ItemDAO instance;
-//     private List<Item> items;
+public class ItemDAO {
 
-//     private ItemDAO() {
-//         items = new ArrayList<>();
-//     }
+   public boolean addItem (Item item) {
+      String sql = "INSERT INTO ddc_items (item, category, description, seller) VALUES (?, ?, ?, ?)";
 
-//     public static ItemDAO getInstance() {
-//         if (instance == null) {
-//             instance = new ItemDAO();
-//         }
-//         return instance;
-//     }
+      try (Connection con = DatabaseConnection.getConnection();
+            PreparedStatement pst = con.prepareStatement(sql)) {
+               
+               pst.setString(1, item.getitem());
+               pst.setString(2, item.getCategory());
+               pst.setString(3, item.getDescription());
+               pst.setString(4, item.getSeller());
 
-//     public void addItem(Item item) {
-//         items.add(item);
-//     }
+               int insert = pst.executeUpdate();
+               return insert > 0;
+            } catch (Exception e) {
+               System.out.println(e.getMessage());
+            }
+            return false;
+   }
 
-//     public List<Item> getAllItems() {
-//         return items;
-//     }
+   public Item getItem (String id) {
+      String sql = "SELECT * FROM ddc_items WHERE id = ?";
 
-//     public Item getItemById(String id) {
-//         return items.stream()
-//                 .filter(i -> i.getId().equals(id))
-//                 .findFirst()
-//                 .orElse(null);
-//     }
+      try (Connection con = DatabaseConnection.getConnection();
+           PreparedStatement pst = con.prepareStatement(sql)) {
+            pst.setString(1, id);
 
-//     public void updateItem(Item updatedItem) {
-//         for (int i = 0; i < items.size(); i++) {
-//             if (items.get(i).getId() == updatedItem.getId()) {
-//                 items.set(i, updatedItem);
-//                 return;
-//             }
-//         }
-//     }
+            ResultSet rs = pst.executeQuery();
 
-//     public void deleteItem(int id) {
-//         items.removeIf(i -> i.getId().equals(id));
-//     }
-// }
+            if (rs.next()) {
+               return new Item.Builder()
+                        .id(rs.getString("id"))
+                        .item(rs.getString("item"))
+                        .category(rs.getString("category"))
+                        .description(rs.getString("description"))
+                        .seller(rs.getString("seller"))
+                        .build();
+            }
+           } catch (SQLException e) {
+            System.out.println(e.getMessage());
+           }
+           return null;
+   }
+}

@@ -42,6 +42,8 @@ public class ClientHandler implements Runnable {
                     case "LOGIN":
                         response = userController.handleLogin(requestUser);
                         break;
+                    case "ADD ITEM":
+                        
                     default:
                         response = "UNDEFINED BEHAVIOR!!!";
                         break;

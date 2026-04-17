@@ -1,11 +1,16 @@
 package ddc.server.model.user;
 
-public class User {
+import ddc.server.model.entity.Entity;
+
+public class User extends Entity {
     private final String action;
     private final String username;
     private final String name;
     private final String email;
     private final String password;
+    
+    private Bidder bidInfo;
+    private Seller sellInfo;
 
     protected User(UserBuilder<?, ?> builder) {
         this.action = builder.action;

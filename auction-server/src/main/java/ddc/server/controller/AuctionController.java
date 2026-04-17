@@ -1,3 +1,14 @@
+package ddc.server.controller;
+
+import ddc.server.dao.ItemDAO;
+
+public class AuctionController {
+    
+    private final ItemDAO itemDAO = new ItemDAO();
+
+    
+}
+
 // // package ddc.server.controller;
 
 // import java.util.List;

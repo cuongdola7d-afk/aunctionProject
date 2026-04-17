@@ -1,32 +1,35 @@
-// package ddc.server.model.item;
-// public class Vehicle extends Item {
-//     private String manufacturer;
-//     private int year;
+package ddc.server.model.item;
 
-//     public Vehicle(String name, String description, double startingPrice,String manufacturer, int year){
-//         super(name, description, startingPrice);
-//         this.manufacturer = manufacturer;
-//         this.year = year;
-//     }
+public class Vehicle extends Item{
+    private final String manufacturer;
+    private final int year;
 
-//     @Override
-//     public String getCategory() {
-//         return "Vehicle";
-//     }
+    public Vehicle (Builder builder) {
+        super(builder);
+        this.manufacturer = builder.manufacturer;
+        this.year = builder.year;
+    }
 
-//     public String getManufacturer() {
-//         return manufacturer;
-//     }
+    public String getManufacturer() { return manufacturer; }
+    public int getYear() { return year; }
 
-//     public void setManufacturer(String manufacturer) {
-//         this.manufacturer = manufacturer;
-//     }
+    public static class Builder extends ItemBuilder<Vehicle, Builder> {
+        private String manufacturer;
+        private int year;
 
-//     public int getYear() {
-//         return year;
-//     }
+        public Builder manufacturer (String manufacturer) {
+            this.manufacturer = manufacturer;
+            return this;
+        }
 
-//     public void setYear(int year) {
-//         this.year = year;
-//     }
-// }
+        public Builder year (int year) {
+            this.year = year;
+            return this;
+        }
+
+        @Override
+        public Vehicle build() {
+            return new Vehicle(this);
+        }
+    }
+}

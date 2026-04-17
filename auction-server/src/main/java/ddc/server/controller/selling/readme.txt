@@ -1,1 +1,0 @@
-truyền dữ liệu, xuất dữ liệu bán
