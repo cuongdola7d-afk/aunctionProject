@@ -2,106 +2,59 @@ package ddc.server.model.transaction;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Currency;
 import java.util.List;
 
 import ddc.server.model.entity.Entity;
-import ddc.server.model.item.Item;
-import ddc.server.model.user.User;
 
-public class Auction extends Entity {
-    private Item item;
-    private List<Bid> bidHistory = new ArrayList<>();
+public class Auction extends Entity<Auction> {
+    private String itemName;
+    private final List<Bid> bidHistory = new ArrayList<>();
 
     private AuctionStatus status = AuctionStatus.OPEN;
 
-    private User highestBidder;
+    private String highestBidderName;
     private double currentPrice;
 
     private LocalDateTime startTime;
     private LocalDateTime endTime;
 
+    //Getters
+    public String getItemName () { return itemName; }
+    public List<Bid> getBidHistory () { return bidHistory; }
+    public AuctionStatus getStatus () { return status; }
+    public String getHighestBidderName() { return highestBidderName; }
+    public double getCurrentPrice() { return currentPrice; }
+    public LocalDateTime getStartTime() { return startTime; }
+    public LocalDateTime getEndTime() { return endTime; }
 
-    public Item getItem() {
-        return item;
+    //Setters
+    public Auction setItemName (String itemName) {
+        this.itemName = itemName;
+        return this;
     }
 
-    public void setItem(Item item) {
-        this.item = item;
-    }
-
-    public List<Bid> getbidHistory() {
-        return bidHistory;
-    }
-
-    public Bid getCurrentHighestBid() {
-        if (bidHistory == null || bidHistory.isEmpty()) {
-            return null;
-        }
-        //tìm ra lệnh đặt giá cao nhất trong danh sách một cách ngắn gọn thay vì phải dùng vòng lặp for
-        return bidHistory.stream()
-                         .max(Comparator.comparingDouble(Bid::getAmount))
-                         .orElse(null);
-    }
-
-    public void setStatus(AuctionStatus status) {
+    public Auction setStatus (AuctionStatus status) {
         this.status = status;
+        return this;
     }
 
-    public AuctionStatus getStatus() {
-        return status;
+    public Auction setHighestBidderName (String highestBidderName) {
+        this.highestBidderName = highestBidderName;
+        return this;
     }
 
-    public User getHighestBidder() {
-        return highestBidder;
-    }
-
-    public double getCurrentPrice() {
-        return currentPrice;
-    }
-
-    public LocalDateTime getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(LocalDateTime startTime) {
-        this.startTime = startTime;
-    }
-
-    public void setCurrentPrice(Double currentPrice) {
+    public Auction setCurrentPrice (double currentPrice) {
         this.currentPrice = currentPrice;
+        return this;
     }
 
-    public LocalDateTime getEndTime() {
-        return endTime;
+    public Auction setStartTime (LocalDateTime startTime) {
+        this.startTime = startTime;
+        return this;
     }
 
-    public void setEndTime(LocalDateTime endTime) {
+    public Auction setEndTime (LocalDateTime endTime) {
         this.endTime = endTime;
+        return this;
     }
-
-    public void startAuction () {
-        this.status = AuctionStatus.RUNNING;
-    }
-
-    public void endAuction () {
-        this.status = AuctionStatus.FINISHED;
-    }
-
-    public void placeBid (Bid bid) {
-        if (status != AuctionStatus.RUNNING) {
-            throw new RuntimeException("Auction not running.");
-        }
-
-        if (bid.getAmount() <= currentPrice) {
-            throw new RuntimeException("Bidded amount lower the current.");
-        }
-
-        bidHistory.add(bid);
-        currentPrice = bid.getAmount();
-        highestBidder = bid.getBidder();
-    }
-
-
 }

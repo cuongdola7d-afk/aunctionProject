@@ -2,23 +2,17 @@ package ddc.server.model.user;
 
 import ddc.server.model.entity.Entity;
 
-public class User extends Entity {
-    private final String action;
-    private final String username;
-    private final String name;
-    private final String email;
-    private final String password;
+public class User extends Entity<User> {
+    private String action;
+    private String username;
+    private String name;
+    private String email;
+    private String password;
     
     private Bidder bidInfo;
     private Seller sellInfo;
 
-    protected User(UserBuilder<?, ?> builder) {
-        this.action = builder.action;
-        this.username = builder.username;
-        this.name = builder.name;
-        this.email = builder.email;
-        this.password = builder.password;
-    }
+    public User () {}
 
     //Getter
     public String getAction() {return action;}
@@ -37,49 +31,24 @@ public class User extends Entity {
                 '}';
     }
 
-    public static abstract class UserBuilder<C extends User, B extends UserBuilder<C, B>> {
-        private String action;
-        private String username;
-        private String name;
-        private String email;
-        private String password;
-
-        public B action (String action) {
-            this.action = action;
-            return self();
-        }
-
-        public B username (String username) {
-            this.username = username;
-            return self();
-        }
-
-        public B name (String name) {
-            this.name = name;
-            return self();
-        }
-
-        public B email (String email) {
-            this.email = email;
-            return self();
-        }
-
-        public B password (String password) {
-            this.password = password;
-            return self();
-        }
-
-        protected B self() {
-            return (B) this;
-        }
-
-        public abstract C build();
+    //Setter
+    public User setUsername (String username) {
+        this.username = username;
+        return this;
     }
 
-    public static class Builder extends UserBuilder<User, Builder> {
-        @Override
-        public User build () {
-            return new User(this);
-        }
+    public User setName (String name) {
+        this.name = name;
+        return this;
+    }
+
+    public User setEmail (String email) {
+        this.email = email;
+        return this;
+    }
+
+    public User setPassword (String password) {
+        this.password = password;
+        return this;
     }
 }

@@ -1,7 +1,7 @@
 package ddc.server.pattern.factory.ItemCreator;
 
-import ddc.server.model.item.Item;
+import ddc.server.model.item.ItemGeneric;
 
 public abstract class ItemCreator {
-    public abstract Item createItem(ItemRequest req);
+    public abstract ItemGeneric createItem(ItemRequest req);
 }

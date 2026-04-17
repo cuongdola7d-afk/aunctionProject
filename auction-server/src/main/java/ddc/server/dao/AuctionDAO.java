@@ -5,19 +5,19 @@ import java.sql.PreparedStatement;
 import java.sql.Timestamp;
 
 import ddc.server.config.DatabaseConnection;
-import ddc.server.model.item.Item;
+import ddc.server.model.item.ItemGeneric;
 import ddc.server.model.transaction.Auction;
 
 public class AuctionDAO {
     
-    public boolean createAuction (Auction auction, Item item) {
+    public boolean createAuction (Auction auction, ItemGeneric item) {
         String sql = "INSERT INTO ddc_auctions (item_id, highest_bidder, current_price, start_time, end_time) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement pst = con.prepareStatement(sql)) {
 
                 pst.setString(1, item.getId());
-                pst.setString(2, auction.getHighestBidder().getUsername());
+                pst.setString(2, auction.getHighestBidderName());
                 pst.setDouble(3, auction.getCurrentPrice());
                 pst.setTimestamp(4, Timestamp.valueOf(auction.getStartTime()));
                 pst.setTimestamp(5, Timestamp.valueOf(auction.getEndTime()));

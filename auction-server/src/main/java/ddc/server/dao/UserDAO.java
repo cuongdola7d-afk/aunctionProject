@@ -40,12 +40,12 @@ public class UserDAO {
             ResultSet rs = pst.executeQuery();
 
             if (rs.next()) {
-               return new User.Builder()
-                        .username(rs.getString("username"))
-                        .name(rs.getString("name"))
-                        .email(rs.getString("email"))
-                        .password(rs.getString("password"))
-                        .build();
+               return new User()
+                        .setId(rs.getString("id"))
+                        .setUsername(rs.getString("username"))
+                        .setName(rs.getString("name"))
+                        .setEmail(rs.getString("email"))
+                        .setPassword(rs.getString("password"));
             }
       } catch (SQLException e) {
          System.out.println(e.getMessage());

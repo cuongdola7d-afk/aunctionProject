@@ -3,12 +3,12 @@ package ddc.server.model.user;
 import java.util.ArrayList;
 import java.util.List;
 
-import ddc.server.model.item.Item;
+import ddc.server.model.item.ItemGeneric;
 
 public class Seller{
-    private List<Item> itemForSale = new ArrayList<>();
+    private List<ItemGeneric> itemForSale = new ArrayList<>();
 
-    public void addItem (Item item) {
+    public void addItem (ItemGeneric item) {
         itemForSale.add(item);
     }
 }
