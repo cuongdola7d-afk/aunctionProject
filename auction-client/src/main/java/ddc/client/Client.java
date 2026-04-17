@@ -2,7 +2,6 @@ package ddc.client;
 
 import java.io.IOException;
 
-import ddc.client.controller.bidding.Bidding;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

@@ -1,20 +1,20 @@
 package ddc.server.pattern.Singleton;
 
 import ddc.server.model.transaction.Auction;
-import ddc.server.model.user.Bidder;
-import ddc.server.exception.*;
+import ddc.server.model.user.User;
+
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 
 public class AuctionManager {
     private static volatile AuctionManager instance;  
     // 2. Danh sách lưu trữ các phiên đấu giá đang chạy
-    private final Map<String, Auction> auctionStore;
-    private final Map<String, Bidder> bidderStore;
+    private final Map<String, Auction> auctionList;
+    private final Map<String, User> bidderList;
 
     private AuctionManager() {
-        auctionStore = new ConcurrentHashMap<>();
-        bidderStore = new ConcurrentHashMap<>();
+        auctionList = new ConcurrentHashMap<>();
+        bidderList = new ConcurrentHashMap<>();
     }
 
     public static AuctionManager getInstance() {
@@ -30,28 +30,28 @@ public class AuctionManager {
 
     
     public void addAuction(Auction auction) {
-        auctionStore.put(auction.getItem().getId(), auction);
+        auctionList.put(auction.getItem().getId(), auction);
     }
 
     public Auction getAuction(String itemId) {
-        return auctionStore.get(itemId);
+        return auctionList.get(itemId);
     }
    
-    public Map<String, Auction> getAllauctionStore() {
-        return auctionStore;
+    public Map<String, Auction> getAllauctionList() {
+        return auctionList;
     }
 
-    public void addBidder(Bidder bidder) {
+    public void addBidder(User bidder) {
         if (bidder != null && bidder.getId() != null) {
-            bidderStore.put(bidder.getId(), bidder);
+            bidderList.put(bidder.getId(), bidder);
         }
     }
 
-    public Bidder getBidder(String bidderId) {
-        return bidderStore.get(bidderId);
+    public User getBidder(String bidderId) {
+        return bidderList.get(bidderId);
     }
 
-    public Map<String, Bidder> getAllBidders() {
-        return bidderStore;
+    public Map<String, User> getAllBidders() {
+        return bidderList;
     }
 }
