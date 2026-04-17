@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -163,6 +165,275 @@ class AuctionServiceTest {
 
         assertEquals(AuctionStatus.FINISHED, auction.getStatus());
     }
+
+    @Test
+void createAuction_shouldThrowWhenItemIsNull() {
+    LocalDateTime startTime = LocalDateTime.now().plusMinutes(5);
+    LocalDateTime endTime = LocalDateTime.now().plusHours(1);
+
+    assertThrows(
+            InvalidBidException.class,
+            () -> auctionService.createAuction(null, startTime, endTime)
+    );
+}
+
+@Test
+void createAuction_shouldThrowWhenStartTimeIsNull() {
+    LocalDateTime endTime = LocalDateTime.now().plusHours(1);
+
+    assertThrows(
+            InvalidBidException.class,
+            () -> auctionService.createAuction(item, null, endTime)
+    );
+}
+
+@Test
+void createAuction_shouldThrowWhenEndTimeIsNull() {
+    LocalDateTime startTime = LocalDateTime.now().plusMinutes(5);
+
+    assertThrows(
+            InvalidBidException.class,
+            () -> auctionService.createAuction(item, startTime, null)
+    );
+}
+
+@Test
+void createAuction_shouldThrowWhenEndTimeIsNotAfterStartTime() {
+    LocalDateTime startTime = LocalDateTime.now().plusHours(1);
+    LocalDateTime endTime = LocalDateTime.now().plusMinutes(5);
+
+    assertThrows(
+            InvalidBidException.class,
+            () -> auctionService.createAuction(item, startTime, endTime)
+    );
+}
+
+@Test
+void startAuction_shouldThrowWhenAuctionIsNull() {
+    assertThrows(
+            InvalidBidException.class,
+            () -> auctionService.startAuction(null)
+    );
+}
+
+@Test
+void startAuction_shouldThrowWhenAuctionItemIsNull() {
+    Auction auction = new Auction();
+    auction.setStartTime(LocalDateTime.now().minusMinutes(1));
+    auction.setEndTime(LocalDateTime.now().plusMinutes(10));
+
+    assertThrows(
+            InvalidBidException.class,
+            () -> auctionService.startAuction(auction)
+    );
+}
+
+@Test
+void startAuction_shouldThrowWhenAuctionTimesAreInvalid() {
+    Auction auction = new Auction(item,
+            LocalDateTime.now().plusHours(1),
+            LocalDateTime.now().plusMinutes(5));
+
+    assertThrows(
+            InvalidBidException.class,
+            () -> auctionService.startAuction(auction)
+    );
+}
+
+@Test
+void startAuction_shouldThrowWhenAuctionCancelled() throws InvalidBidException {
+    Auction auction = auctionService.createAuction(
+            item,
+            LocalDateTime.now().minusMinutes(10),
+            LocalDateTime.now().plusMinutes(30)
+    );
+    auction.setStatus(AuctionStatus.CANCELLED);
+
+    assertThrows(
+            AuctionClosedException.class,
+            () -> auctionService.startAuction(auction)
+    );
+}
+
+@Test
+void startAuction_shouldThrowWhenBeforeStartTime() throws InvalidBidException {
+    Auction auction = auctionService.createAuction(
+            item,
+            LocalDateTime.now().plusMinutes(10),
+            LocalDateTime.now().plusHours(1)
+    );
+
+    assertThrows(
+            AuctionClosedException.class,
+            () -> auctionService.startAuction(auction)
+    );
+}
+
+@Test
+void placeBid_shouldThrowWhenAuctionIsNull() {
+    assertThrows(
+            InvalidBidException.class,
+            () -> auctionService.placeBid(null, bidder, 12_000_000d)
+    );
+}
+
+@Test
+void placeBid_shouldThrowWhenBidderIsNull() throws InvalidBidException, AuctionClosedException {
+    Auction auction = createRunningAuction();
+
+    assertThrows(
+            InvalidBidException.class,
+            () -> auctionService.placeBid(auction, null, 12_000_000d)
+    );
+}
+
+@Test
+void placeBid_shouldThrowWhenAuctionIsOpen() throws InvalidBidException {
+    Auction auction = auctionService.createAuction(
+            item,
+            LocalDateTime.now().plusMinutes(10),
+            LocalDateTime.now().plusHours(1)
+    );
+
+    assertThrows(
+            AuctionClosedException.class,
+            () -> auctionService.placeBid(auction, bidder, 12_000_000d)
+    );
+}
+
+@Test
+void placeBid_shouldThrowWhenAuctionIsCancelled() throws InvalidBidException, AuctionClosedException {
+    Auction auction = createRunningAuction();
+    auction.setStatus(AuctionStatus.CANCELLED);
+
+    assertThrows(
+            AuctionClosedException.class,
+            () -> auctionService.placeBid(auction, bidder, 12_000_000d)
+    );
+}
+
+@Test
+void placeBid_shouldThrowWhenAuctionIsFinished() throws InvalidBidException {
+    Auction auction = auctionService.createAuction(
+            item,
+            LocalDateTime.now().minusHours(2),
+            LocalDateTime.now().minusHours(1)
+    );
+
+    assertThrows(
+            AuctionClosedException.class,
+            () -> auctionService.placeBid(auction, bidder, 12_000_000d)
+    );
+}
+
+@Test
+void placeBid_shouldThrowWhenBidAmountEqualsCurrentPrice()
+        throws InvalidBidException, AuctionClosedException {
+
+    Auction auction = createRunningAuction();
+    double equalAmount = auction.getCurrentPrice();
+
+    assertThrows(
+            InvalidBidException.class,
+            () -> auctionService.placeBid(auction, bidder, equalAmount)
+    );
+}
+
+@Test
+void placeBid_shouldThrowWhenBidAmountLowerThanCurrentPrice()
+        throws InvalidBidException, AuctionClosedException {
+
+    Auction auction = createRunningAuction();
+    double lowerAmount = auction.getCurrentPrice() - 1_000d;
+
+    assertThrows(
+            InvalidBidException.class,
+            () -> auctionService.placeBid(auction, bidder, lowerAmount)
+    );
+}
+
+@Test
+void placeBid_shouldThrowWhenAuctionHasEndedByTime() throws InvalidBidException {
+    Auction auction = auctionService.createAuction(
+            item,
+            LocalDateTime.now().minusHours(2),
+            LocalDateTime.now().minusMinutes(1)
+    );
+
+    assertThrows(
+            AuctionClosedException.class,
+            () -> auctionService.placeBid(auction, bidder, 12_000_000d)
+    );
+}
+
+@Test
+void finishAuction_shouldThrowWhenAuctionIsNull() {
+    assertThrows(
+            InvalidBidException.class,
+            () -> auctionService.finishAuction(null)
+    );
+}
+
+@Test
+void finishAuction_shouldThrowWhenAuctionHasInvalidTimeRange() {
+    Auction auction = new Auction(item,
+            LocalDateTime.now().plusHours(1),
+            LocalDateTime.now().plusMinutes(5));
+
+    assertThrows(
+            InvalidBidException.class,
+            () -> auctionService.finishAuction(auction)
+    );
+}
+
+@Test
+void finishAuction_shouldReturnSilentlyWhenAlreadyFinished() throws InvalidBidException {
+    Auction auction = auctionService.createAuction(
+            item,
+            LocalDateTime.now().minusMinutes(10),
+            LocalDateTime.now().plusMinutes(30)
+    );
+    auction.setStatus(AuctionStatus.FINISHED);
+
+    assertDoesNotThrow(() -> auctionService.finishAuction(auction));
+    assertEquals(AuctionStatus.FINISHED, auction.getStatus());
+}
+
+@Test
+void finishAuction_shouldReturnSilentlyWhenCancelled() throws InvalidBidException {
+    Auction auction = auctionService.createAuction(
+            item,
+            LocalDateTime.now().minusMinutes(10),
+            LocalDateTime.now().plusMinutes(30)
+    );
+    auction.setStatus(AuctionStatus.CANCELLED);
+
+    assertDoesNotThrow(() -> auctionService.finishAuction(auction));
+    assertEquals(AuctionStatus.CANCELLED, auction.getStatus());
+}
+
+@Test
+void cancelAuction_shouldThrowWhenAuctionIsNull() {
+    assertThrows(
+            InvalidBidException.class,
+            () -> auctionService.cancelAuction(null)
+    );
+}
+
+@Test
+void cancelAuction_shouldThrowWhenAuctionAlreadyFinished() throws InvalidBidException {
+    Auction auction = auctionService.createAuction(
+            item,
+            LocalDateTime.now().minusMinutes(10),
+            LocalDateTime.now().plusMinutes(30)
+    );
+    auction.setStatus(AuctionStatus.FINISHED);
+
+    assertThrows(
+            IllegalStateException.class,
+            () -> auctionService.cancelAuction(auction)
+    );
+}
 
     private Auction createRunningAuction()
             throws InvalidBidException, AuctionClosedException {
