@@ -1,14 +1,18 @@
 package ddc.server.model.entity;
 
-
-public abstract class Entity {
+public abstract class Entity <T extends Entity<T>> {
     private String id;
 
-    public void setId(String id){
-        this.id = id;
+    public Entity () {}
+
+    public String getId () { return id; }
+
+    protected T self () {
+        return (T) this;
     }
 
-    public String getId() {
-        return id;
+    public T setId (String id) {
+        this.id = id;
+        return self();
     }
 }
