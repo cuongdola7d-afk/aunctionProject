@@ -106,11 +106,11 @@ public class Auction extends BaseEntity {
         item.setCurrentPrice(currentPrice);
     }
 }
-    public void addBid(BidTransaction bidTransaction) {
+    /*public void addBid(BidTransaction bidTransaction) {
         if (bidTransaction != null) {
             bids.add(bidTransaction);
         }
-    }
+    }*/
 
     public void extendTimeIfNeeded() {
         if (endTime != null && endTime.minusSeconds(10).isBefore(LocalDateTime.now())) {

@@ -1,12 +1,8 @@
 package ddc.server.network.client;
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Map;
-
 import com.google.gson.Gson;
-
 import ddc.server.controller.AuctionController;
 import ddc.server.exception.AuctionClosedException;
 import ddc.server.exception.AuctionNotFoundException;
