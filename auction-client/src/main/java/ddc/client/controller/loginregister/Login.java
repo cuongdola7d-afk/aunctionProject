@@ -1,7 +1,7 @@
 package ddc.client.controller.loginregister;
 
 import ddc.client.controller.SceneSwitcher;
-import ddc.client.model.User;
+import ddc.client.model.UserDTO;
 import ddc.client.network.ClientToServer;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -34,14 +34,13 @@ public class Login {
             String username = usernameTextField.getText();
             String password = passwordField.getText();
 
-            User user = new User();
-            user.setAction("LOGIN");
-            user.setUsername(username);
-            user.setPassword(password);
+            UserDTO user = new UserDTO()
+                            .setUsername(username)
+                            .setPassword(password);
 
             new Thread(() -> {
                 
-                String response = ClientToServer.toServer(user);
+                String response = ClientToServer.sendRequest("LOGIN", user);
 
                 if (response.contains("SUCCESS")) {
                     Platform.runLater(() -> errorLabel.setText("Đăng nhập thành công!"));
@@ -69,6 +68,7 @@ public class Login {
                         stage.show();
                     } catch (Exception e) {
                         System.out.println(e.getMessage());
+                        e.printStackTrace();
                     }
                 });
             } else {

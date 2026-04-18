@@ -1,7 +1,7 @@
 package ddc.client.controller.loginregister;
 
 import ddc.client.controller.SceneSwitcher;
-import ddc.client.model.User;
+import ddc.client.model.UserDTO;
 import ddc.client.network.ClientToServer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -28,13 +28,12 @@ public class Register {
             String email = emailTextField.getText();
             String password = passwordField.getText();
 
-            User user = new User();
-            user.setAction("REGISTER");
-            user.setUsername(username);
-            user.setEmail(email);
-            user.setPassword(password);
+            UserDTO user = new UserDTO()
+                            .setUsername(username)
+                            .setEmail(email)
+                            .setPassword(password);
 
-            String response = ClientToServer.toServer(user);
+            String response = ClientToServer.sendRequest("REGISTER", user);
 
             if (response.contains("SUCCESS")) {
                 errorLabel.setText("Đăng ký thành công!");

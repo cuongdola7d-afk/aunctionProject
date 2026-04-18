@@ -13,6 +13,8 @@ module ddc.server {
     exports ddc.server.pattern.observer;
     // exports ddc.server.service;
 
+    opens ddc.server.controller to com.google.gson;
+
     opens ddc.server.model.entity to com.google.gson;
     opens ddc.server.model.item to com.google.gson;
     opens ddc.server.model.transaction to com.google.gson;

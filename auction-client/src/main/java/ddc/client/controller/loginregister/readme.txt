@@ -1,1 +1,0 @@
-Sử dụng chỗ này để nối vs giao diện, vì đây là chỗ để login

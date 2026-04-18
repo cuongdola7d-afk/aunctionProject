@@ -3,7 +3,6 @@ package ddc.server.model.user;
 import ddc.server.model.entity.Entity;
 
 public class User extends Entity<User> {
-    private String action;
     private String username;
     private String name;
     private String email;
@@ -15,7 +14,6 @@ public class User extends Entity<User> {
     public User () {}
 
     //Getter
-    public String getAction() {return action;}
     public String getUsername() { return username; }
     public String getName() { return name; }
     public String getEmail() { return email; }

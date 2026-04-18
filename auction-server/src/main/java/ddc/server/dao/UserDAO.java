@@ -17,7 +17,7 @@ public class UserDAO {
            PreparedStatement pst = con.prepareStatement(sql)) {
 
             pst.setString(1, user.getUsername());
-            pst.setString(2, user.getName());
+            pst.setString(2, user.getUsername());
             pst.setString(3, user.getEmail());
             pst.setString(4, user.getPassword());
 

@@ -7,20 +7,20 @@ import java.net.Socket;
 
 import com.google.gson.Gson;
 
-import ddc.client.model.User;
+import ddc.client.model.Request;
 
 public class ClientToServer {
     private static final Gson gson = new Gson();
 
-    public static String toServer (User requestUser) {
-
-        String jsonString = gson.toJson(requestUser);
-        System.out.println("Sending...");
-
+    public static String sendRequest (String action, Object obj) {
         try (Socket socket = new Socket("localhost", 8080);
-             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
             
+            Request request = new Request(action, obj);
+            
+            String jsonString = gson.toJson(request);
+            System.out.println("Sending: " + jsonString);
             out.println(jsonString);
 
             String response = in.readLine();
@@ -29,6 +29,7 @@ public class ClientToServer {
             return response;
         } catch (Exception e) {
             System.out.println(e.getMessage());
+            e.printStackTrace();
             return "Can't connect to Server!";
         }
     }
