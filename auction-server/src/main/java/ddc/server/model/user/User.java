@@ -2,51 +2,53 @@ package ddc.server.model.user;
 
 import ddc.server.model.entity.Entity;
 
-public class User extends Entity<User> {
+public class User extends Entity {
+    private String action;
     private String username;
     private String name;
     private String email;
     private String password;
-    
-    private Bidder bidInfo;
-    private Seller sellInfo;
 
-    public User () {}
-
-    //Getter
-    public String getUsername() { return username; }
-    public String getName() { return name; }
-    public String getEmail() { return email; }
-    public String getPassword() { return password; }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "username='" + username + '\'' +
-                ", name='" + name + '\'' +
-                ", email='" + email + '\'' +
-                ", password='[PROTECTED]'" +
-                '}';
+    public User() {
     }
 
-    //Setter
-    public User setUsername (String username) {
+    public String getAction() {
+        return action;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
         this.username = username;
-        return this;
     }
 
-    public User setName (String name) {
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
         this.name = name;
-        return this;
     }
 
-    public User setEmail (String email) {
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
         this.email = email;
-        return this;
     }
 
-    public User setPassword (String password) {
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
         this.password = password;
-        return this;
     }
 }

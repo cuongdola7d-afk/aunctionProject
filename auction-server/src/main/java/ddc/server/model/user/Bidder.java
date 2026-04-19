@@ -5,10 +5,18 @@ import java.util.List;
 
 import ddc.server.model.transaction.Bid;
 
-public class Bidder {
+public class Bidder extends User {
     private List<Bid> bidHistory = new ArrayList<>();
 
-    public void addBid (Bid bid) {
+    public Bidder() {
+        super();
+    }
+
+    public void addBid(Bid bid) {
         bidHistory.add(bid);
+    }
+
+    public List<Bid> getBidHistory() {
+        return bidHistory;
     }
 }

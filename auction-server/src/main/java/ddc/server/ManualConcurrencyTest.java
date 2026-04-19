@@ -5,7 +5,7 @@
 // import java.util.concurrent.ExecutorService;
 // import java.util.concurrent.Executors;
 
-// import ddc.server.model.item.ItemGeneric;
+// import ddc.server.model.item.Item;
 // import ddc.server.model.transaction.Auction;
 // import ddc.server.model.user.Bidder;
 // import ddc.server.pattern.observer.LoggingAuctionObserver;
@@ -86,7 +86,11 @@
 //     private static Runnable createBidTask(
 //             AuctionService service,
 //             Auction auction,
+<<<<<<< HEAD
 //             User bidder,
+=======
+//             Bidder bidder,
+>>>>>>> feature/auction-bidding
 //             double amount,
 //             CountDownLatch ready,
 //             CountDownLatch start,
