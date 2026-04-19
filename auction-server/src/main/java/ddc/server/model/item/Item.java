@@ -10,16 +10,10 @@ public abstract class Item extends Entity {
     private double startingPrice;
     private double currentPrice;
 
-    protected Item(ItemBuilder<?, ?> builder) {
-        this.itemName = builder.itemName;
-        this.description = builder.description;
-        this.category = builder.category;
-        this.sellerName = builder.sellerName;
-        this.startingPrice = builder.startingPrice;
-        this.currentPrice = builder.startingPrice;
+    public Item() {
     }
 
-    protected Item(String itemName, String description, double startingPrice) {
+    public Item(String itemName, String description, double startingPrice) {
         this.itemName = itemName;
         this.description = description;
         this.startingPrice = startingPrice;
@@ -35,6 +29,10 @@ public abstract class Item extends Entity {
     }
 
     public void setName(String itemName) {
+        this.itemName = itemName;
+    }
+
+    public void setItemName(String itemName) {
         this.itemName = itemName;
     }
 
@@ -74,54 +72,7 @@ public abstract class Item extends Entity {
         return category;
     }
 
-    protected void setCategory(String category) {
+    public void setCategory(String category) {
         this.category = category;
-    }
-
-    public static abstract class ItemBuilder<C extends Item, B extends ItemBuilder<C, B>> {
-        private String itemName;
-        private String description;
-        private String category;
-        private String sellerName;
-        private double startingPrice;
-
-        public B itemName(String itemName) {
-            this.itemName = itemName;
-            return self();
-        }
-
-        public B item(String itemName) {
-            this.itemName = itemName;
-            return self();
-        }
-
-        public B description(String description) {
-            this.description = description;
-            return self();
-        }
-
-        public B category(String category) {
-            this.category = category;
-            return self();
-        }
-
-        public B sellerName(String sellerName) {
-            this.sellerName = sellerName;
-            return self();
-        }
-
-        public B seller(String sellerName) {
-            this.sellerName = sellerName;
-            return self();
-        }
-
-        public B startingPrice(double startingPrice) {
-            this.startingPrice = startingPrice;
-            return self();
-        }
-
-        protected abstract B self();
-
-        public abstract C build();
     }
 }

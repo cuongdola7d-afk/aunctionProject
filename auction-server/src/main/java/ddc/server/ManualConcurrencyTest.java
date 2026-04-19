@@ -86,11 +86,7 @@
 //     private static Runnable createBidTask(
 //             AuctionService service,
 //             Auction auction,
-<<<<<<< HEAD
-//             User bidder,
-=======
 //             Bidder bidder,
->>>>>>> feature/auction-bidding
 //             double amount,
 //             CountDownLatch ready,
 //             CountDownLatch start,
