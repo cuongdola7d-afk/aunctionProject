@@ -32,6 +32,9 @@ public class ItemRequest {
     public String getName(){
         return this.name;
     }
+    public double getStartingPrice(){
+        return this.startingPrice;
+    }
 
     // 2. Constructor đầy đủ (Dùng khi bạn muốn tạo request thủ công trong code test)
     public ItemRequest(String type, String name, double startingPrice, String description) {

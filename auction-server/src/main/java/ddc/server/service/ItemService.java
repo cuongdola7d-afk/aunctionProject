@@ -1,6 +1,7 @@
 package ddc.server.service;
 
 import ddc.server.dao.ItemDAO;
+import ddc.server.exception.ItemValidationException;
 import ddc.server.model.item.Item;
 import ddc.server.pattern.factory.ItemCreator.*;
 
@@ -20,6 +21,14 @@ public class ItemService {
      */
     public boolean createAndSaveItem(ItemRequest req) {
         try {
+            if (req.getName() == null || req.getName().isEmpty()) {
+                throw new ItemValidationException.MissingFieldException("Tên sản phẩm không được để trống!");
+            }
+
+            // 2. Kiểm tra giá (Invalid Price)
+            if (req.getStartingPrice() <= 0) {
+                throw new ItemValidationException.InvalidPriceException("Giá khởi điểm phải lớn hơn 0!");
+            }
             // Bước 1: Tìm xưởng sản xuất dựa trên type
             ItemCreator creator = CreatorRegistry.getCreator(req.getType());
             
