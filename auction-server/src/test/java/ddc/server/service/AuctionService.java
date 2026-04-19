@@ -1,8 +1,8 @@
- package ddc.server.service;
+package ddc.server.service;
 
- import java.time.LocalDateTime;
- import java.util.Collections;
- import java.util.List;
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 
 import ddc.server.exception.AuctionClosedException;
 import ddc.server.exception.InvalidBidException;
@@ -38,37 +38,37 @@ public class AuctionService {
         return auction;
     }
 
-     public void refreshAuctionStatus(Auction auction) {
-         if (auction == null || auction.getStartTime() == null || auction.getEndTime() == null) {
-             return;
-         }
+    public void refreshAuctionStatus(Auction auction) {
+        if (auction == null || auction.getStartTime() == null || auction.getEndTime() == null) {
+            return;
+        }
 
         if (auction.getStatus() == AuctionStatus.CANCELLED) {
             return;
         }
 
-         LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now();
 
-         if (now.isBefore(auction.getStartTime())) {
-             auction.setStatus(AuctionStatus.OPEN);
-         } else if (now.isBefore(auction.getEndTime())) {
-             auction.setStatus(AuctionStatus.RUNNING);
-         } else {
-             auction.setStatus(AuctionStatus.FINISHED);
-         }
-     }
+        if (now.isBefore(auction.getStartTime())) {
+            auction.setStatus(AuctionStatus.OPEN);
+        } else if (now.isBefore(auction.getEndTime())) {
+            auction.setStatus(AuctionStatus.RUNNING);
+        } else {
+            auction.setStatus(AuctionStatus.FINISHED);
+        }
+    }
 
     public void startAuction(Auction auction) throws AuctionClosedException, InvalidBidException {
         validateAuctionStructure(auction);
         normalizeAuctionPriceIfNeeded(auction);
         refreshAuctionStatus(auction);
 
-         if (auction.getStatus() == AuctionStatus.FINISHED) {
-             throw new AuctionClosedException("Phiên đấu giá đã kết thúc.");
-         }
-
         if (auction.getStatus() == AuctionStatus.CANCELLED) {
             throw new AuctionClosedException("Phiên đấu giá đã bị hủy.");
+        }
+
+        if (auction.getStatus() == AuctionStatus.FINISHED) {
+            throw new AuctionClosedException("Phiên đấu giá đã kết thúc.");
         }
 
         if (LocalDateTime.now().isBefore(auction.getStartTime())) {
@@ -79,7 +79,7 @@ public class AuctionService {
     }
 
     public void placeBid(Auction auction, Bidder bidder, double amount)
-            throws AuctionClosedException, InvalidBidException {
+            throws InvalidBidException, AuctionClosedException {
 
         validateAuctionStructure(auction);
         normalizeAuctionPriceIfNeeded(auction);
@@ -161,25 +161,25 @@ public class AuctionService {
         return auction.getCurrentPrice();
     }
 
-     public List<Bid> getBidHistory(Auction auction) {
-         if (auction == null || auction.getbidHistory() == null) {
-             return Collections.emptyList();
-         }
-         return auction.getbidHistory();
-     }
+    public List<Bid> getBidHistory(Auction auction) {
+        if (auction == null || auction.getbidHistory() == null) {
+            return Collections.emptyList();
+        }
+        return auction.getbidHistory();
+    }
 
     private void validateAuctionStructure(Auction auction) throws InvalidBidException {
         if (auction == null) {
             throw new InvalidBidException("Auction không được null.");
         }
 
-         if (auction.getItem() == null) {
-             throw new InvalidBidException("Auction chưa có item.");
-         }
+        if (auction.getItem() == null) {
+            throw new InvalidBidException("Auction chưa có item.");
+        }
 
-         if (auction.getStartTime() == null || auction.getEndTime() == null) {
-             throw new InvalidBidException("Auction phải có startTime và endTime.");
-         }
+        if (auction.getStartTime() == null || auction.getEndTime() == null) {
+            throw new InvalidBidException("Auction phải có startTime và endTime.");
+        }
 
         if (!auction.getEndTime().isAfter(auction.getStartTime())) {
             throw new InvalidBidException("endTime phải sau startTime.");

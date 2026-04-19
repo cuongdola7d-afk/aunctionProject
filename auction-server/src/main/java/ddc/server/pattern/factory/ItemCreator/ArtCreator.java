@@ -1,16 +1,17 @@
-// package ddc.server.pattern.factory.ItemCreator;
-// import ddc.server.model.item.*;
+package ddc.server.pattern.factory.ItemCreator;
+import ddc.server.model.item.*;
+import ddc.server.exception.*;
 
-// public class ArtCreator extends ItemCreator {
-//     @Override
-//     public Item createItem(ItemRequest req) {
-//         // Bạn lấy dữ liệu trực tiếp từ các thuộc tính của req
-//         return new Art(
-//             req.name,
-//             req.description, 
-//             req.startingPrice, 
-//             req.artist, 
-//             req.yearCreated
-//         );
-//     }
-// }
+public class ArtCreator extends ItemCreator {
+    @Override
+    public Item createItem(ItemRequest req) throws ItemValidationException {
+        // Fluent API giúp code cực gọn, không cần tạo biến tạm
+        return (Item) Art.create()
+                .setItemName(req.name)
+                .setDescription(req.description)
+                .setStartingPrice(req.startingPrice)
+                .setAuthor(req.artist)      // Chỉ nhặt artist
+                .setCreationDate(req.creationDate) // Chỉ nhặt yearCreated
+                .validate();                // Chốt chặn Exception
+    }
+}
