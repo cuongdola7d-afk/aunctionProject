@@ -1,29 +1,44 @@
 package ddc.server.model.item;
 
-public class Art extends Item{
+public class Art extends Item {
     private final String author;
     private final String creationDate;
 
-    public Art (Builder builder) {
+    public Art(Builder builder) {
         super(builder);
         this.author = builder.author;
         this.creationDate = builder.creationDate;
+        setCategory("ART");
     }
 
-    public String getAuthor() { return author; }
-    public String getCreationDate() { return creationDate; }
+    public String getAuthor() {
+        return author;
+    }
+
+    public String getCreationDate() {
+        return creationDate;
+    }
 
     public static class Builder extends ItemBuilder<Art, Builder> {
         private String author;
         private String creationDate;
 
-        public Builder author (String author) {
+        public Builder() {
+            category("ART");
+        }
+
+        public Builder author(String author) {
             this.author = author;
             return this;
         }
 
-        public Builder creationDate (String creationDate) {
+        public Builder creationDate(String creationDate) {
             this.creationDate = creationDate;
+            return this;
+        }
+
+        @Override
+        protected Builder self() {
             return this;
         }
 

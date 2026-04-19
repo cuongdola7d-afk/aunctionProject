@@ -40,13 +40,36 @@ public class GsonConfig {
                     @Override
                     public User deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
                         JsonObject jsonObject = json.getAsJsonObject();
-                        return new User.Builder()
-                                .action(jsonObject.has("action") ? jsonObject.get("action").getAsString() : null)
-                                .username(jsonObject.has("username") ? jsonObject.get("username").getAsString() : null)
-                                .name(jsonObject.has("name") ? jsonObject.get("name").getAsString() : jsonObject.get("username").getAsString())
-                                .email(jsonObject.has("email") ? jsonObject.get("email").getAsString() : null)
-                                .password(jsonObject.has("password") ? jsonObject.get("password").getAsString() : null)
-                                .build();
+
+                        User user = new User();
+
+                        if (jsonObject.has("id") && !jsonObject.get("id").isJsonNull()) {
+                            user.setId(jsonObject.get("id").getAsString());
+                        }
+
+                        if (jsonObject.has("action") && !jsonObject.get("action").isJsonNull()) {
+                            user.setAction(jsonObject.get("action").getAsString());
+                        }
+
+                        if (jsonObject.has("username") && !jsonObject.get("username").isJsonNull()) {
+                            user.setUsername(jsonObject.get("username").getAsString());
+                        }
+
+                        if (jsonObject.has("name") && !jsonObject.get("name").isJsonNull()) {
+                            user.setName(jsonObject.get("name").getAsString());
+                        } else if (jsonObject.has("username") && !jsonObject.get("username").isJsonNull()) {
+                            user.setName(jsonObject.get("username").getAsString());
+                        }
+
+                        if (jsonObject.has("email") && !jsonObject.get("email").isJsonNull()) {
+                            user.setEmail(jsonObject.get("email").getAsString());
+                        }
+
+                        if (jsonObject.has("password") && !jsonObject.get("password").isJsonNull()) {
+                            user.setPassword(jsonObject.get("password").getAsString());
+                        }
+
+                        return user;
                     }
                 })
                 .create();

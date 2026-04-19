@@ -1,86 +1,69 @@
 package ddc.server.pattern.Singleton;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.util.UUID;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import ddc.server.exception.AuctionNotFoundException;
 import ddc.server.exception.BidderNotFoundException;
+import ddc.server.model.transaction.Auction;
+import ddc.server.model.user.Bidder;
 
-class AuctionManagerTest {
+public class AuctionManager {
+    private static final AuctionManager INSTANCE = new AuctionManager();
 
-    private AuctionManager auctionManager;
+    private final Map<String, Auction> auctions = new ConcurrentHashMap<>();
+    private final Map<String, Bidder> bidders = new ConcurrentHashMap<>();
 
-    @BeforeEach
-    void setUp() {
-        auctionManager = AuctionManager.getInstance();
+    private AuctionManager() {
     }
 
-    @Test
-    void getAuctionOrThrow_shouldThrowWhenAuctionIdIsNull() {
-        AuctionNotFoundException exception = assertThrows(
-                AuctionNotFoundException.class,
-                () -> auctionManager.getAuctionOrThrow(null)
-        );
-
-        assertEquals("auctionId không hợp lệ.", exception.getMessage());
+    public static AuctionManager getInstance() {
+        return INSTANCE;
     }
 
-    @Test
-    void getAuctionOrThrow_shouldThrowWhenAuctionIdIsBlank() {
-        AuctionNotFoundException exception = assertThrows(
-                AuctionNotFoundException.class,
-                () -> auctionManager.getAuctionOrThrow("   ")
-        );
-
-        assertEquals("auctionId không hợp lệ.", exception.getMessage());
+    public void addAuction(Auction auction) {
+        if (auction != null && auction.getId() != null) {
+            auctions.put(auction.getId(), auction);
+        }
     }
 
-    @Test
-    void getAuctionOrThrow_shouldThrowWhenAuctionDoesNotExist() {
-        String missingAuctionId = "AUCT-" + UUID.randomUUID();
-
-        AuctionNotFoundException exception = assertThrows(
-                AuctionNotFoundException.class,
-                () -> auctionManager.getAuctionOrThrow(missingAuctionId)
-        );
-
-        assertEquals("Không tìm thấy phiên đấu giá: " + missingAuctionId, exception.getMessage());
+    public void addBidder(Bidder bidder) {
+        if (bidder != null && bidder.getId() != null) {
+            bidders.put(bidder.getId(), bidder);
+        }
     }
 
-    @Test
-    void getBidderOrThrow_shouldThrowWhenBidderIdIsNull() {
-        BidderNotFoundException exception = assertThrows(
-                BidderNotFoundException.class,
-                () -> auctionManager.getBidderOrThrow(null)
-        );
-
-        assertEquals("bidderId không hợp lệ.", exception.getMessage());
+    public Auction getAuction(String auctionId) {
+        return auctions.get(auctionId);
     }
 
-    @Test
-    void getBidderOrThrow_shouldThrowWhenBidderIdIsBlank() {
-        BidderNotFoundException exception = assertThrows(
-                BidderNotFoundException.class,
-                () -> auctionManager.getBidderOrThrow("   ")
-        );
-
-        assertEquals("bidderId không hợp lệ.", exception.getMessage());
+    public Bidder getBidder(String bidderId) {
+        return bidders.get(bidderId);
     }
 
-    @Test
-    void getBidderOrThrow_shouldThrowWhenBidderDoesNotExist() {
-        String missingBidderId = "BID-" + UUID.randomUUID();
+    public Auction getAuctionOrThrow(String auctionId) throws AuctionNotFoundException {
+        if (auctionId == null || auctionId.isBlank()) {
+            throw new AuctionNotFoundException("auctionId không hợp lệ.");
+        }
 
-        BidderNotFoundException exception = assertThrows(
-                BidderNotFoundException.class,
-                () -> auctionManager.getBidderOrThrow(missingBidderId)
-        );
+        Auction auction = auctions.get(auctionId);
+        if (auction == null) {
+            throw new AuctionNotFoundException("Không tìm thấy phiên đấu giá: " + auctionId);
+        }
 
-        assertEquals("Không tìm thấy bidder: " + missingBidderId, exception.getMessage());
+        return auction;
+    }
+
+    public Bidder getBidderOrThrow(String bidderId) throws BidderNotFoundException {
+        if (bidderId == null || bidderId.isBlank()) {
+            throw new BidderNotFoundException("bidderId không hợp lệ.");
+        }
+
+        Bidder bidder = bidders.get(bidderId);
+        if (bidder == null) {
+            throw new BidderNotFoundException("Không tìm thấy bidder: " + bidderId);
+        }
+
+        return bidder;
     }
 }

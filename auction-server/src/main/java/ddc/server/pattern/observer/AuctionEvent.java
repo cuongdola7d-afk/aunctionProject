@@ -154,7 +154,7 @@ public class AuctionEvent {
             return null;
         }
         Item item = auction.getItem();
-        return (item != null) ? item.getItemName() : null;
+        return (item != null) ? item.getName() : null;
     }
 
     private static double safeCurrentPrice(Auction auction) {
