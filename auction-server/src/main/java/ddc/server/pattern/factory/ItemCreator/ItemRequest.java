@@ -15,7 +15,7 @@ public class ItemRequest {
 
     // Thông tin riêng cho Art
     public String artist;
-    public String creationDate;
+    public String yearCreated;
 
     // Thông tin riêng cho Vehicle
     public String manufacturer;
@@ -36,7 +36,7 @@ public class ItemRequest {
     public static ItemRequest createArtRequest(String name, double price, String artist, String year) {
         ItemRequest req = new ItemRequest("ART", name, price, "");
         req.artist = artist;
-        req.creationDate = year;
+        req.yearCreated = year;
         return req;
     }
     

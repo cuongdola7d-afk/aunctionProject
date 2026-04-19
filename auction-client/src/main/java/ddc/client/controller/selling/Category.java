@@ -25,12 +25,12 @@ public enum Category {
     // 1. CỤC LOGIC CỦA NGHỆ THUẬT
     ART("Nghệ thuật") {
         private TextField authorField;
-        private TextField creationDateField;
+        private TextField yearCreatedField;
 
         @Override
         public void renderUI(FieldBuilder builder) {
             this.authorField = builder.add("Tác giả: ","Nhập tên tác giả.");
-            this.creationDateField = builder.add("Năm sáng tác: ","Nhập năm sáng tác.");
+            this.yearCreatedField = builder.add("Năm sáng tác: ","Nhập năm sáng tác.");
         }
 
         @Override
@@ -41,7 +41,7 @@ public enum Category {
                     .setCategory("Nghệ thuật")
                     .setSellerName(sellerName)
                     .setAuthor(authorField.getText())
-                    .setCreationDate(creationDateField.getText());
+                    .setyearCreated(yearCreatedField.getText());
         }
     },
 
