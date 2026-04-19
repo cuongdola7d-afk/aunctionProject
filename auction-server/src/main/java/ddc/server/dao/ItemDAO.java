@@ -9,7 +9,7 @@ import ddc.server.model.item.Item;
 public class ItemDAO {
 
    public boolean addItem (Item item) {
-      String sql = "INSERT INTO ddc_items (item, category, description, seller) VALUES (?, ?, ?, ?)";
+      String sql = "INSERT INTO ddc_items (item_name, category, description, seller_name) VALUES (?, ?, ?, ?)";
 
       try (Connection con = DatabaseConnection.getConnection();
             PreparedStatement pst = con.prepareStatement(sql)) {

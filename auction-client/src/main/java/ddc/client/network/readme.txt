@@ -1,1 +1,0 @@
-gọi socket ở đây

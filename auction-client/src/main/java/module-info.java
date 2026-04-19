@@ -20,6 +20,7 @@ module ddc.client {
     opens ddc.client.network.request to com.google.gson;
 
     opens ddc.client.model to com.google.gson;
+    opens ddc.client.model.ItemDTO to com.google.gson;
 
     opens ddc.client.network to com.google.gson;
 }

@@ -13,11 +13,11 @@ public enum Category {
         }
 
         @Override
-        public ItemGeneric getItemData(String itemName, String description, String category, String sellerName) {
+        public ItemGeneric getItemData(String itemName, String description, String sellerName) {
             return new ArtDTO()
                     .setItemName(itemName)
                     .setDescription(description)
-                    .setCategory(category)
+                    .setCategory("Chung")
                     .setSellerName(sellerName);
         }
     },
@@ -34,11 +34,11 @@ public enum Category {
         }
 
         @Override
-        public ItemGeneric getItemData(String itemName, String description, String category, String sellerName) {
+        public ItemGeneric getItemData(String itemName, String description, String sellerName) {
             return new ArtDTO()
                     .setItemName(itemName)
                     .setDescription(description)
-                    .setCategory(category)
+                    .setCategory("Nghệ thuật")
                     .setSellerName(sellerName)
                     .setAuthor(authorField.getText())
                     .setCreationDate(creationDateField.getText());
@@ -57,11 +57,11 @@ public enum Category {
         }
 
         @Override
-        public ItemGeneric getItemData(String itemName, String description, String category, String sellerName) {
+        public ItemGeneric getItemData(String itemName, String description, String sellerName) {
             return new VehicleDTO()
                     .setItemName(itemName)
                     .setDescription(description)
-                    .setCategory(category)
+                    .setCategory("Phương tiện")
                     .setSellerName(sellerName)
                     .setManufacturer(manufacturerField.getText())
                     .setYear(Integer.parseInt(yearField.getText()));
@@ -80,7 +80,7 @@ public enum Category {
 
     public abstract void renderUI(FieldBuilder builder);
 
-    public abstract ItemGeneric getItemData(String itemName, String description, String category, String sellerName);
+    public abstract ItemGeneric getItemData(String itemName, String description, String sellerName);
 
     public static Category fromDisplayName(String itemName) {
         for (Category cat : values()) {

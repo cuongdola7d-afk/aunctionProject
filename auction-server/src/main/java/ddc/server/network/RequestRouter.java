@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import ddc.server.controller.handler.ActionHandler;
+import ddc.server.controller.handler.AddItemHandler;
 import ddc.server.controller.handler.LoginHandler;
 import ddc.server.controller.handler.RegisterHandler;
 
@@ -13,6 +14,7 @@ public class RequestRouter {
     static {
         routes.put("LOGIN", new LoginHandler());
         routes.put("REGISTER", new RegisterHandler());
+        routes.put("ADD_ITEM", new AddItemHandler());
     }
 
     public static ActionHandler getHandler (String action) {

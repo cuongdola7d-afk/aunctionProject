@@ -3,6 +3,7 @@ package ddc.client.controller.loginregister;
 import ddc.client.controller.SceneSwitcher;
 import ddc.client.model.UserDTO;
 import ddc.client.network.ClientToServer;
+import ddc.client.network.UserSession;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -43,6 +44,7 @@ public class Login {
                 String response = ClientToServer.sendRequest("LOGIN", user);
 
                 if (response.contains("SUCCESS")) {
+                    UserSession.getInstance().setUsername(username);
                     Platform.runLater(() -> errorLabel.setText("Đăng nhập thành công!"));
                 
                 try {

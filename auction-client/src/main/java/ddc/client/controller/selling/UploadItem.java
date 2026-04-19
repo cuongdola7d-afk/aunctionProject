@@ -2,11 +2,18 @@ package ddc.client.controller.selling;
 
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
 import ddc.client.exception.ItemValidationException;
+import ddc.client.model.ItemDTO.ItemGeneric;
+import ddc.client.network.ClientToServer;
+import ddc.client.network.UserSession;
 import javafx.animation.FadeTransition;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
@@ -35,7 +42,7 @@ public class UploadItem implements Initializable {
     @FXML
     private VBox dynamicCategoryContainer, step1Container, step2Container;
     @FXML
-    private TextField itemNameField, priceField;
+    private TextField itemNameField, priceField, timeField;
     @FXML
     private TextArea itemDescriptionArea;
     @FXML
@@ -54,6 +61,7 @@ public class UploadItem implements Initializable {
     private final List<Label> dynamicErrorLabels = new ArrayList<>();
 
     private Category currentCat;
+    private final String currentUserUsername = UserSession.getInstance().getUsername();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -86,12 +94,9 @@ public class UploadItem implements Initializable {
         setUpVisibleFalse(step2Container);
 
         // Theo dõi nút step 2
-        priceField.textProperty().addListener((o, old, newVal) -> {
-            updateRegisterButtonState();
-        });
-        auctionDatePicker.valueProperty().addListener((o, old, newVal) -> {
-            updateRegisterButtonState();
-        });
+        priceField.textProperty().addListener((o, old, newVal) -> { updateRegisterButtonState(); });
+        auctionDatePicker.valueProperty().addListener((o, old, newVal) -> { updateRegisterButtonState(); });
+        timeField.textProperty().addListener((o, old, nemVal) -> { updateRegisterButtonState(); });
 
         //Không cho DatePicker editable
         TextField editor = auctionDatePicker.getEditor();
@@ -186,15 +191,25 @@ public class UploadItem implements Initializable {
                 throw new ItemValidationException.InvalidDurationException("Ngày kết thúc không được ở quá khứ!");
             }
 
+            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+
+            LocalDate date = auctionDatePicker.getValue();
+            LocalTime time = LocalTime.parse(timeField.getText(), timeFormatter);
+
+            LocalDateTime datetime = LocalDateTime.of(date, time);
+
             registerButton.setText("Đang xử lý... ");
             registerButton.setDisable(true); // Khóa nút để tránh bấm lung tung
             registerButton.setStyle("-fx-background-color: #555555; -fx-text-fill: white;");
 
-            // 2. Tạo độ trễ 2 giây (giả lập nạp dữ liệu)
-            PauseTransition pause = new PauseTransition(Duration.seconds(2));
-            pause.setOnFinished(e -> {
+            String itemName = itemNameField.getText();
+            String description = itemDescriptionArea.getText();
+            String sellerName = currentUserUsername;
+            
+            ItemGeneric item = currentCat.getItemData(itemName, description, sellerName);
+            String response = ClientToServer.sendRequest("ADD_ITEM", item);
 
-                // 3. Giai đoạn Done: Đổi chữ thành tích xanh và đổi màu nền xanh lá
+            if (response.contains("SUCCESS")) {
                 registerButton.setText("Thành công! ✔");
                 registerButton.setStyle("-fx-background-color: #28a745; -fx-text-fill: white; -fx-font-weight: bold;");
 
@@ -205,12 +220,14 @@ public class UploadItem implements Initializable {
                     stage.close();
                 });
                 closePause.play();
-            });
-            pause.play();
+            }
         } catch (ItemValidationException e) {
             showErrorAlert("Lỗi nhập liệu", e.getMessage());
         } catch (NumberFormatException e) {
             showErrorAlert("Lỗi định dạng", "Giá phải là số!");
+        } catch (DateTimeParseException e) {
+            showErrorAlert("Lỗi định dạng thời gian", 
+            "Vui lòng nhập đúng định dạng thời gian: Giờ : phút");
         }
     }
 
