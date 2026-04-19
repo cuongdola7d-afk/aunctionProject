@@ -127,7 +127,7 @@
                                     <Font size="16.0" />
                                  </font>
                               </Label>
-                              <TextField fx:id="priceField" prefHeight="40.0" promptText="e.g: 100.000 VND" style="-fx-background-color: transparent; -fx-border-color: #ccc; -fx-border-width: 0 0 1 0;" />
+                              <TextField fx:id="priceField" prefHeight="40.0" promptText="Nhập số tiền (VND)" style="-fx-background-color: transparent; -fx-border-color: #ccc; -fx-border-width: 0 0 1 0;" />
                            </children>
                            <HBox.margin>
                               <Insets top="10.0" />
@@ -158,7 +158,7 @@
                                     <Font size="16.0" />
                                  </font>
                               </Label>
-                              <TextField fx:id="priceField1" prefHeight="40.0" promptText="e.g: 100.000 VND" style="-fx-background-color: transparent; -fx-border-color: #ccc; -fx-border-width: 0 0 1 0;" />
+                              <TextField fx:id="priceField1" prefHeight="40.0" promptText="giờ:phút" style="-fx-background-color: transparent; -fx-border-color: #ccc; -fx-border-width: 0 0 1 0;" />
                            </children>
                         </VBox>
                         <Region prefHeight="79.0" prefWidth="25.0" />
