@@ -11,7 +11,7 @@ module ddc.server {
     exports ddc.server.model.user;
     exports ddc.server.network.client;
     exports ddc.server.pattern.observer;
-    exports ddc.server.service;
+    // exports ddc.server.service;
 
 
     //exports ddc.server.network.dispatcher;

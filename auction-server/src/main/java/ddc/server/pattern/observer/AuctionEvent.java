@@ -5,8 +5,8 @@ import java.time.LocalDateTime;
 import ddc.server.model.item.Item;
 import ddc.server.model.transaction.Auction;
 import ddc.server.model.transaction.AuctionStatus;
-import ddc.server.model.transaction.BidTransaction;
-import ddc.server.model.user.Bidder;
+import ddc.server.model.transaction.Bid;
+import ddc.server.model.user.User;
 
 public class AuctionEvent {
     private AuctionEventType type;
@@ -56,13 +56,13 @@ public class AuctionEvent {
         );
     }
 
-    public static AuctionEvent newBid(Auction auction, BidTransaction bid) {
+    public static AuctionEvent newBid(Auction auction, Bid bid) {
         String bidderName = null;
         double bidAmount = 0;
 
         if (bid != null) {
-            Bidder bidder = bid.getBidder();
-            bidderName = (bidder != null) ? bidder.getName() : null;
+            User user = bid.getBidder();
+            bidderName = (user != null) ? user.getName() : null;
             bidAmount = bid.getAmount();
         }
 
@@ -154,7 +154,7 @@ public class AuctionEvent {
             return null;
         }
         Item item = auction.getItem();
-        return (item != null) ? item.getName() : null;
+        return (item != null) ? item.getItemName() : null;
     }
 
     private static double safeCurrentPrice(Auction auction) {

@@ -5,37 +5,40 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.time.LocalDateTime;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
-import ddc.server.controller.AuctionController;
-import ddc.server.model.item.Item;
-import ddc.server.model.transaction.Auction;
-import ddc.server.model.transaction.AuctionStatus;
-import ddc.server.model.user.Bidder;
-import ddc.server.network.client.AuctionEventDispatcher;
-import ddc.server.network.client.ClientHandler;
+import ddc.server.network.ClientHandler;
 import ddc.server.pattern.observer.AuctionEvent;
 import ddc.server.pattern.observer.AuctionEventType;
 import ddc.server.service.AuctionService;
 
 public class Server {
-    private static final int PORT = 5555;
+    private static final int PORT = 8080;
 
-    // ID cố định để test
+    public static void main(String[] args) {
+        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
+            System.out.println("Server opened!");
+
+            while (true) {
+                Socket clientSocket = serverSocket.accept();
+                System.out.println("New Client Detected! - " + clientSocket.getInetAddress());
+                
+                ClientHandler handler = new ClientHandler(clientSocket);
+                new Thread(handler).start();
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    ID cố định để test
     public static final String DEMO_AUCTION_ID = "AUCT-001";
     public static final String BIDDER_ALICE_ID = "BIDDER-ALICE";
     public static final String BIDDER_BOB_ID = "BIDDER-BOB";
     public static final String BIDDER_CHARLIE_ID = "BIDDER-CHARLIE";
 
     private final ExecutorService executor = Executors.newCachedThreadPool();
-    private final Map<String, Auction> auctionStore = new ConcurrentHashMap<>();
-    private final Map<String, Bidder> bidderStore = new ConcurrentHashMap<>();
+    private final Map<String, Auction> auctionList = new ConcurrentHashMap<>();
+    private final Map<String, Bidder> bidderList = new ConcurrentHashMap<>();
 
     private final AuctionService auctionService;
     private final AuctionController auctionController;
@@ -52,39 +55,39 @@ public class Server {
         seedDemoData();
     }
 
-    public void start() throws Exception {
-        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
-            System.out.println("Auction server running on port " + PORT);
-            printDemoIds();
-            //Khởi động luồng chạy status liên tục
-            startAutoSchedule();
-            startStatusMonitor();
-            while (true) {
-                Socket socket = serverSocket.accept();
+    // public void start() throws Exception {
+    //     try (ServerSocket serverSocket = new ServerSocket(PORT)) {
+    //         System.out.println("Auction server running on port " + PORT);
+    //         printDemoIds();
+    //         //Khởi động luồng chạy status liên tục
+    //         startAutoSchedule();
+    //         startStatusMonitor();
+    //         while (true) {
+    //             Socket socket = serverSocket.accept();
 
-                BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
+    //             BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+    //             PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
 
-                ClientHandler handler = new ClientHandler(
-                        socket,
-                        reader,
-                        writer,
-                        auctionController,
-                        dispatcher
-                );
+    //             ClientHandler handler = new ClientHandler(
+    //                     socket,
+    //                     reader,
+    //                     writer,
+    //                     auctionController,
+    //                     dispatcher
+    //             );
 
-                executor.submit(handler);
-            }
-        }
-    }
+    //             executor.submit(handler);
+    //         }
+    //     }
+    // }
 
     private void startAutoSchedule() {
         scheduler.scheduleAtFixedRate(() -> {
             try{
             LocalDateTime now = LocalDateTime.now();
-            System.out.println("DEBUG: Đang quét " + auctionStore.size());
+            System.out.println("DEBUG: Đang quét " + auctionList.size());
             // Duyệt qua tất cả phiên đấu giá trong kho
-            auctionStore.values().forEach(auction -> {
+            auctionList.values().forEach(auction -> {
                 if (auction.getStatus() == AuctionStatus.OPEN && !auction.getStartTime().isAfter(now)) {
                 processAuctionStart(auction);
                 }
@@ -193,7 +196,7 @@ public class Server {
                 try {
                     Thread.sleep(1000); // 10 giây in một lần
                     System.out.println("\n===== BANG TRANG THAI HIEN TAI =====");
-                    auctionStore.values().forEach(a -> {
+                    auctionList.values().forEach(a -> {
                         System.out.printf("ID: %s | Item: %s | Status: %s\n", 
                             a.getId().substring(0, 8), a.getItem().getName(), a.getStatus());
                     });
@@ -215,7 +218,7 @@ public class Server {
         auction.setId(DEMO_AUCTION_ID);
 
         // Đưa vào kho lưu trữ của Server để Scheduler nhìn thấy
-        auctionStore.put(auction.getId(), auction); 
+        auctionList.put(auction.getId(), auction); 
         
         // Đặt trạng thái ban đầu là OPEN để nó có thể chuyển sang RUNNING
         auction.setStatus(AuctionStatus.OPEN);
@@ -232,13 +235,13 @@ public class Server {
         charlie.setId(BIDDER_CHARLIE_ID);
         charlie.setName("Charlie");
 
-        auctionStore.clear();
-        bidderStore.clear();
+        auctionList.clear();
+        bidderList.clear();
 
-        auctionStore.put(auction.getId(), auction);
-        bidderStore.put(alice.getId(), alice);
-        bidderStore.put(bob.getId(), bob);
-        bidderStore.put(charlie.getId(), charlie);
+        auctionList.put(auction.getId(), auction);
+        bidderList.put(alice.getId(), alice);
+        bidderList.put(bob.getId(), bob);
+        bidderList.put(charlie.getId(), charlie);
     }
 
     private void printDemoIds() {

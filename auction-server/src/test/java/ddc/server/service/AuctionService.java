@@ -63,12 +63,12 @@ public class AuctionService {
         normalizeAuctionPriceIfNeeded(auction);
         refreshAuctionStatus(auction);
 
-        if (auction.getStatus() == AuctionStatus.FINISHED) {
-            throw new AuctionClosedException("Phiên đấu giá đã kết thúc.");
-        }
-
         if (auction.getStatus() == AuctionStatus.CANCELLED) {
             throw new AuctionClosedException("Phiên đấu giá đã bị hủy.");
+        }
+
+        if (auction.getStatus() == AuctionStatus.FINISHED) {
+            throw new AuctionClosedException("Phiên đấu giá đã kết thúc.");
         }
 
         if (LocalDateTime.now().isBefore(auction.getStartTime())) {
@@ -79,7 +79,7 @@ public class AuctionService {
     }
 
     public void placeBid(Auction auction, Bidder bidder, double amount)
-            throws AuctionClosedException, InvalidBidException {
+            throws InvalidBidException, AuctionClosedException {
 
         validateAuctionStructure(auction);
         normalizeAuctionPriceIfNeeded(auction);
