@@ -1,10 +1,12 @@
 package ddc.server.pattern.factory.ItemCreator;
 
+import java.util.Locale.Category;
+
 //Class lưu lại thông tin của item để nhét vào constructor -> createItem
 
 public class ItemRequest {
     // Thông tin chung
-    public String type; // "ELECTRONICS", "ART", "VEHICLE"
+    public String type;
     public String name;
     public double startingPrice;
     public String description;
@@ -22,6 +24,13 @@ public class ItemRequest {
     public int vehicleYear;
 
     public ItemRequest() {
+    }
+
+    public String getType(){
+        return this.type;
+    }
+    public String getName(){
+        return this.name;
     }
 
     // 2. Constructor đầy đủ (Dùng khi bạn muốn tạo request thủ công trong code test)

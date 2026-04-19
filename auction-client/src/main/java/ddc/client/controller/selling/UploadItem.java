@@ -206,6 +206,7 @@ public class UploadItem implements Initializable {
             String description = itemDescriptionArea.getText();
             String sellerName = currentUserUsername;
             
+            //
             ItemGeneric item = currentCat.getItemData(itemName, description, sellerName);
             String response = ClientToServer.sendRequest("ADD_ITEM", item);
 

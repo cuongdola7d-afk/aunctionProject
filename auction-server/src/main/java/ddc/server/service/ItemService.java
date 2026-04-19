@@ -1,64 +1,54 @@
-// package ddc.server.service;
-// import ddc.server.dao.*;
-// import ddc.server.model.item.*;
+package ddc.server.service;
 
+import ddc.server.dao.ItemDAO;
+import ddc.server.model.item.Item;
+import ddc.server.pattern.factory.ItemCreator.*;
 
-// import java.util.List;
+public class ItemService {
+    private final ItemDAO itemDAO;
 
-// public class ItemService {
+    public ItemService() {
+        this.itemDAO = new ItemDAO();
+    }
 
-//     private ItemDAO itemDAO;
+    /**
+     * Quy trình tạo sản phẩm: 
+     * 1. Nhận Request từ Controller
+     * 2. Tìm Factory phù hợp
+     * 3. Tạo và Validate Object
+     * 4. Lưu vào Database thông qua DAO
+     */
+    public boolean createAndSaveItem(ItemRequest req) {
+        try {
+            // Bước 1: Tìm xưởng sản xuất dựa trên type
+            ItemCreator creator = CreatorRegistry.getCreator(req.getType());
+            
+            if (creator == null) {
+                System.out.println("Lỗi: Không tìm thấy xưởng sản xuất cho loại: " + req.getType());
+                return false;
+            }
 
-//     public ItemService() {
-//         this.itemDAO = ItemDAO.getInstance(); // Singleton
-//     }
+            // Bước 2: Dùng Factory để tạo ra đối tượng Item chuẩn
+            Item newItem = creator.createItem(req);
 
-   
-//     public void createItem(Item item) {
-//         validateItem(item);
-//         itemDAO.addItem(item);
-//     }
+            // Bước 3: Sau khi có Object xịn, gọi DAO để "bốc" nó vào SQL
+            boolean isSaved = itemDAO.addItem(newItem);
 
-   
-//     public void updateItem(Item updatedItem) {
-//         validateItem(updatedItem);
+            if (isSaved) {
+                System.out.println("Service: Đã lưu sản phẩm " + newItem.getItemName() + " thành công!");
+            }
+            return isSaved;
 
-//         Item existing = itemDAO.getItemById(updatedItem.getId());
-//         if (existing == null) {
-//             throw new RuntimeException("Item not found");
-//         }
+        } catch (Exception e) {
+            System.err.println("Service Lỗi: " + e.getMessage());
+            return false;
+        }
+    }
 
-//         itemDAO.updateItem(updatedItem);
-//     }
-
-    
-//     public void deleteItem(String itemId) {
-//         Item existing = itemDAO.getItemById(itemId);
-//         if (existing == null) {
-//             throw new RuntimeException("Item not found");
-//         }
-
-//         itemDAO.deleteItem(Integer.parseInt(itemId));
-//     }
-
-    
-//     public List<Item> getAllItems() {
-//         return itemDAO.getAllItems();
-//     }
-
-    
-//     public Item getItemById(String id) {
-//         return itemDAO.getItemById(id);
-//     }
-
-    
-//     private void validateItem(Item item) {
-//         if (item.getName() == null || item.getName().isEmpty()) {
-//             throw new IllegalArgumentException("Item name is required");
-//         }
-
-//         if (item.getStartingPrice() <= 0) {
-//             throw new IllegalArgumentException("Start price must be > 0");
-//         }
-//     }
-// }
+    /**
+     * Lấy thông tin sản phẩm chi tiết
+     */
+    public Item getItemDetails(String id) {
+        return itemDAO.getItem(id);
+    }
+}

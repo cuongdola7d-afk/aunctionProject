@@ -6,10 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import ddc.server.config.DatabaseConnection;
-import ddc.server.model.item.Art;
-import ddc.server.model.item.Electronics;
-import ddc.server.model.item.Item;
-import ddc.server.model.item.Vehicle;
+import ddc.server.model.item.*;
 
 public class ItemDAO {
 
