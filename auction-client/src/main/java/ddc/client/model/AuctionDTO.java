@@ -3,7 +3,7 @@ package ddc.client.model;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-public class AuctionDTO {
+public class AuctionDTO {//Data transfer objects
 
     private Long auctionId;
     private Long itemId;
