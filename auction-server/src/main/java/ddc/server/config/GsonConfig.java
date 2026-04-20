@@ -46,9 +46,6 @@ public class GsonConfig {
                         if (jsonObject.has("id") && !jsonObject.get("id").isJsonNull()) {
                             user.setId(jsonObject.get("id").getAsString());
                         }
-                        if (jsonObject.has("action") && !jsonObject.get("action").isJsonNull()) {
-                            user.setAction(jsonObject.get("action").getAsString());
-                        }
                         if (jsonObject.has("username") && !jsonObject.get("username").isJsonNull()) {
                             user.setUsername(jsonObject.get("username").getAsString());
                         }

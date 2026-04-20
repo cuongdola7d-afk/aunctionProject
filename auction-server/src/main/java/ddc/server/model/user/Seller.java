@@ -5,8 +5,10 @@ import java.util.List;
 
 import ddc.server.model.item.ItemGeneric;
 
-public class Seller{
-    private List<ItemGeneric> itemForSale = new ArrayList<>();
+public class Seller extends User{
+    private final List<ItemGeneric> itemForSale = new ArrayList<>();
+
+    public List<ItemGeneric> getItemForSale () { return itemForSale; }
 
     public void addItem (ItemGeneric item) {
         itemForSale.add(item);

@@ -11,10 +11,11 @@ import ddc.server.model.transaction.Auction;
 import ddc.server.model.transaction.AuctionStatus;
 import ddc.server.model.transaction.Bid;
 import ddc.server.model.user.Bidder;
+import ddc.server.model.user.User;
 
 public class AuctionService {
 
-    public Auction createAuction(Item item, LocalDateTime startTime, LocalDateTime endTime)
+    public Auction createAuction(Item item, double currentPrice, LocalDateTime startTime, LocalDateTime endTime)
             throws InvalidBidException {
 
         if (item == null) {
@@ -30,10 +31,11 @@ public class AuctionService {
             throw new InvalidBidException("endTime phải sau startTime.");
         }
 
-        Auction auction = new Auction(item, startTime, endTime);
-        auction.setStatus(AuctionStatus.OPEN);
-        auction.setCurrentPrice(item.getStartingPrice());
-        item.setCurrentPrice(item.getStartingPrice());
+                Auction auction = new Auction()
+                            .setItem(item)
+                            .setStartTime(startTime)
+                            .setEndTime(endTime)
+                            .setCurrentPrice(currentPrice);
 
         return auction;
     }
@@ -78,7 +80,7 @@ public class AuctionService {
         auction.startAuction();
     }
 
-    public void placeBid(Auction auction, Bidder bidder, double amount)
+    public void placeBid(Auction auction, Bidder bidder, double amount, LocalDateTime time)
             throws InvalidBidException, AuctionClosedException {
 
         validateAuctionStructure(auction);
@@ -107,7 +109,10 @@ public class AuctionService {
                     "Giá bid phải lớn hơn giá hiện tại: " + auction.getCurrentPrice());
         }
 
-        Bid bid = new Bid(bidder, amount);
+        Bid bid = new Bid()
+                    .setBidder(bidder)
+                    .setBidAmount(amount)
+                    .setBidTime(time);
         bid.setAuctionId(auction.getId());
 
         try {
@@ -117,7 +122,7 @@ public class AuctionService {
         }
 
         bidder.addBid(bid);
-        auction.getItem().setCurrentPrice(amount);
+        auction.setCurrentPrice(amount);
     }
 
     public void finishAuction(Auction auction) throws InvalidBidException {
@@ -147,7 +152,7 @@ public class AuctionService {
         auction.setStatus(AuctionStatus.CANCELLED);
     }
 
-    public Bidder getHighestBidder(Auction auction) {
+    public User getHighestBidder(Auction auction) {
         if (auction == null) {
             return null;
         }
@@ -162,10 +167,10 @@ public class AuctionService {
     }
 
     public List<Bid> getBidHistory(Auction auction) {
-        if (auction == null || auction.getbidHistory() == null) {
+        if (auction == null || auction.getBidHistory() == null) {
             return Collections.emptyList();
         }
-        return auction.getbidHistory();
+        return auction.getBidHistory();
     }
 
     private void validateAuctionStructure(Auction auction) throws InvalidBidException {
@@ -190,8 +195,7 @@ public class AuctionService {
         if (auction != null
                 && auction.getItem() != null
                 && auction.getCurrentPrice() <= 0) {
-            auction.setCurrentPrice(auction.getItem().getStartingPrice());
-            auction.getItem().setCurrentPrice(auction.getItem().getStartingPrice());
+            auction.setCurrentPrice(auction.getCurrentPrice());
         }
     }
 }

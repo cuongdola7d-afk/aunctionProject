@@ -9,12 +9,14 @@ module ddc.server {
 
     //Mở cửa các thư mục để Test có thể gọi đến
     exports ddc.server;
-    exports ddc.server.service; // Bắt buộc để gọi được AuctionService
-    exports ddc.server.model.transaction; // Bắt buộc để gọi được AuctionStatus
-    exports ddc.server.model.item;
-    exports ddc.server.model.user;
-    exports ddc.server.exception;
+
+    opens ddc.server.controller to com.google.gson;
+    opens ddc.server.controller.handler to com.google.gson;
+    opens ddc.server.controller.service to com.google.gson, org.junit.platform.commons; // Bắt buộc để gọi được AuctionService, Cho phép JUnit can thiệp sâu để chạy Test
+
+    opens ddc.server.model.transaction to com.google.gson; // Bắt buộc để gọi được AuctionStatus
+    opens ddc.server.model.item to com.google.gson;
+    opens ddc.server.model.user to com.google.gson;
+    opens ddc.server.exception to com.google.gson;
     
-    //Cho phép JUnit can thiệp sâu để chạy Test
-    opens ddc.server.service to org.junit.platform.commons;
 }

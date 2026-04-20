@@ -2,7 +2,7 @@ package ddc.server.pattern.observer;
 
 import java.time.LocalDateTime;
 
-import ddc.server.model.item.Item;
+import ddc.server.model.item.ItemGeneric;
 import ddc.server.model.transaction.Auction;
 import ddc.server.model.transaction.AuctionStatus;
 import ddc.server.model.transaction.Bid;
@@ -49,7 +49,7 @@ public class AuctionEvent {
         if (bid != null) {
             User user = bid.getBidder();
             bidderName = (user != null) ? user.getName() : null;
-            bidAmount = bid.getAmount();
+            bidAmount = bid.getBidAmount();
         }
 
         return new AuctionEvent(
@@ -112,7 +112,7 @@ public class AuctionEvent {
         if (auction == null) {
             return null;
         }
-        Item item = auction.getItem();
+        ItemGeneric item = auction.getItem();
         return (item != null) ? item.getId() : null;
     }
 
@@ -120,8 +120,8 @@ public class AuctionEvent {
         if (auction == null) {
             return null;
         }
-        Item item = auction.getItem();
-        return (item != null) ? item.getName() : null;
+        ItemGeneric item = auction.getItem();
+        return (item != null) ? item.getItemName() : null;
     }
 
     private static double safeCurrentPrice(Auction auction) {

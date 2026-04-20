@@ -5,47 +5,38 @@ import java.time.LocalDateTime;
 import ddc.server.model.entity.Entity;
 import ddc.server.model.user.User;
 
-public class Bid extends Entity {
+public class Bid extends Entity<Bid> {
     private String auctionId;
     private User bidder;
-    private double amount;
-    private LocalDateTime time;
+    private double bidAmount;
+    private LocalDateTime bidTime;
 
-    public Bid(User bidder, double amount) {
-        this.bidder = bidder;
-        this.amount = amount;
-        this.time = LocalDateTime.now();
-    }
+    public Bid () {}
 
-    public String getAuctionId() {
-        return auctionId;
-    }
+    //Getters
+    public String auctionId () { return auctionId; }
+    public User getBidder () { return bidder; }
+    public double getBidAmount () { return bidAmount; } 
+    public LocalDateTime getBidTime () { return bidTime; } 
 
-    public void setAuctionId(String auctionId) {
+    //Setters
+    public Bid setAuctionId (String auctionId) {
         this.auctionId = auctionId;
+        return this;
     }
 
-    public User getBidder() {
-        return bidder;
-    }
-
-    public void setBidder(User bidder) {
+    public Bid setBidder (User bidder) {
         this.bidder = bidder;
+        return this;
     }
 
-    public double getAmount() {
-        return amount;
+    public Bid setBidAmount (double bidAmount) {
+        this.bidAmount = bidAmount;
+        return this;
     }
 
-    public void setAmount(double amount) {
-        this.amount = amount;
-    }
-
-    public LocalDateTime getTime() {
-        return time;
-    }
-
-    public void setTime(LocalDateTime time) {
-        this.time = time;
+    public Bid setBidTime (LocalDateTime bidTime) {
+        this.bidTime = bidTime;
+        return this;
     }
 }

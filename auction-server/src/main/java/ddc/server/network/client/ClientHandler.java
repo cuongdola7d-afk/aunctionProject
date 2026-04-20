@@ -5,7 +5,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-import ddc.server.service.AuctionService; // Import Service 
+import ddc.server.controller.service.AuctionService;
 
 public class ClientHandler implements Runnable {
     private final Socket socket;

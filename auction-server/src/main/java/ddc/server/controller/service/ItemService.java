@@ -1,9 +1,11 @@
-package ddc.server.service;
+package ddc.server.controller.service;
 
 import ddc.server.dao.ItemDAO;
 import ddc.server.exception.ItemValidationException;
-import ddc.server.model.item.Item;
-import ddc.server.pattern.factory.ItemCreator.*;
+import ddc.server.model.item.ItemGeneric;
+import ddc.server.pattern.factory.ItemCreator.CreatorRegistry;
+import ddc.server.pattern.factory.ItemCreator.ItemCreator;
+import ddc.server.pattern.factory.ItemCreator.ItemRequest;
 
 public class ItemService {
     private final ItemDAO itemDAO;
@@ -38,7 +40,7 @@ public class ItemService {
             }
 
             // Bước 2: Dùng Factory để tạo ra đối tượng Item chuẩn
-            Item newItem = creator.createItem(req);
+            ItemGeneric newItem = creator.createItem(req);
 
             // Bước 3: Sau khi có Object xịn, gọi DAO để "bốc" nó vào SQL
             boolean isSaved = itemDAO.addItem(newItem);
@@ -57,7 +59,7 @@ public class ItemService {
     /**
      * Lấy thông tin sản phẩm chi tiết
      */
-    public Item getItemDetails(String id) {
+    public ItemGeneric getItemDetails(String id) {
         return itemDAO.getItem(id);
     }
 }

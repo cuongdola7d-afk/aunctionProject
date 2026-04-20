@@ -4,9 +4,7 @@ import com.google.gson.Gson;
 
 import ddc.server.config.GsonConfig;
 import ddc.server.controller.RequestMessage;
-import ddc.server.dao.ItemDAO;
-import ddc.server.model.item.Item;
-import ddc.server.service.ItemService;
+import ddc.server.controller.service.ItemService;
 import ddc.server.pattern.factory.ItemCreator.ItemRequest;
 
 public class AddItemHandler implements ActionHandler {
