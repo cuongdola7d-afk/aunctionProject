@@ -6,31 +6,35 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import ddc.server.config.DatabaseConnection;
-import ddc.server.model.item.*;
+import ddc.server.model.item.Art;
+import ddc.server.model.item.Electronics;
+import ddc.server.model.item.ItemGeneric;
+import ddc.server.model.item.Vehicle;
 
 public class ItemDAO {
 
-   public boolean addItem (Item item) {
-      String sql = "INSERT INTO ddc_items (item_name, category, description, seller_name) VALUES (?, ?, ?, ?)";
+   public boolean addItem (ItemGeneric item) {
+        try (Connection con = DatabaseConnection.getConnection()) {
+            con.setAutoCommit(false);
 
-        try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement pst = con.prepareStatement(sql)) {
+            try {
+                item.save(con);
 
-            pst.setString(1, item.getId());
-            pst.setString(2, item.getItemName());
-            pst.setString(3, item.getCategory());
-            pst.setString(4, item.getDescription());
-            pst.setString(5, item.getSellerName());
-
-            int insert = pst.executeUpdate();
-            return insert > 0;
+                con.commit();
+                return true;
+            } catch (SQLException e) {
+                con.rollback();
+                e.printStackTrace();
+                return false;
+            }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
+            return false;
         }
-        return false;
+        
     }
 
-    public Item getItem(String id) {
+    public ItemGeneric getItem(String id) {
         String sql = "SELECT * FROM ddc_items WHERE id = ?";
 
         try (Connection con = DatabaseConnection.getConnection();
@@ -46,14 +50,12 @@ public class ItemDAO {
                 String description = rs.getString("description");
                 String seller = rs.getString("seller");
 
-                Item item = buildItemByCategory(category);
+                ItemGeneric item = buildItemByCategory(category);
                 if (item != null) {
                     item.setId(itemId);
                     item.setItemName(itemName);
                     item.setDescription(description);
                     item.setSellerName(seller);
-                    item.setStartingPrice(0);
-                    item.setCurrentPrice(0);
                 }
                 return item;
             }
@@ -63,7 +65,7 @@ public class ItemDAO {
         return null;
     }
 
-    private Item buildItemByCategory(String category) {
+    private ItemGeneric buildItemByCategory(String category) {
         if (category == null) {
             return null;
         }

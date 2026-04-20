@@ -2,18 +2,19 @@ package ddc.server.model.transaction;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 import ddc.server.model.entity.Entity;
-import ddc.server.model.item.Item;
-import ddc.server.model.user.Bidder;
+import ddc.server.model.item.ItemGeneric;
+import ddc.server.model.user.User;
 
-public class Auction extends Entity {
-    private Item item;
+public class Auction extends Entity<Auction> {
+    private ItemGeneric item;
     private List<Bid> bidHistory = new ArrayList<>();
+
     private AuctionStatus status = AuctionStatus.OPEN;
-    private Bidder highestBidder;
+
+    private User highestBidder;
     private double currentPrice;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
@@ -21,77 +22,44 @@ public class Auction extends Entity {
     public Auction() {
     }
 
-    public Auction(Item item, LocalDateTime startTime, LocalDateTime endTime) {
+    //Getters
+    public ItemGeneric getItem () { return item; }
+    public List<Bid> getBidHistory () { return bidHistory; }
+    public AuctionStatus getStatus () { return status; }
+    public User getHighestBidder() { return highestBidder; }
+    public double getCurrentPrice() { return currentPrice; }
+    public LocalDateTime getStartTime() { return startTime; }
+    public LocalDateTime getEndTime() { return endTime; }
+
+    //Setters
+    public Auction setItem (ItemGeneric item) {
         this.item = item;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.currentPrice = item.getStartingPrice();
-        this.status = AuctionStatus.OPEN;
+        return this;
     }
 
-    public Item getItem() {
-        return item;
-    }
-
-    public void setItem(Item item) {
-        this.item = item;
-    }
-
-    public List<Bid> getbidHistory() {
-        return bidHistory;
-    }
-
-    public void setBidHistory(List<Bid> bidHistory) {
-        this.bidHistory = bidHistory;
-    }
-
-    public Bid getCurrentHighestBid() {
-        if (bidHistory == null || bidHistory.isEmpty()) {
-            return null;
-        }
-        return bidHistory.stream()
-                .max(Comparator.comparingDouble(Bid::getAmount))
-                .orElse(null);
-    }
-
-    public AuctionStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(AuctionStatus status) {
+    public Auction setStatus (AuctionStatus status) {
         this.status = status;
+        return this;
     }
 
-    public Bidder getHighestBidder() {
-        return highestBidder;
-    }
-
-    public void setHighestBidder(Bidder highestBidder) {
+    public Auction setHighestBidder (User highestBidder) {
         this.highestBidder = highestBidder;
+        return this;
     }
 
-    public double getCurrentPrice() {
-        return currentPrice;
-    }
-
-    public void setCurrentPrice(Double currentPrice) {
+    public Auction setCurrentPrice (double currentPrice) {
         this.currentPrice = currentPrice;
+        return this;
     }
 
-    public LocalDateTime getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(LocalDateTime startTime) {
+    public Auction setStartTime (LocalDateTime startTime) {
         this.startTime = startTime;
+        return this;
     }
 
-    public LocalDateTime getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(LocalDateTime endTime) {
+    public Auction setEndTime (LocalDateTime endTime) {
         this.endTime = endTime;
+        return this;
     }
 
     public void startAuction() {
@@ -107,12 +75,12 @@ public class Auction extends Entity {
             throw new RuntimeException("Auction not running.");
         }
 
-        if (bid.getAmount() <= currentPrice) {
+        if (bid.getBidAmount() <= currentPrice) {
             throw new RuntimeException("Bidded amount lower the current.");
         }
 
         bidHistory.add(bid);
-        currentPrice = bid.getAmount();
-        highestBidder = (Bidder) bid.getBidder();
+        currentPrice = bid.getBidAmount();
+        highestBidder = bid.getBidder();
     }
 }

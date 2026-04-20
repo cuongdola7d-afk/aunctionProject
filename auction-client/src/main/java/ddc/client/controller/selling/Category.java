@@ -17,7 +17,7 @@ public enum Category {
             return new ArtDTO()
                     .setItemName(itemName)
                     .setDescription(description)
-                    .setCategory("Chung")
+                    .setCategory("GENERAL")
                     .setSellerName(sellerName);
         }
     },
@@ -38,7 +38,7 @@ public enum Category {
             return new ArtDTO()
                     .setItemName(itemName)
                     .setDescription(description)
-                    .setCategory("Nghệ thuật")
+                    .setCategory("ART")
                     .setSellerName(sellerName)
                     .setAuthor(authorField.getText())
                     .setyearCreated(yearCreatedField.getText());
@@ -61,7 +61,7 @@ public enum Category {
             return new VehicleDTO()
                     .setItemName(itemName)
                     .setDescription(description)
-                    .setCategory("Phương tiện")
+                    .setCategory("VEHICLE")
                     .setSellerName(sellerName)
                     .setManufacturer(manufacturerField.getText())
                     .setYear(Integer.parseInt(yearField.getText()));

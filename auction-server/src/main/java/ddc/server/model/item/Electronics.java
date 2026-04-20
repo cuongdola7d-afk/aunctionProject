@@ -1,5 +1,9 @@
 package ddc.server.model.item;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
 import ddc.server.exception.ItemValidationException;
 
 public class Electronics extends ItemGeneric<Electronics> {
@@ -15,15 +19,33 @@ public class Electronics extends ItemGeneric<Electronics> {
         return new Electronics();
     }
 
-    // Fluent Setters riêng cho Electronics
-    public Electronics setBrand(String brand) {
+    //Getters
+    public String getBrand() { return brand; }
+    public int getWarrantyMonths() { return warrantyMonths; }
+
+    //Setters
+    public Electronics setBrand (String brand) {
         this.brand = brand;
-        return self();
+        return this;
+    }
+    
+    public Electronics setWarrantyMonths (int warrantyMonths) {
+        this.warrantyMonths = warrantyMonths;
+        return this;
     }
 
-    public Electronics setWarrantyMonths(int warrantyMonths) {
-        this.warrantyMonths = warrantyMonths;
-        return self();
+    @Override
+    public void saveSpecificDetails (Connection con) {
+        String sql = "INSERT INTO item_art (brand, warrantyMonths) VALUES (?, ?)";
+
+        try (PreparedStatement pst = con.prepareStatement(sql)) {
+            pst.setString(1, this.brand);
+            pst.setInt(2, this.warrantyMonths);
+
+            pst.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     // Chốt chặn Validation
@@ -31,8 +53,8 @@ public class Electronics extends ItemGeneric<Electronics> {
         if (getItemName() == null || getItemName().isEmpty()) 
             throw new ItemValidationException.MissingFieldException("Tên thiết kế bị trống");
         
-        if (getStartingPrice() <= 0)
-            throw new ItemValidationException.InvalidPriceException("Giá khởi điểm điện tử phải > 0");
+        // if (getStartingPrice() <= 0)
+        //     throw new ItemValidationException.InvalidPriceException("Giá khởi điểm điện tử phải > 0");
 
         if (brand == null || brand.isEmpty())
             throw new ItemValidationException.MissingFieldException("Thiếu thương hiệu (Brand)");
