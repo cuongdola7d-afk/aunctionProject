@@ -1,6 +1,7 @@
 package ddc.client.controller.selling;
 
 import ddc.client.model.ItemDTO.ArtDTO;
+import ddc.client.model.ItemDTO.ElectronicsDTO;
 import ddc.client.model.ItemDTO.ItemGeneric;
 import ddc.client.model.ItemDTO.VehicleDTO;
 import javafx.scene.control.TextField;
@@ -44,6 +45,30 @@ public enum Category {
                     .setyearCreated(yearCreatedField.getText());
         }
     },
+
+    ELECTRONICS("Điện tử") {
+    private TextField BrandField;
+    private TextField warrantyField;
+
+    @Override
+    public void renderUI(FieldBuilder builder) {
+        // Tạo các ô nhập liệu đặc thù cho Điện tử
+        this.BrandField = builder.add("Hãng sản xuất: ", "Nhập hãng sản xuất (VD: Apple, Samsung).");
+        this.warrantyField = builder.add("Thời gian bảo hành (tháng): ", "Nhập số tháng bảo hành.");
+    }
+
+    @Override
+    public ItemGeneric getItemData(String itemName, String description, String sellerName) {
+        // Trả về đối tượng ElectronicsDTO với các thông tin đã nhập
+        return new ElectronicsDTO()
+                .setItemName(itemName)
+                .setDescription(description)
+                .setCategory("ELECTRONICS")
+                .setSellerName(sellerName)
+                .setBrand(BrandField.getText())
+                .setWarrantyMonths(Integer.parseInt(warrantyField.getText())); // Hoặc parse sang Integer tùy theo DTO của bạn
+    }
+},
 
     // 2. CỤC LOGIC CỦA PHƯƠNG TIỆN
     VEHICLE("Phương tiện") {

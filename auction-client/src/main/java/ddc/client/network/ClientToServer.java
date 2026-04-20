@@ -20,11 +20,11 @@ public class ClientToServer {
             Request request = new Request(action, obj);
             
             String jsonString = gson.toJson(request);
-            System.out.println("Sending: " + jsonString);
+            System.out.println("Sending2: " + jsonString);
             out.println(jsonString);
 
             String response = in.readLine();
-            System.out.println("Response: " + response);
+            System.out.println("Response2: " + response);
 
             return response;
         } catch (Exception e) {

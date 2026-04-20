@@ -3,9 +3,9 @@ package ddc.server.controller.service;
 import ddc.server.dao.ItemDAO;
 import ddc.server.exception.ItemValidationException;
 import ddc.server.model.item.ItemGeneric;
-import ddc.server.pattern.factory.ItemCreator.CreatorRegistry;
-import ddc.server.pattern.factory.ItemCreator.ItemCreator;
-import ddc.server.pattern.factory.ItemCreator.ItemRequest;
+import ddc.server.pattern.factory.ItemCreating.CreatorRegistry;
+import ddc.server.pattern.factory.ItemCreating.ItemCreator;
+import ddc.server.pattern.factory.ItemCreating.ItemRequest;
 
 public class ItemService {
     private final ItemDAO itemDAO;
@@ -23,32 +23,29 @@ public class ItemService {
      */
     public boolean createAndSaveItem(ItemRequest req) {
         try {
-            if (req.getName() == null || req.getName().isEmpty()) {
+            if (req.getItemName() == null || req.getItemName().isEmpty()) {
                 throw new ItemValidationException.MissingFieldException("Tên sản phẩm không được để trống!");
             }
-
-            // 2. Kiểm tra giá (Invalid Price)
-            if (req.getStartingPrice() <= 0) {
-                throw new ItemValidationException.InvalidPriceException("Giá khởi điểm phải lớn hơn 0!");
-            }
             // Bước 1: Tìm xưởng sản xuất dựa trên type
-            ItemCreator creator = CreatorRegistry.getCreator(req.getType());
+            ItemCreator creator = CreatorRegistry.getCreator(req.getCategory());
             
             if (creator == null) {
-                System.out.println("Lỗi: Không tìm thấy xưởng sản xuất cho loại: " + req.getType());
+                System.out.println("Lỗi: Không tìm thấy xưởng sản xuất cho loại: " + req.getCategory());
                 return false;
             }
 
             // Bước 2: Dùng Factory để tạo ra đối tượng Item chuẩn
             ItemGeneric newItem = creator.createItem(req);
-
+            System.out.println(newItem);
+            System.out.println("Tao object thanh cong");
             // Bước 3: Sau khi có Object xịn, gọi DAO để "bốc" nó vào SQL
-            boolean isSaved = itemDAO.addItem(newItem);
+            // boolean isSaved = itemDAO.addItem(newItem);
 
-            if (isSaved) {
-                System.out.println("Service: Đã lưu sản phẩm " + newItem.getItemName() + " thành công!");
-            }
-            return isSaved;
+            // if (isSaved) {
+            //     System.out.println("Service: Đã lưu sản phẩm " + newItem.getItemName() + " thành công!");
+            // }
+            // return isSaved;
+            return true;
 
         } catch (Exception e) {
             System.err.println("Service Lỗi: " + e.getMessage());

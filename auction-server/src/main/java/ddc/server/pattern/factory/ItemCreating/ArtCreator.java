@@ -1,4 +1,4 @@
-package ddc.server.pattern.factory.ItemCreator;
+package ddc.server.pattern.factory.ItemCreating;
 import ddc.server.exception.ItemValidationException;
 import ddc.server.model.item.Art;
 import ddc.server.model.item.ItemGeneric;
@@ -8,9 +8,9 @@ public class ArtCreator extends ItemCreator {
     public ItemGeneric createItem(ItemRequest req) throws ItemValidationException {
         // Fluent API giúp code cực gọn, không cần tạo biến tạm
         return Art.create()
-                .setItemName(req.name)
+                .setItemName(req.itemName)
                 .setDescription(req.description)
-                .setAuthor(req.artist)      // Chỉ nhặt artist
+                .setAuthor(req.author)      // Chỉ nhặt artist
                 .setyearCreated(req.yearCreated) // Chỉ nhặt yearCreated
                 .validate();                // Chốt chặn Exception
     }
