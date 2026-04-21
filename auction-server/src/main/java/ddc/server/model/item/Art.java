@@ -36,18 +36,19 @@ public class Art extends ItemGeneric<Art> {
     }
 
     @Override
-    public void saveSpecificDetails (Connection con) {
-        String sql = "INSERT INTO item_art (author, year_created) VALUES (?, ?)";
-
+    protected void saveSpecificDetails(Connection con, String itemId) throws SQLException {
+        String sql = "INSERT INTO item_art (id, author, year_created) VALUES (?, ?, ?)";
+        
         try (PreparedStatement pst = con.prepareStatement(sql)) {
-            pst.setString(1, author);
-            pst.setString(2, yearCreated);
-
+            pst.setString(1, itemId);          // Dùng itemId nhận được từ cha
+            pst.setString(2, this.author);       
+            pst.setString(3, this.yearCreated); 
+            
             pst.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
-    }
 
     // HÀM QUAN TRỌNG NHẤT: Kiểm tra toàn bộ Exception trước khi trả về
     public Art validate() throws ItemValidationException {

@@ -2,13 +2,13 @@ package ddc.server.model.item;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import ddc.server.model.entity.Entity;
 
 /**
  * ItemGeneric đóng vai trò là lớp hỗ trợ Builder (Fluent Interface).
- * Nó không giữ biến mà dùng 'super' để đổ dữ liệu vào lớp Item cha.
  * T giúp các lớp con (Art, Electronics, Vehicle) trả về đúng kiểu của chúng.
  */
 public abstract class ItemGeneric<T extends ItemGeneric<T>> extends Entity<T> {
@@ -44,7 +44,7 @@ public abstract class ItemGeneric<T extends ItemGeneric<T>> extends Entity<T> {
         return self();
     }
 
-    public void save (Connection con) {
+   public void save(Connection con) throws SQLException {
         String sql = "INSERT INTO ddc_items (item_name, category, description, seller_name) VALUES (?, ?, ?, ?)";
 
         try (PreparedStatement pst = con.prepareStatement(sql)) {
@@ -52,14 +52,27 @@ public abstract class ItemGeneric<T extends ItemGeneric<T>> extends Entity<T> {
             pst.setString(2, category);
             pst.setString(3, description);
             pst.setString(4, sellerName);
-            
             pst.executeUpdate();
-            
-            saveSpecificDetails(con);
-        } catch (SQLException e) {
+
+            // Lấy ID vừa được Trigger tạo ra bằng LAST_INSERT_ID() hoặc SELECT MAX
+            String idMoi = "";
+            String sqlGetId = "SELECT id FROM ddc_items WHERE item_name = ? AND seller_name = ? ORDER BY id DESC LIMIT 1";
+            try (PreparedStatement pstId = con.prepareStatement(sqlGetId)) {
+                pstId.setString(1, itemName);
+                pstId.setString(2, sellerName);
+                try (ResultSet rs = pstId.executeQuery()) {
+                    if (rs.next()) {
+                        idMoi = rs.getString("id");
+                        saveSpecificDetails(con, idMoi);
+                    }
+                }
+            }
+        }
+        catch (SQLException e){
             e.printStackTrace();
         }
     }
+    
 
-    public abstract void saveSpecificDetails(Connection con) throws SQLException;
+    protected abstract void saveSpecificDetails(Connection con, String idMoi) throws SQLException;
 }
