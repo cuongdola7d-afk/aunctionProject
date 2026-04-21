@@ -1,4 +1,4 @@
-package ddc.server.pattern.factory.ItemCreator;
+package ddc.server.pattern.factory.ItemCreating;
 
 import ddc.server.exception.ItemValidationException;
 import ddc.server.model.item.Electronics;
@@ -9,7 +9,7 @@ public class ElectronicsCreator extends ItemCreator {
     public ItemGeneric createItem(ItemRequest req) throws ItemValidationException {
         // Sử dụng chuỗi Fluent API, lọc đúng các field của Electronics
         return Electronics.create()
-                .setItemName(req.name)
+                .setItemName(req.itemName)
                 .setDescription(req.description)
                 .setBrand(req.brand)              // Nhặt brand từ Request
                 .setWarrantyMonths(req.warrantyMonths) // Nhặt warranty từ Request

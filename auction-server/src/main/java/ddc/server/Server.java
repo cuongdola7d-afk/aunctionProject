@@ -15,7 +15,7 @@ public class Server {
 
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             System.out.println("Server opened at port " + PORT);
-
+            
             while (true) {
                 // Chờ và đón Client kết nối
                 Socket clientSocket = serverSocket.accept();

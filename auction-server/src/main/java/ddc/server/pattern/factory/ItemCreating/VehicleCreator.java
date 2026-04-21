@@ -1,4 +1,4 @@
-package ddc.server.pattern.factory.ItemCreator;
+package ddc.server.pattern.factory.ItemCreating;
 
 import ddc.server.exception.ItemValidationException;
 import ddc.server.model.item.ItemGeneric;
@@ -9,10 +9,10 @@ public class VehicleCreator extends ItemCreator {
     public ItemGeneric createItem(ItemRequest req) throws ItemValidationException {
         // Nhặt đúng manufacturer và vehicleYear từ Request cồng kềnh
         return Vehicle.create()
-                .setItemName(req.name)
+                .setItemName(req.itemName)
                 .setDescription(req.description)
                 .setManufacturer(req.manufacturer)
-                .setYear(req.vehicleYear)
+                .setYear(req.year)
                 .validate();
     }
 }

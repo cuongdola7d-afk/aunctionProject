@@ -177,10 +177,10 @@ public class UploadItem implements Initializable {
     @FXML
     private void handleInitialize() {
         try {
-            String priceStr = priceField.getText();
+            String startingPrice = priceField.getText();
 
             // Kiểm tra giá hợp lệ
-            if (Double.parseDouble(priceStr) <= 0)
+            if (Double.parseDouble(startingPrice) <= 0)
                 throw new ItemValidationException("Giá phải > 0");
             // kiểm tra ngày hợp lệ
             if (auctionDatePicker.getValue() == null) {
@@ -210,7 +210,7 @@ public class UploadItem implements Initializable {
             ItemGeneric item = currentCat.getItemData(itemName, description, sellerName);
             String response = ClientToServer.sendRequest("ADD_ITEM", item);
 
-            if (response.contains("SUCCESS")) {
+            if (response != null && response.contains("SUCCESS")) {
                 registerButton.setText("Thành công! ✔");
                 registerButton.setStyle("-fx-background-color: #28a745; -fx-text-fill: white; -fx-font-weight: bold;");
 
@@ -222,6 +222,7 @@ public class UploadItem implements Initializable {
                 });
                 closePause.play();
             }
+        
         } catch (ItemValidationException e) {
             showErrorAlert("Lỗi nhập liệu", e.getMessage());
         } catch (NumberFormatException e) {

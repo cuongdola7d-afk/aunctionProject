@@ -18,5 +18,5 @@ module ddc.server {
     opens ddc.server.model.item to com.google.gson;
     opens ddc.server.model.user to com.google.gson;
     opens ddc.server.exception to com.google.gson;
-    
+    opens ddc.server.pattern.factory.ItemCreating to com.google.gson;
 }
