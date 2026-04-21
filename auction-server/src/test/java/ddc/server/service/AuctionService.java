@@ -6,7 +6,7 @@ import java.util.List;
 
 import ddc.server.exception.AuctionClosedException;
 import ddc.server.exception.InvalidBidException;
-import ddc.server.model.item.Item;
+import ddc.server.model.item.ItemGeneric;
 import ddc.server.model.transaction.Auction;
 import ddc.server.model.transaction.AuctionStatus;
 import ddc.server.model.transaction.Bid;
@@ -15,7 +15,7 @@ import ddc.server.model.user.User;
 
 public class AuctionService {
 
-    public Auction createAuction(Item item, double currentPrice, LocalDateTime startTime, LocalDateTime endTime)
+    public Auction createAuction(ItemGeneric item, double currentPrice, LocalDateTime startTime, LocalDateTime endTime)
             throws InvalidBidException {
 
         if (item == null) {

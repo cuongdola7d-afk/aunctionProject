@@ -34,19 +34,20 @@ public class Vehicle extends ItemGeneric<Vehicle> {
         return this;
     }
 
-    @Override
-    public void saveSpecificDetails (Connection con) {
-        String sql = "INSERT INTO item_art (manufacturer, year) VALUES (?, ?)";
-
+ @Override
+    protected void saveSpecificDetails(Connection con, String itemId) throws SQLException {
+        String sql = "INSERT INTO item_vehicle (id, manufacterer, year) VALUES (?, ?, ?)";
+        
         try (PreparedStatement pst = con.prepareStatement(sql)) {
-            pst.setString(1, manufacturer);
-            pst.setInt(2, year);
-
+            pst.setString(1, itemId);          // Dùng itemId nhận được từ cha
+            pst.setString(2, this.manufacturer);       
+            pst.setInt(3, this.year); 
+            
             pst.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
-    }
 
     // Chốt chặn Validation cho phương tiện
     public Vehicle validate() throws ItemValidationException {
