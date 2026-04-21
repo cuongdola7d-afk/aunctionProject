@@ -10,6 +10,8 @@ public class ArtCreator extends ItemCreator {
         return Art.create()
                 .setItemName(req.itemName)
                 .setDescription(req.description)
+                .setCategory(req.category)
+                .setSellerName(req.sellerName)
                 .setAuthor(req.author)      // Chỉ nhặt artist
                 .setyearCreated(req.yearCreated) // Chỉ nhặt yearCreated
                 .validate();                // Chốt chặn Exception

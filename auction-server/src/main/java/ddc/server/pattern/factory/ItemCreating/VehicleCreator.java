@@ -11,6 +11,8 @@ public class VehicleCreator extends ItemCreator {
         return Vehicle.create()
                 .setItemName(req.itemName)
                 .setDescription(req.description)
+                .setCategory(req.category)
+                .setSellerName(req.sellerName)
                 .setManufacturer(req.manufacturer)
                 .setYear(req.year)
                 .validate();

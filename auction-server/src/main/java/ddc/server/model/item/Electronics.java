@@ -35,14 +35,15 @@ public class Electronics extends ItemGeneric<Electronics> {
     }
 
     @Override
-    public void saveSpecificDetails (Connection con) {
-        String sql = "INSERT INTO item_art (brand, warrantyMonths) VALUES (?, ?)";
-
-        try (PreparedStatement pst = con.prepareStatement(sql)) {
-            pst.setString(1, this.brand);
-            pst.setInt(2, this.warrantyMonths);
-
-            pst.executeUpdate();
+    protected void saveSpecificDetails(Connection con, String itemId) throws SQLException {
+    String sql = "INSERT INTO item_electronics (id, brand, warranty_months) VALUES (?, ?, ?)";
+    
+    try (PreparedStatement pst = con.prepareStatement(sql)) {
+        pst.setString(1, itemId);          // Dùng itemId nhận được từ cha
+        pst.setString(2, this.brand);       
+        pst.setInt(3, this.warrantyMonths); 
+        
+        pst.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }

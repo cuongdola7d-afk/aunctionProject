@@ -27,10 +27,11 @@ public class ItemService {
                 throw new ItemValidationException.MissingFieldException("Tên sản phẩm không được để trống!");
             }
             // Bước 1: Tìm xưởng sản xuất dựa trên type
+            System.out.println(">>> Đang kiem tra Category: " + req.getCategory());
             ItemCreator creator = CreatorRegistry.getCreator(req.getCategory());
             
             if (creator == null) {
-                System.out.println("Lỗi: Không tìm thấy xưởng sản xuất cho loại: " + req.getCategory());
+                System.out.println("Khong tim thay creator cho loai: " + req.getCategory());
                 return false;
             }
 
@@ -38,17 +39,18 @@ public class ItemService {
             ItemGeneric newItem = creator.createItem(req);
             System.out.println(newItem);
             System.out.println("Tao object thanh cong");
-            // Bước 3: Sau khi có Object xịn, gọi DAO để "bốc" nó vào SQL
-            // boolean isSaved = itemDAO.addItem(newItem);
+            
+            //Bước 3: Sau khi có Object xịn, gọi DAO để "bốc" nó vào SQL
+            boolean isSaved = itemDAO.addItem(newItem);
 
-            // if (isSaved) {
-            //     System.out.println("Service: Đã lưu sản phẩm " + newItem.getItemName() + " thành công!");
-            // }
-            // return isSaved;
-            return true;
+            if (isSaved) {
+                System.out.println("Service: Da luu san pham " + newItem.getItemName() + " thanh cong!");
+            }
+            return isSaved;
+            
 
         } catch (Exception e) {
-            System.err.println("Service Lỗi: " + e.getMessage());
+            System.err.println("Service Loi: " + e.getMessage());
             return false;
         }
     }
