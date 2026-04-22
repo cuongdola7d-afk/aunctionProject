@@ -9,6 +9,7 @@ import ddc.client.model.AuctionItemViewModel;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
@@ -30,21 +31,33 @@ public class Bidding {
     @FXML
     private TreeView<String> categoryTree;
 
+    @FXML
+    private Label lblResultCount;
+
+    @FXML
+    private Label lblSelectedCategory;
+
+    @FXML
+    private Label lblEmptyState;
+
     private final List<AuctionItemViewModel> itemList = new ArrayList<>();
 
     // bidder hiện tại sẽ được scene trước truyền vào
-    private String currentBidderId;
+    //private String currentBidderId;
+    private String currentBidderId = "BIDDER-001";
+
+    private String selectedCategory;
 
     @FXML
     public void initialize() {
+        currentBidderId = "BIDDER-001";
+
         loadSampleData();
-        renderItems(itemList);
-
-        txtSearch.textProperty().addListener((observable, oldValue, newValue) -> {
-            filterItems(newValue);
-        });
-
         setupCategoryTree();
+
+        txtSearch.textProperty().addListener((observable, oldValue, newValue) -> applyFilters());
+
+        applyFilters();
     }
 
     /**
@@ -53,7 +66,7 @@ public class Bidding {
      */
     public void setupBidderContext(String bidderId) {
         this.currentBidderId = bidderId;
-        renderItems(itemList);
+        applyFilters();
     }
 
     private void setupCategoryTree() {
@@ -67,11 +80,11 @@ public class Bidding {
         );
 
         TreeItem<String> elec = new TreeItem<>("Đồ điện tử");
-        TreeItem<String> accessories = new TreeItem<>("Phụ kiện");
-        TreeItem<String> laptops = new TreeItem<>("Máy tính xách tay");
-        TreeItem<String> smartphones = new TreeItem<>("Điện thoại");
-
-        elec.getChildren().addAll(smartphones, laptops, accessories);
+        elec.getChildren().addAll(
+                new TreeItem<>("Điện thoại"),
+                new TreeItem<>("Máy tính xách tay"),
+                new TreeItem<>("Phụ kiện")
+        );
 
         TreeItem<String> veh = new TreeItem<>("Phương tiện");
         veh.getChildren().addAll(
@@ -85,39 +98,109 @@ public class Bidding {
         categoryTree.setShowRoot(false);
 
         categoryTree.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal != null && newVal.isLeaf()) {
-                filterByCategory(newVal.getValue());
+            if (newVal == null) {
+                selectedCategory = null;
+            } else {
+                selectedCategory = newVal.getValue();
             }
+            applyFilters();
         });
     }
 
-    private void filterByCategory(String category) {
-        String lowerCategory = category.toLowerCase();
+    private void loadSampleData() {
+        itemList.clear();
+
+        itemList.add(new AuctionItemViewModel(
+                "AUCT-001",
+                "Đồng hồ thông minh",
+                "1,250,000 đ",
+                "02:15:30",
+                "/ddc/client/views/bidding/image/watch.jpg",
+                "Đồ điện tử"
+        ));
+
+        itemList.add(new AuctionItemViewModel(
+                "AUCT-002",
+                "Đồng hồ Vintage",
+                "3,400,000 đ",
+                "00:45:12",
+                "/ddc/client/views/bidding/image/vintageWatch.jpg",
+                "Nghệ thuật"
+        ));
+
+        itemList.add(new AuctionItemViewModel(
+                "AUCT-003",
+                "Tai nghe chống ồn",
+                "850,000 đ",
+                "05:10:00",
+                "/ddc/client/views/bidding/image/headphone.jpg",
+                "Đồ điện tử"
+        ));
+
+        itemList.add(new AuctionItemViewModel(
+                "AUCT-004",
+                "Bàn phím cơ RGB",
+                "2,100,000 đ",
+                "01:20:45",
+                "/ddc/client/views/bidding/image/mechanicalKeyboard.jpg",
+                "Đồ điện tử"
+        ));
+    }
+
+    private void applyFilters() {
+        String keyword = txtSearch.getText() == null ? "" : txtSearch.getText().trim().toLowerCase();
 
         List<AuctionItemViewModel> filtered = itemList.stream()
-                .filter(item -> item.getName().toLowerCase().contains(lowerCategory)
-                        || (lowerCategory.equals("laptops")
-                        && item.getName().toLowerCase().contains("macbook")))
+                .filter(item -> matchesKeyword(item, keyword))
+                .filter(item -> matchesCategory(item, selectedCategory))
                 .toList();
 
         renderItems(filtered);
+        updateFilterState(filtered.size());
     }
 
-    private void loadSampleData() {
-        String demoAuctionId = "AUCT-001";
+    private boolean matchesKeyword(AuctionItemViewModel item, String keyword) {
+        if (keyword.isBlank()) {
+            return true;
+        }
 
-        itemList.add(new AuctionItemViewModel(demoAuctionId, "Đồng hồ thông minh", "1,250,000 đ", "02:15:30",
-                "/ddc/client/views/bidding/image/watch.jpg", "Đồ điện tử"));
-        itemList.add(new AuctionItemViewModel(demoAuctionId, "Đồng hồ Vintage", "3,400,000 đ", "00:45:12",
-                "/ddc/client/views/bidding/image/vintageWatch.jpg", "Đồ điện tử"));
-        itemList.add(new AuctionItemViewModel(demoAuctionId, "Tai nghe chống ồn", "850,000 đ", "05:10:00",
-                "/ddc/client/views/bidding/image/headphone.jpg", "Đồ điện tử"));
-        itemList.add(new AuctionItemViewModel(demoAuctionId, "Bàn phím cơ RGB", "2,100,000 đ", "01:20:45",
-                "/ddc/client/views/bidding/image/mechanicalKeyboard.jpg", "Đồ điện tử"));
+        return item.getName().toLowerCase().contains(keyword)
+                || item.getPrice().toLowerCase().contains(keyword)
+                || item.getCategory().toLowerCase().contains(keyword);
+    }
+
+    private boolean matchesCategory(AuctionItemViewModel item, String category) {
+        if (category == null || category.isBlank()) {
+            return true;
+        }
+
+        String normalized = category.trim().toLowerCase();
+        String itemCategory = item.getCategory() == null ? "" : item.getCategory().trim().toLowerCase();
+        String itemName = item.getName() == null ? "" : item.getName().trim().toLowerCase();
+
+        return switch (normalized) {
+            case "nghệ thuật", "hội họa", "điêu khắc" -> itemCategory.equals("nghệ thuật");
+            case "đồ điện tử", "điện thoại", "máy tính xách tay", "phụ kiện" -> itemCategory.equals("đồ điện tử");
+            case "phương tiện", "ô tô", "xe máy" -> itemCategory.equals("phương tiện");
+            default -> itemCategory.equals(normalized) || itemName.contains(normalized);
+        };
+    }
+
+    private void updateFilterState(int resultCount) {
+        lblResultCount.setText("Kết quả: " + resultCount);
+        lblSelectedCategory.setText(
+                selectedCategory == null || selectedCategory.isBlank()
+                        ? "Danh mục: Tất cả"
+                        : "Danh mục: " + selectedCategory
+        );
     }
 
     private void renderItems(List<AuctionItemViewModel> items) {
         auctionContainer.getChildren().clear();
+
+        boolean isEmpty = items.isEmpty();
+        lblEmptyState.setVisible(isEmpty);
+        lblEmptyState.setManaged(isEmpty);
 
         for (AuctionItemViewModel item : items) {
             try {
@@ -139,19 +222,12 @@ public class Bidding {
         }
     }
 
-    private void filterItems(String keyword) {
-        if (keyword == null || keyword.isBlank()) {
-            renderItems(itemList);
-            return;
-        }
-
-        String lowerKeyword = keyword.toLowerCase().trim();
-
-        List<AuctionItemViewModel> filtered = itemList.stream()
-                .filter(item -> item.getName().toLowerCase().contains(lowerKeyword))
-                .toList();
-
-        renderItems(filtered);
+    @FXML
+    private void handleClearFilters() {
+        txtSearch.clear();
+        categoryTree.getSelectionModel().clearSelection();
+        selectedCategory = null;
+        applyFilters();
     }
 
     @FXML

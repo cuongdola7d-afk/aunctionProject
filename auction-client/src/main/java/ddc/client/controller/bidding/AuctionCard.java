@@ -3,6 +3,7 @@ package ddc.client.controller.bidding;
 import java.io.IOException;
 
 import ddc.client.model.AuctionItemViewModel;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -58,48 +59,48 @@ public class AuctionCard {
         }
     }
 
-@FXML
-private void handleCardClick(MouseEvent event) {
-    if (item == null) {
-        System.out.println("Item chưa được gán.");
-        return;
+    @FXML
+    private void handleCardClick(MouseEvent event) {
+        if (item == null) {
+            System.out.println("Item chưa được gán.");
+            return;
+        }
+
+        if (item.getAuctionId() == null || item.getAuctionId().isBlank()) {
+            System.out.println("Thiếu auctionId.");
+            return;
+        }
+
+        if (currentBidderId == null || currentBidderId.isBlank()) {
+            System.out.println("Thiếu bidderId hiện tại.");
+            return;
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/ddc/client/views/bidding/auction-detail.fxml")
+            );
+
+            Parent root = loader.load();
+
+            AuctionDetail controller = loader.getController();
+            controller.setProductData(
+                    item.getName(),
+                    item.getPrice(),
+                    item.getImagePath()
+            );
+
+            Stage stage = (Stage) cardRoot.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+
+            // Đẩy subscribe sang sau khi scene đã hiện
+            Platform.runLater(() ->
+                    controller.setupAuctionContext(item.getAuctionId(), currentBidderId));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Không mở được trang chi tiết đấu giá.");
+        }
     }
-
-    if (item.getAuctionId() == null || item.getAuctionId().isBlank()) {
-        System.out.println("Thiếu auctionId.");
-        return;
-    }
-
-    if (currentBidderId == null || currentBidderId.isBlank()) {
-        System.out.println("Thiếu bidderId hiện tại.");
-        return;
-    }
-
-    try {
-        FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/ddc/client/views/bidding/auction-detail.fxml")
-        );
-
-        Parent root = loader.load();
-
-        AuctionDetail controller = loader.getController();
-        controller.setProductData(
-                item.getName(),
-                item.getPrice(),
-                item.getImagePath()
-        );
-
-        Stage stage = (Stage) cardRoot.getScene().getWindow();
-        stage.setScene(new Scene(root));
-        stage.show();
-
-        // đẩy subscribe sang sau khi scene đã hiện
-        javafx.application.Platform.runLater(() ->
-                controller.setupAuctionContext(item.getAuctionId(), currentBidderId));
-
-    } catch (IOException e) {
-        e.printStackTrace();
-        System.out.println("Không mở được trang chi tiết đấu giá.");
-    }
-}
 }

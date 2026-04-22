@@ -3,15 +3,12 @@ package ddc.server;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import ddc.server.controller.service.AuctionService;
 import ddc.server.network.ClientHandler;
 
 public class Server {
     private static final int PORT = 8080;
 
     public static void main(String[] args) {
-        //Khởi tạo cục bộ các Service xử lý logic 
-        AuctionService auctionService = new AuctionService();
 
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             System.out.println("Server opened at port " + PORT);
