@@ -72,16 +72,14 @@ public class Art extends ItemGeneric<Art> {
     }
     
     // Kiểm tra toàn bộ Exception trước khi trả về
-    public Art validate() throws ItemValidationException {
-        if (getItemName() == null || getItemName().isEmpty()) 
-            throw new ItemValidationException.MissingFieldException("Tên tác phẩm không được trống");
-        
-        // if (getStartingPrice() <= 0)
-        //     throw new ItemValidationException.InvalidPriceException("Giá khởi điểm phải > 0");
+    public void validate() throws ItemValidationException {
+        super.validate();
 
         if (author == null || author.isEmpty())
             throw new ItemValidationException.MissingFieldException("Thiếu tên tác giả");
 
-        return this; // Trả về chính đối tượng đã "sạch" lỗi
+        if (yearCreated == null || yearCreated.isEmpty())
+            throw new ItemValidationException.MissingFieldException("Thiếu tên năm sáng tác");
+
     }
 }

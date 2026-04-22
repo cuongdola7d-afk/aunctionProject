@@ -3,8 +3,10 @@ package ddc.server.pattern.Singleton;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import ddc.server.dao.ItemDAO;
 import ddc.server.exception.AuctionNotFoundException;
 import ddc.server.exception.BidderNotFoundException;
+import ddc.server.model.item.ItemGeneric;
 import ddc.server.model.transaction.Auction;
 import ddc.server.model.user.Bidder;
 
@@ -66,4 +68,35 @@ public class AuctionManager {
 
         return bidder;
     }
+
+    // ItemDAO itemDAO = new ItemDAO();
+
+    //     // 2. Chọn một ID chắc chắn đang có trong DB (xem trong MySQL Workbench)
+    //     String idCanTest = "I00001"; 
+
+    //     System.out.println("---------- ĐANG TEST GET ITEM ----------");
+        
+    //     try {
+    //         // 3. Gọi hàm getItem
+    //         // Hàm này sẽ dùng Factory để tạo object và loadSpecificDetails để lấy data bảng phụ
+    //         ItemGeneric item = itemDAO.getItem(idCanTest);
+
+    //         // 4. Kiểm tra và in kết quả
+    //         if (item != null) {
+    //             System.out.println("Tìm thấy sản phẩm!");
+                
+    //             // CHỈ CẦN DÒNG NÀY: Java sẽ tự gọi toString() của Art/Electronics tương ứng
+    //             System.out.println("Thông tin chi tiết: " + item); 
+                
+    //         } else {
+    //             System.out.println("Không tìm thấy sản phẩm nào với ID: " + idCanTest);
+    //             System.out.println("Hãy kiểm tra lại tên cột (item_name, seller_name) trong DAO!");
+    //         }
+    //     } catch (Exception e) {
+    //         System.err.println("Có lỗi xảy ra trong quá trình truy vấn:");
+    //         e.printStackTrace();
+    //     }
+        
+    //     System.out.println("----------------------------------------");
+    // }
 }

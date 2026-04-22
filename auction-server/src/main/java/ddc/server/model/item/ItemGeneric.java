@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import ddc.server.exception.ItemValidationException;
 import ddc.server.model.entity.Entity;
 
 /**
@@ -46,13 +47,20 @@ public abstract class ItemGeneric<T extends ItemGeneric<T>> extends Entity<T> {
 
     @Override
     public String toString() {
-        return String.format(
-            "[%s] %s | Loai: %s | Nguoi ban: %s | Mo ta: %s",
-            itemName, 
-            category, 
-            sellerName, 
-            description
-        );
+        return String.format("[%s] | Loại: %s | Người bán: %s", 
+                      itemName, category, sellerName);
+    }
+
+    public void validate() throws ItemValidationException {
+        if (itemName == null || itemName.trim().isEmpty()) {
+            throw new ItemValidationException("Tên sản phẩm không được để trống.");
+        }
+        if (category == null || category.trim().isEmpty()) {
+            throw new ItemValidationException("Loại sản phẩm không hợp lệ.");
+        }
+        if (sellerName == null || sellerName.trim().isEmpty()) {
+            throw new ItemValidationException("Tên người bán không được để trống.");
+        }
     }
 
    public void save(Connection con) throws SQLException {

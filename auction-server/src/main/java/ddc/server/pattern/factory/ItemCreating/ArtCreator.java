@@ -13,7 +13,6 @@ public class ArtCreator extends ItemCreator {
                 .setCategory(req.category)
                 .setSellerName(req.sellerName)
                 .setAuthor(req.author)      // Chỉ nhặt artist
-                .setyearCreated(req.yearCreated) // Chỉ nhặt yearCreated
-                .validate();                // Chốt chặn Exception
+                .setyearCreated(req.yearCreated); // Chỉ nhặt yearCreated
     }
 }

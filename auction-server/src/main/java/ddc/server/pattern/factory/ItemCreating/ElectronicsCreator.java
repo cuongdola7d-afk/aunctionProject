@@ -14,7 +14,6 @@ public class ElectronicsCreator extends ItemCreator {
                 .setCategory(req.category)
                 .setSellerName(req.sellerName)
                 .setBrand(req.brand)              // Nhặt brand từ Request
-                .setWarrantyMonths(req.warrantyMonths) // Nhặt warranty từ Request
-                .validate();                      // Kiểm tra lỗi
+                .setWarrantyMonths(req.warrantyMonths); 
     }
 }

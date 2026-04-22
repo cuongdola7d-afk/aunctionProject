@@ -69,6 +69,12 @@ public class ItemDAO {
                         item.setId(itemId);
                         // Bước 3: Load nốt các thuộc tính riêng từ bảng phụ
                         item.loadSpecificDetails(con);
+                        try {
+                            item.validate(); 
+                        } catch (ItemValidationException e) {
+                            // Dữ liệu DB lỗi (ai đó đã sửa tay vào DB chẳng hạn)
+                            return null; 
+                        }
                     }
                     return item;
                 }
