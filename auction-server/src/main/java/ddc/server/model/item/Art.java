@@ -2,6 +2,7 @@ package ddc.server.model.item;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import ddc.server.exception.ItemValidationException;
@@ -9,7 +10,7 @@ import ddc.server.exception.ItemValidationException;
 // Kế thừa ItemGeneric và truyền chính nó vào Generic T
 public class Art extends ItemGeneric<Art> {
     private String author;
-    private String yearCreated;
+    private int yearCreated;
 
     public Art() {
         setCategory("ART");
@@ -22,7 +23,7 @@ public class Art extends ItemGeneric<Art> {
 
     //Getters
     public String getAuthor() { return author; }
-    public String getyearCreated() { return yearCreated; }
+    public int getyearCreated() { return yearCreated; }
 
     //Setters
     public Art setAuthor (String author) {
@@ -30,25 +31,42 @@ public class Art extends ItemGeneric<Art> {
         return this;
     }
 
-    public Art setyearCreated (String yearCreated) {
+    public Art setyearCreated (int yearCreated) {
         this.yearCreated = yearCreated;
         return this;
     }
 
     @Override
-    protected void saveSpecificDetails(Connection con, String itemId) throws SQLException {
-        String sql = "INSERT INTO item_art (id, author, year_created) VALUES (?, ?, ?)";
+    public String save(Connection con) throws SQLException {
+        String sqlInsert = "CALL insert_art (?, ?, ?, ?, ?, ?)";
+
+        String sqlGetId = "SELECT @item_id AS generated_id;";
         
-        try (PreparedStatement pst = con.prepareStatement(sql)) {
-            pst.setString(1, itemId);          // Dùng itemId nhận được từ cha
-            pst.setString(2, this.author);       
-            pst.setString(3, this.yearCreated); 
+        try (PreparedStatement pst1 = con.prepareStatement(sqlInsert)) {
+            pst1.setString(1, getItemName());
+            pst1.setString(2, getCategory());
+            pst1.setString(3, getDescription());
+            pst1.setString(4, getSellerName());
+            pst1.setString(5, author);
+            pst1.setInt(6, yearCreated);
             
-            pst.executeUpdate();
-            } catch (SQLException e) {
-                e.printStackTrace();
+            int rowExecuted = pst1.executeUpdate();
+
+            if (rowExecuted > 0) {
+                try (PreparedStatement pst2 = con.prepareStatement(sqlGetId);
+                    ResultSet rs = pst2.executeQuery()) {
+                    if (rs.next()) {
+                        String id = rs.getString("generated_id");
+                        return id;
+                    }
+                }
             }
+            return null;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
         }
+    }
 
     // HÀM QUAN TRỌNG NHẤT: Kiểm tra toàn bộ Exception trước khi trả về
     public Art validate() throws ItemValidationException {

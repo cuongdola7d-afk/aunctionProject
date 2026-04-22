@@ -13,6 +13,7 @@ public class CreatorRegistry {
         creators.put("ART", new ArtCreator());
         creators.put("ELECTRONICS", new ElectronicsCreator());
         creators.put("VEHICLE", new VehicleCreator());
+        creators.put("GENERAL", new GeneralCreator());
     }
 
     //Hàm lấy Creator

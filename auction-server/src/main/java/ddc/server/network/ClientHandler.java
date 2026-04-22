@@ -1,7 +1,6 @@
 package ddc.server.network;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -42,14 +41,6 @@ public class ClientHandler implements Runnable {
             out.println(response);
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (clientSocket != null && !clientSocket.isClosed()) {
-                    clientSocket.close();
-                }
-            } catch (IOException e) {
-                System.out.println(e.getMessage());
-            }
         }
     }
 }

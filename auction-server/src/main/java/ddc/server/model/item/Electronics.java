@@ -2,6 +2,7 @@ package ddc.server.model.item;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import ddc.server.exception.ItemValidationException;
@@ -35,17 +36,34 @@ public class Electronics extends ItemGeneric<Electronics> {
     }
 
     @Override
-    protected void saveSpecificDetails(Connection con, String itemId) throws SQLException {
-    String sql = "INSERT INTO item_electronics (id, brand, warranty_months) VALUES (?, ?, ?)";
-    
-    try (PreparedStatement pst = con.prepareStatement(sql)) {
-        pst.setString(1, itemId);          // Dùng itemId nhận được từ cha
-        pst.setString(2, this.brand);       
-        pst.setInt(3, this.warrantyMonths); 
+    public String save(Connection con) throws SQLException {
+        String sqlInsert = "CALL insert_electronics (?, ?, ?, ?, ?, ?)";
+
+        String sqlGetId = "SELECT @item_id AS generated_id;";
         
-        pst.executeUpdate();
+        try (PreparedStatement pst1 = con.prepareStatement(sqlInsert)) {
+            pst1.setString(1, getItemName());
+            pst1.setString(2, getCategory());
+            pst1.setString(3, getDescription());
+            pst1.setString(4, getSellerName());
+            pst1.setString(5, brand);
+            pst1.setInt(6, warrantyMonths);
+            
+            int rowExecuted = pst1.executeUpdate();
+
+            if (rowExecuted > 0) {
+                try (PreparedStatement pst2 = con.prepareStatement(sqlGetId);
+                    ResultSet rs = pst2.executeQuery()) {
+                    if (rs.next()) {
+                        String id = rs.getString("generated_id");
+                        return id;
+                    }
+                }
+            }
+            return null;
         } catch (SQLException e) {
             e.printStackTrace();
+            return null;
         }
     }
 

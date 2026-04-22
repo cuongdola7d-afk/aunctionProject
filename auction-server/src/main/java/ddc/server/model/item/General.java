@@ -1,0 +1,44 @@
+package ddc.server.model.item;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+public class General extends ItemGeneric<General> {
+    public General () {}
+
+    public static General create() {
+        return new General();
+    }
+
+    @Override
+    public String save (Connection con) {
+        String sqlInsert = "INSERT INTO ddc_items (item_name, category, description, seller_name) VALUES (?, ?, ?, ?)";
+
+        String sqlGetId = "SELECT @item_id AS generated_id;";
+
+        try (PreparedStatement pst1 = con.prepareStatement(sqlInsert)) {
+            pst1.setString(1, getItemName());
+            pst1.setString(2, getCategory());
+            pst1.setString(3, getDescription());
+            pst1.setString(4, getSellerName());
+            int rowExecuted = pst1.executeUpdate();
+
+            if (rowExecuted > 0) {
+                try (PreparedStatement pst2 = con.prepareStatement(sqlGetId);
+                    ResultSet rs = pst2.executeQuery()) {
+                    if (rs.next()) {
+                        String id = rs.getString("generated_id");
+                        return id;
+                    }
+                }
+            }
+            return null;
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+}
