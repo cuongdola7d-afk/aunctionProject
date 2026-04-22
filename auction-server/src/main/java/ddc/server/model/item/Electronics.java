@@ -2,6 +2,7 @@ package ddc.server.model.item;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import ddc.server.exception.ItemValidationException;
@@ -35,17 +36,36 @@ public class Electronics extends ItemGeneric<Electronics> {
     }
 
     @Override
+    public String toString() {
+        return super.toString() + String.format(" | Hang: %s | Bao hanh: %d thang", brand, warrantyMonths);
+    }
+
+    @Override
     protected void saveSpecificDetails(Connection con, String itemId) throws SQLException {
-    String sql = "INSERT INTO item_electronics (id, brand, warranty_months) VALUES (?, ?, ?)";
-    
-    try (PreparedStatement pst = con.prepareStatement(sql)) {
-        pst.setString(1, itemId);          // Dùng itemId nhận được từ cha
-        pst.setString(2, this.brand);       
-        pst.setInt(3, this.warrantyMonths); 
+        String sql = "INSERT INTO item_electronics (id, brand, warranty_months) VALUES (?, ?, ?)";
         
-        pst.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        try (PreparedStatement pst = con.prepareStatement(sql)) {
+            pst.setString(1, itemId);          // Dùng itemId nhận được từ cha
+            pst.setString(2, this.brand);       
+            pst.setInt(3, this.warrantyMonths); 
+            
+            pst.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    
+    @Override
+    public void loadSpecificDetails(Connection con) throws SQLException {
+        String sql = "SELECT brand, warranty_months FROM item_electronis WHERE id = ?";
+        try (PreparedStatement pst = con.prepareStatement(sql)) {
+            pst.setString(1, this.getId()); // Lấy ID của chính món đồ này
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    this.brand = rs.getString("brand");
+                    this.warrantyMonths = rs.getInt("warranty_months");
+                }
+            }
         }
     }
 

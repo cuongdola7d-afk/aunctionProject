@@ -44,6 +44,17 @@ public abstract class ItemGeneric<T extends ItemGeneric<T>> extends Entity<T> {
         return self();
     }
 
+    @Override
+    public String toString() {
+        return String.format(
+            "[%s] %s | Loai: %s | Nguoi ban: %s | Mo ta: %s",
+            itemName, 
+            category, 
+            sellerName, 
+            description
+        );
+    }
+
    public void save(Connection con) throws SQLException {
         String sql = "INSERT INTO ddc_items (item_name, category, description, seller_name) VALUES (?, ?, ?, ?)";
 
@@ -54,7 +65,7 @@ public abstract class ItemGeneric<T extends ItemGeneric<T>> extends Entity<T> {
             pst.setString(4, sellerName);
             pst.executeUpdate();
 
-            // Lấy ID vừa được Trigger tạo ra bằng LAST_INSERT_ID() hoặc SELECT MAX
+            // Lấy ID vừa được Trigger tạo ra
             String idMoi = "";
             String sqlGetId = "SELECT id FROM ddc_items WHERE item_name = ? AND seller_name = ? ORDER BY id DESC LIMIT 1";
             try (PreparedStatement pstId = con.prepareStatement(sqlGetId)) {
@@ -74,5 +85,7 @@ public abstract class ItemGeneric<T extends ItemGeneric<T>> extends Entity<T> {
     }
     
 
+
     protected abstract void saveSpecificDetails(Connection con, String idMoi) throws SQLException;
+    public abstract void loadSpecificDetails(Connection con) throws SQLException;
 }

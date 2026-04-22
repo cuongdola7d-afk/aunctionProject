@@ -6,10 +6,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import ddc.server.config.DatabaseConnection;
+import ddc.server.exception.ItemValidationException;
 import ddc.server.model.item.Art;
 import ddc.server.model.item.Electronics;
 import ddc.server.model.item.ItemGeneric;
 import ddc.server.model.item.Vehicle;
+import ddc.server.pattern.factory.ItemCreating.CreatorRegistry;
+import ddc.server.pattern.factory.ItemCreating.ItemRequest;
 
 public class ItemDAO {
 
@@ -38,29 +41,40 @@ public class ItemDAO {
         String sql = "SELECT * FROM ddc_items WHERE id = ?";
 
         try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement pst = con.prepareStatement(sql)) {
+            PreparedStatement pst = con.prepareStatement(sql)) {
 
             pst.setString(1, id);
-            ResultSet rs = pst.executeQuery();
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    // Bước 1: Đổ dữ liệu từ DB vào ItemRequest (DTO)
+                    ItemRequest request = new ItemRequest(rs.getString("item_name"),
+                                                          rs.getString("description"),
+                                                          rs.getString("category"),
+                                                          rs.getString("seller_name"));
+                       
+                    // Gán ID,cate để Factory hoặc các bước sau sử dụng
+                    String category = rs.getString("category");
+                    String itemId = rs.getString("id");
 
-            if (rs.next()) {
-                String itemId = rs.getString("id");
-                String itemName = rs.getString("item");
-                String category = rs.getString("category");
-                String description = rs.getString("description");
-                String seller = rs.getString("seller");
+                    ItemGeneric item = null;
+                    try {
+                        // Gọi Factory ở đây
+                        item = CreatorRegistry.getCreator(category).createItem(request);
+                    } catch (ItemValidationException e) {
+                        System.out.println("Lỗi validation khi load item: " + e.getMessage());
+                        // Bạn có thể xử lý thêm ở đây
+                    }
 
-                ItemGeneric item = buildItemByCategory(category);
-                if (item != null) {
-                    item.setId(itemId);
-                    item.setItemName(itemName);
-                    item.setDescription(description);
-                    item.setSellerName(seller);
+                    if (item != null) {
+                        item.setId(itemId);
+                        // Bước 3: Load nốt các thuộc tính riêng từ bảng phụ
+                        item.loadSpecificDetails(con);
+                    }
+                    return item;
                 }
-                return item;
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
         return null;
     }

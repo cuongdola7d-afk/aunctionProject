@@ -7,4 +7,5 @@ public class Item extends ItemGeneric<Item> {
 
     @Override
     public void saveSpecificDetails (Connection con, String id) {}
+    public void loadSpecificDetails(Connection con){}
 }

@@ -2,6 +2,7 @@ package ddc.server.model.item;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import ddc.server.exception.ItemValidationException;
@@ -36,6 +37,11 @@ public class Art extends ItemGeneric<Art> {
     }
 
     @Override
+    public String toString() {
+        return super.toString() + String.format(" | Tac gia: %s | Nam sang tac: %s", author, yearCreated);
+    }
+
+    @Override
     protected void saveSpecificDetails(Connection con, String itemId) throws SQLException {
         String sql = "INSERT INTO item_art (id, author, year_created) VALUES (?, ?, ?)";
         
@@ -49,8 +55,23 @@ public class Art extends ItemGeneric<Art> {
                 e.printStackTrace();
             }
         }
-
-    // HÀM QUAN TRỌNG NHẤT: Kiểm tra toàn bộ Exception trước khi trả về
+    
+    // Trong file Art.java
+    @Override
+    public void loadSpecificDetails(Connection con) throws SQLException {
+        String sql = "SELECT author, year_created FROM item_art WHERE id = ?";
+        try (PreparedStatement pst = con.prepareStatement(sql)) {
+            pst.setString(1, this.getId()); // Lấy ID của chính món đồ này
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    this.author = rs.getString("author");
+                    this.yearCreated = rs.getString("year_created");
+                }
+            }
+        }
+    }
+    
+    // Kiểm tra toàn bộ Exception trước khi trả về
     public Art validate() throws ItemValidationException {
         if (getItemName() == null || getItemName().isEmpty()) 
             throw new ItemValidationException.MissingFieldException("Tên tác phẩm không được trống");
