@@ -21,7 +21,7 @@ public class ItemService {
      * 3. Tạo và Validate Object
      * 4. Lưu vào Database thông qua DAO
      */
-    public boolean createAndSaveItem(ItemRequest req) {
+    public String createAndSaveItem(ItemRequest req) {
         try {
             if (req.getItemName() == null || req.getItemName().isEmpty()) {
                 throw new ItemValidationException.MissingFieldException("Tên sản phẩm không được để trống!");
@@ -32,7 +32,7 @@ public class ItemService {
             
             if (creator == null) {
                 System.out.println("Khong tim thay creator cho loai: " + req.getCategory());
-                return false;
+                return null;
             }
 
             // Bước 2: Dùng Factory để tạo ra đối tượng Item chuẩn
@@ -41,17 +41,17 @@ public class ItemService {
             System.out.println("Tao object thanh cong");
             
             //Bước 3: Sau khi có Object xịn, gọi DAO để "bốc" nó vào SQL
-            boolean isSaved = itemDAO.addItem(newItem);
+            String id = itemDAO.addItem(newItem);
 
-            if (isSaved) {
+            if (!id.isEmpty()) {
                 System.out.println("Service: Da luu san pham " + newItem.getItemName() + " thanh cong!");
             }
-            return isSaved;
+            return id;
             
 
         } catch (Exception e) {
             System.err.println("Service Loi: " + e.getMessage());
-            return false;
+            return null;
         }
     }
 

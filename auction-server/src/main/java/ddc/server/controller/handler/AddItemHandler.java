@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import ddc.server.config.GsonConfig;
 import ddc.server.controller.RequestMessage;
 import ddc.server.controller.service.ItemService;
+import ddc.server.network.response.BaseResponse;
 import ddc.server.pattern.factory.ItemCreating.ItemRequest;
 
 public class AddItemHandler implements ActionHandler {
@@ -13,7 +14,7 @@ public class AddItemHandler implements ActionHandler {
     private final ItemService itemService = new ItemService(); 
 
     @Override
-    public String handle(RequestMessage request) {
+    public BaseResponse handle(RequestMessage request) {
         try {
             System.out.println(">>> Server đang nhận ADD_ITEM...");
             
@@ -26,9 +27,9 @@ public class AddItemHandler implements ActionHandler {
             System.out.println(">>> Parse thành công SP: " + itemReq.getItemName());
 
             // 3. Thực hiện lưu
-            boolean isSuccess = itemService.createAndSaveItem(itemReq);
+            String id = itemService.createAndSaveItem(itemReq);
             
-            return isSuccess ? "\"SUCCESS\"" : "\"FAIL\"";
+            return !(id == null) ? "\"SUCCESS\"" : "\"FAIL\"";
 
         } catch (Throwable t) { 
             // Dùng Throwable để bắt TẤT CẢ mọi loại lỗi kể cả Error nghiêm trọng

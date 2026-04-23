@@ -1,4 +1,4 @@
-package ddc.client.network.response;
+package ddc.server.network.response;
 
 public class AddItemResponse extends Response<AddItemResponse> {
     private String id;

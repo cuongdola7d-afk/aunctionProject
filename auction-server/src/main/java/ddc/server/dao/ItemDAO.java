@@ -13,23 +13,23 @@ import ddc.server.model.item.Vehicle;
 
 public class ItemDAO {
 
-   public boolean addItem (ItemGeneric item) {
+   public String addItem (ItemGeneric item) {
         try (Connection con = DatabaseConnection.getConnection()) {
             con.setAutoCommit(false);
 
             try {
-                item.save(con);
+                String id = item.save(con);
 
                 con.commit();
-                return true;
+                return id;
             } catch (SQLException e) {
                 con.rollback();
                 e.printStackTrace();
-                return false;
+                return null;
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
+            return null;
         }
         
     }
