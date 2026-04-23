@@ -85,7 +85,7 @@ public class ItemDAO {
         return null;
     }
 
-    private ItemGeneric buildItemByCategory(String category) {
+   /* private ItemGeneric buildItemByCategory(String category) {
         if (category == null) {
             return null;
         }
@@ -100,5 +100,5 @@ public class ItemDAO {
             default:
                 return null;
         }
-    }
+    }*/
 }
