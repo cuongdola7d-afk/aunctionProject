@@ -37,10 +37,20 @@ public class Art extends ItemGeneric<Art> {
     }
 
     @Override
+<<<<<<< HEAD
     public String save(Connection con) throws SQLException {
         String sqlInsert = "CALL insert_art (?, ?, ?, ?, ?, ?)";
 
         String sqlGetId = "SELECT @item_id AS generated_id;";
+=======
+    public String toString() {
+        return super.toString() + String.format(" | Tac gia: %s | Nam sang tac: %s", author, yearCreated);
+    }
+
+    @Override
+    protected void saveSpecificDetails(Connection con, String itemId) throws SQLException {
+        String sql = "INSERT INTO item_art (id, author, year_created) VALUES (?, ?, ?)";
+>>>>>>> master
         
         try (PreparedStatement pst1 = con.prepareStatement(sqlInsert)) {
             pst1.setString(1, getItemName());
@@ -66,6 +76,7 @@ public class Art extends ItemGeneric<Art> {
             e.printStackTrace();
             return null;
         }
+<<<<<<< HEAD
     }
 
     // HÀM QUAN TRỌNG NHẤT: Kiểm tra toàn bộ Exception trước khi trả về
@@ -75,5 +86,33 @@ public class Art extends ItemGeneric<Art> {
         if (author == null || author.isEmpty())
             throw new ItemValidationException.MissingFieldException("Thiếu tên tác giả");
         return this;
+=======
+    
+    // Trong file Art.java
+    @Override
+    public void loadSpecificDetails(Connection con) throws SQLException {
+        String sql = "SELECT author, year_created FROM item_art WHERE id = ?";
+        try (PreparedStatement pst = con.prepareStatement(sql)) {
+            pst.setString(1, this.getId()); // Lấy ID của chính món đồ này
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    this.author = rs.getString("author");
+                    this.yearCreated = rs.getString("year_created");
+                }
+            }
+        }
+    }
+    
+    // Kiểm tra toàn bộ Exception trước khi trả về
+    public void validate() throws ItemValidationException {
+        super.validate();
+
+        if (author == null || author.isEmpty())
+            throw new ItemValidationException.MissingFieldException("Thiếu tên tác giả");
+
+        if (yearCreated == null || yearCreated.isEmpty())
+            throw new ItemValidationException.MissingFieldException("Thiếu tên năm sáng tác");
+
+>>>>>>> master
     }
 }

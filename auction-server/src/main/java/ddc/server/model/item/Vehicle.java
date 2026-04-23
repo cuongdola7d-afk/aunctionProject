@@ -34,6 +34,11 @@ public class Vehicle extends ItemGeneric<Vehicle> {
         this.year = year;
         return this;
     }
+    
+    @Override
+    public String toString() {
+        return super.toString() + String.format(" | Brand: %s | Nam SX: %d", manufacturer , year);
+    }
 
     @Override
     public String save(Connection con) throws SQLException {
@@ -67,14 +72,27 @@ public class Vehicle extends ItemGeneric<Vehicle> {
         }
     }
 
+    @Override
+    public void loadSpecificDetails(Connection con) throws SQLException {
+        String sql = "SELECT manufacturer, year FROM item_vehicle WHERE id = ?";
+        try (PreparedStatement pst = con.prepareStatement(sql)) {
+            pst.setString(1, this.getId()); // Lấy ID của chính món đồ này
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    this.manufacturer = rs.getString("manufacturer");
+                    this.year = rs.getInt("year");
+                }
+            }
+        }
+    }
+
     // Chốt chặn Validation cho phương tiện
-    public Vehicle validate() throws ItemValidationException {
-        if (getItemName() == null || getItemName().isEmpty()) 
-            throw new ItemValidationException.MissingFieldException("Tên phương tiện không được để trống");
+    public void validate() throws ItemValidationException {
+        // super.validate();
+
         if (manufacturer == null || manufacturer.isEmpty())
             throw new ItemValidationException.MissingFieldException("Thiếu thông tin nhà sản xuất");
         if (year < 1886) // Năm chiếc ô tô đầu tiên ra đời
             throw new ItemValidationException.InvalidPriceException("Năm sản xuất không hợp lệ");
-        return this;
     }
 }

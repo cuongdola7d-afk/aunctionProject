@@ -22,10 +22,10 @@ public class Server {
                 ClientHandler handler = new ClientHandler(clientSocket);
                 new Thread(handler).start();
             }
-
         } catch (Exception e) {
             System.out.println("Server Error! " + e.getMessage());
             e.printStackTrace();
         }
-    }
 }
+}
+

@@ -14,7 +14,6 @@ public class VehicleCreator extends ItemCreator {
                 .setCategory(req.category)
                 .setSellerName(req.sellerName)
                 .setManufacturer(req.manufacturer)
-                .setYear(req.year)
-                .validate();
+                .setYear(req.year);
     }
 }

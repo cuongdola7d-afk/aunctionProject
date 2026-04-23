@@ -64,23 +64,29 @@ public class Electronics extends ItemGeneric<Electronics> {
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
+    
+    @Override
+    public void loadSpecificDetails(Connection con) throws SQLException {
+        String sql = "SELECT brand, warranty_months FROM item_electronics WHERE id = ?";
+        try (PreparedStatement pst = con.prepareStatement(sql)) {
+            pst.setString(1, this.getId()); // Lấy ID của chính món đồ này
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    this.brand = rs.getString("brand");
+                    this.warrantyMonths = rs.getInt("warranty_months");
+                }
+            }
         }
     }
 
     // Chốt chặn Validation
-    public Electronics validate() throws ItemValidationException {
-        if (getItemName() == null || getItemName().isEmpty()) 
-            throw new ItemValidationException.MissingFieldException("Tên thiết kế bị trống");
-        
-        // if (getStartingPrice() <= 0)
-        //     throw new ItemValidationException.InvalidPriceException("Giá khởi điểm điện tử phải > 0");
+    public void validate() throws ItemValidationException {
+        super.validate();
 
         if (brand == null || brand.isEmpty())
             throw new ItemValidationException.MissingFieldException("Thiếu thương hiệu (Brand)");
             
         if (warrantyMonths < 0)
             throw new ItemValidationException.InvalidPriceException("Thời gian bảo hành không hợp lệ");
-
-        return this;
     }
 }

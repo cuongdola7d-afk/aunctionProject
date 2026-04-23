@@ -37,6 +37,7 @@ public class ItemService {
 
             // Bước 2: Dùng Factory để tạo ra đối tượng Item chuẩn
             ItemGeneric newItem = creator.createItem(req);
+            newItem.validate();
             System.out.println(newItem);
             System.out.println("Tao object thanh cong");
             
