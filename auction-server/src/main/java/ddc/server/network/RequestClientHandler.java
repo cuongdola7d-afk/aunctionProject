@@ -12,11 +12,11 @@ import ddc.server.config.GsonConfig;
 import ddc.server.controller.RequestMessage;
 import ddc.server.controller.handler.ActionHandler;
 
-public class ClientHandler implements Runnable {
+public class RequestClientHandler implements Runnable {
     private final Socket clientSocket;
     private final Gson gson;
     
-    public ClientHandler (Socket socket) {
+    public RequestClientHandler (Socket socket) {
         this.clientSocket = socket;
         this.gson = GsonConfig.newGson();
     }
