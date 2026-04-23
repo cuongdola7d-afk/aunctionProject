@@ -41,4 +41,7 @@ public class General extends ItemGeneric<General> {
             return null;
         }
     }
+
+    @Override
+    public void loadSpecificDetails(Connection con) {} 
 }

@@ -64,6 +64,9 @@ public class Electronics extends ItemGeneric<Electronics> {
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
     
     @Override
     public void loadSpecificDetails(Connection con) throws SQLException {
@@ -81,12 +84,13 @@ public class Electronics extends ItemGeneric<Electronics> {
 
     // Chốt chặn Validation
     public void validate() throws ItemValidationException {
-        super.validate();
+        // super.validate();
 
         if (brand == null || brand.isEmpty())
             throw new ItemValidationException.MissingFieldException("Thiếu thương hiệu (Brand)");
             
         if (warrantyMonths < 0)
             throw new ItemValidationException.InvalidPriceException("Thời gian bảo hành không hợp lệ");
+
     }
 }

@@ -66,6 +66,7 @@ public class Art extends ItemGeneric<Art> {
             e.printStackTrace();
             return null;
         }
+    }
     
     // Trong file Art.java
     @Override
@@ -76,7 +77,7 @@ public class Art extends ItemGeneric<Art> {
             try (ResultSet rs = pst.executeQuery()) {
                 if (rs.next()) {
                     this.author = rs.getString("author");
-                    this.yearCreated = rs.getString("year_created");
+                    this.yearCreated = rs.getInt("year_created");
                 }
             }
         }
@@ -84,13 +85,13 @@ public class Art extends ItemGeneric<Art> {
     
     // Kiểm tra toàn bộ Exception trước khi trả về
     public void validate() throws ItemValidationException {
-        super.validate();
+        // super.validate();
 
         if (author == null || author.isEmpty())
             throw new ItemValidationException.MissingFieldException("Thiếu tên tác giả");
 
-        if (yearCreated == null || yearCreated.isEmpty())
-            throw new ItemValidationException.MissingFieldException("Thiếu tên năm sáng tác");
+        // if (yearCreated == null || yearCreated.isEmpty())
+        //     throw new ItemValidationException.MissingFieldException("Thiếu tên năm sáng tác");
 
     }
 }
