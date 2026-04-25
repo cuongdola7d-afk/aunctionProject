@@ -1,4 +1,4 @@
-package ddc.server.pattern.factory.itemcreating;
+package ddc.server.pattern.factory;
 //Class lưu lại thông tin của item để nhét vào constructor -> createItem
 
 public class ItemRequest {
@@ -93,7 +93,7 @@ public class ItemRequest {
         return this;
     }
 
-    public ItemRequest setYearCreated(String yearCreated) {
+    public ItemRequest setYearCreated(int yearCreated) {
         this.yearCreated = yearCreated;
         return this;
     }
@@ -119,7 +119,7 @@ public class ItemRequest {
     public int getWarrantyMonths() { return warrantyMonths; }
 
     public String getAuthor() { return author; }
-    public String getYearCreated() { return yearCreated; }
+    public int getYearCreated() { return yearCreated; }
 
     public String getManufacturer() { return manufacturer; }
     public int getYear() { return year; }

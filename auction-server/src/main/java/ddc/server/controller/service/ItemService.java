@@ -3,9 +3,9 @@ package ddc.server.controller.service;
 import ddc.server.dao.ItemDAO;
 import ddc.server.exception.ItemValidationException;
 import ddc.server.model.item.ItemGeneric;
-import ddc.server.pattern.factory.itemcreating.CreatorRegistry;
-import ddc.server.pattern.factory.itemcreating.ItemCreator;
-import ddc.server.pattern.factory.itemcreating.ItemRequest;
+import ddc.server.pattern.factory.CreatorRegistry;
+import ddc.server.pattern.factory.ItemCreator;
+import ddc.server.pattern.factory.ItemRequest;
 
 public class ItemService {
     private final ItemDAO itemDAO;
@@ -39,9 +39,6 @@ public class ItemService {
             if (req.getCategory() == null || req.getCategory().isEmpty()) {
                 throw new ItemValidationException.InvalidCategoryException("Category khong duoc de trong!");
             }
-            
-            // Bước 1: Tìm Creator (Bản thân hàm này cũng đã throws InvalidCategoryException rồi)
-            ItemCreator creator = CreatorRegistry.getCreator(req.getCategory());
 
             // Bước 2: Tạo Object và Validate (Hàm này cũng throws MissingFieldException...)
             ItemGeneric newItem = creator.createItem(req);
@@ -61,6 +58,7 @@ public class ItemService {
             e.printStackTrace();
             return null;
         }
+    }
 
     /**
      * Lấy thông tin sản phẩm chi tiết

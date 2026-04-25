@@ -1,7 +1,10 @@
 package ddc.server.dao;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
+
 import ddc.server.model.item.Art;
 import ddc.server.model.item.ItemGeneric;
 
@@ -14,10 +17,10 @@ public class ItemDAOTest {
         Art art = new Art()
                     .setItemName("Tranh Test ID Tự Động")
                     .setSellerName("AdminTest")
-                    .setyearCreated("1999")
+                    .setyearCreated(1999)
                     .setAuthor("Artist Test");
 
-        boolean isSaved = itemDAO.addItem(art);
+        boolean isSaved = !itemDAO.addItem(art).isEmpty();
         assertTrue(isSaved, "DAO phai luu thanh cong ma khong can truyen ID");
     }
 

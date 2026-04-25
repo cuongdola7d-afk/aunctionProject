@@ -5,7 +5,7 @@ import ddc.server.controller.service.ItemService;
 import ddc.server.network.response.AddItemResponse;
 import ddc.server.network.response.BaseResponse;
 import ddc.server.network.response.Response;
-import ddc.server.pattern.factory.ItemCreating.ItemRequest;
+import ddc.server.pattern.factory.ItemRequest;
 
 public class AddItemHandler implements ActionHandler {
     // Thay vì gọi trực tiếp DAO, ta dùng Service

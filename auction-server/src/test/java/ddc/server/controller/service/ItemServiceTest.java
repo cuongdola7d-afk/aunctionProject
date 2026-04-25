@@ -1,14 +1,18 @@
 package ddc.server.controller.service;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import ddc.server.model.item.ItemGeneric;
-import ddc.server.pattern.factory.itemcreating.ItemRequest;
 import ddc.server.exception.ItemValidationException;
 import ddc.server.exception.ItemValidationException.InvalidCategoryException;
 import ddc.server.exception.ItemValidationException.MissingFieldException;
+import ddc.server.model.item.ItemGeneric;
+import ddc.server.pattern.factory.ItemRequest;
 
 public class ItemServiceTest {
     private static ItemService itemService;
@@ -64,8 +68,8 @@ public class ItemServiceTest {
                 .setCategory("ART")
                 .setAuthor("An danh")
                 .setSellerName("Nguyen Van A")
-                .setYearCreated("1991");
-        boolean result = itemService.createAndSaveItem(req);
+                .setYearCreated(1991);
+        boolean result = !itemService.createAndSaveItem(req).isEmpty();
         
         assertTrue(result, "Service phai tra ve true khi luu thanh cong");
     }

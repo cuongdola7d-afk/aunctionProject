@@ -17,6 +17,7 @@ import com.google.gson.JsonSerializer;
 
 import ddc.server.model.item.Art;
 import ddc.server.model.item.Electronics;
+import ddc.server.model.item.General;
 import ddc.server.model.item.ItemGeneric;
 import ddc.server.model.item.Vehicle;
 import ddc.server.model.user.User;
@@ -80,6 +81,8 @@ public class GsonConfig {
                         String category = jsonObject.get("category").getAsString();
 
                         switch (category) {
+                            case "GENERAL":
+                                return context.deserialize(json, General.class);
                             case "ELECTRONICS":
                                 return context.deserialize(json, Electronics.class);
                             case "VEHICLE":
