@@ -25,4 +25,7 @@ module ddc.server {
     opens ddc.server.model.item to com.google.gson;
     opens ddc.server.model.user to com.google.gson;
     opens ddc.server.exception to com.google.gson;
+    opens ddc.server.pattern.Singleton to org.junit.platform.commons;
+    opens ddc.server.pattern.factory.itemcreating to org.junit.platform.commons;
+    
 }

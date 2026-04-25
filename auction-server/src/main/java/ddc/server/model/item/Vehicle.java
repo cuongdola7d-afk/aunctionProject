@@ -77,6 +77,6 @@ public class Vehicle extends ItemGeneric<Vehicle> {
             throw new ItemValidationException.MissingFieldException("Thiếu thông tin nhà sản xuất");
             
         if (year < 1886) // Năm chiếc ô tô đầu tiên ra đời
-            throw new ItemValidationException.InvalidPriceException("Năm sản xuất không hợp lệ");
+            throw new ItemValidationException.InvalidValueException("Năm sản xuất không hợp lệ");
     }
 }

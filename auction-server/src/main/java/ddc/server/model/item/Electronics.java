@@ -77,6 +77,6 @@ public class Electronics extends ItemGeneric<Electronics> {
             throw new ItemValidationException.MissingFieldException("Thiếu thương hiệu (Brand)");
             
         if (warrantyMonths < 0)
-            throw new ItemValidationException.InvalidPriceException("Thời gian bảo hành không hợp lệ");
+            throw new ItemValidationException.InvalidValueException("Thời gian bảo hành không hợp lệ");
     }
 }

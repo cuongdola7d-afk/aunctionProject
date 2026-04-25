@@ -1,7 +1,9 @@
-package ddc.server.pattern.factory.ItemCreating;
+package ddc.server.pattern.factory.itemcreating;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import ddc.server.exception.ItemValidationException.InvalidCategoryException;
 
 // Lớp như cái kho chứa các Creators (Để không switch-case)
 public class CreatorRegistry {
@@ -16,8 +18,17 @@ public class CreatorRegistry {
     }
 
     //Hàm lấy Creator
-    public static ItemCreator getCreator(String type) {
-        if (type == null) return null;
-        return creators.get(type.toUpperCase());
-    }
+    public static ItemCreator getCreator(String type) throws InvalidCategoryException {
+        if (type == null || type.trim().isEmpty()) {
+            throw new InvalidCategoryException("Category khong duoc de trong!");
+        }
+        
+        ItemCreator creator = creators.get(type.toUpperCase());
+        
+        if (creator == null) {
+            throw new InvalidCategoryException("He thong chua ho tro loai: " + type);
+        }
+        
+        return creator;
+}
 }

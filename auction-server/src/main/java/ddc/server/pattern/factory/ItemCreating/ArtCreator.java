@@ -1,4 +1,4 @@
-package ddc.server.pattern.factory.ItemCreating;
+package ddc.server.pattern.factory.itemcreating;
 import ddc.server.exception.ItemValidationException;
 import ddc.server.model.item.Art;
 import ddc.server.model.item.ItemGeneric;

@@ -7,12 +7,9 @@ import java.sql.SQLException;
 
 import ddc.server.config.DatabaseConnection;
 import ddc.server.exception.ItemValidationException;
-import ddc.server.model.item.Art;
-import ddc.server.model.item.Electronics;
 import ddc.server.model.item.ItemGeneric;
-import ddc.server.model.item.Vehicle;
-import ddc.server.pattern.factory.ItemCreating.CreatorRegistry;
-import ddc.server.pattern.factory.ItemCreating.ItemRequest;
+import ddc.server.pattern.factory.itemcreating.CreatorRegistry;
+import ddc.server.pattern.factory.itemcreating.ItemRequest;
 
 public class ItemDAO {
 

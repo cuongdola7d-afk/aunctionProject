@@ -1,4 +1,4 @@
-package ddc.server.pattern.factory.ItemCreating;
+package ddc.server.pattern.factory.itemcreating;
 //Class lưu lại thông tin của item để nhét vào constructor -> createItem
 
 public class ItemRequest {
@@ -23,12 +23,7 @@ public class ItemRequest {
     public ItemRequest() {
     }
 
-    public String getCategory(){
-        return this.category;
-    }
-    public String getItemName(){
-        return this.itemName;
-    }
+
     // 2. Constructor đầy đủ (Dùng khi bạn muốn tạo request thủ công trong code test)
     public ItemRequest(String itemName, String description, String category, String sellerName) {
         this.itemName = itemName;
@@ -59,4 +54,73 @@ public class ItemRequest {
         req.year = year;
         return req;
     }
+
+    // --- FLUENT SETTERS ---
+    public ItemRequest setCategory(String category) {
+        this.category = category;
+        return this;
+    }
+
+    public ItemRequest setItemName(String itemName) {
+        this.itemName = itemName;
+        return this;
+    }
+
+    public ItemRequest setDescription(String description) {
+        this.description = description;
+        return this;
+    }
+
+    public ItemRequest setSellerName(String sellerName) {
+        this.sellerName = sellerName;
+        return this;
+    }
+
+    // Setters cho Electronics
+    public ItemRequest setBrand(String brand) {
+        this.brand = brand;
+        return this;
+    }
+
+    public ItemRequest setWarrantyMonths(int warrantyMonths) {
+        this.warrantyMonths = warrantyMonths;
+        return this;
+    }
+
+    // Setters cho Art
+    public ItemRequest setAuthor(String author) {
+        this.author = author;
+        return this;
+    }
+
+    public ItemRequest setYearCreated(String yearCreated) {
+        this.yearCreated = yearCreated;
+        return this;
+    }
+
+    // Setters cho Vehicle
+    public ItemRequest setManufacturer(String manufacturer) {
+        this.manufacturer = manufacturer;
+        return this;
+    }
+
+    public ItemRequest setYear(int year) {
+        this.year = year;
+        return this;
+    }
+
+    // --- GETTERS (Để Factory lấy dữ liệu ra) ---
+    public String getCategory() { return category; }
+    public String getItemName() { return itemName; }
+    public String getDescription() { return description; }
+    public String getSellerName() { return sellerName; }
+
+    public String getBrand() { return brand; }
+    public int getWarrantyMonths() { return warrantyMonths; }
+
+    public String getAuthor() { return author; }
+    public String getYearCreated() { return yearCreated; }
+
+    public String getManufacturer() { return manufacturer; }
+    public int getYear() { return year; }
 }

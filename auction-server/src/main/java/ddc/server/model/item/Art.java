@@ -76,10 +76,10 @@ public class Art extends ItemGeneric<Art> {
         super.validate();
 
         if (author == null || author.isEmpty())
-            throw new ItemValidationException.MissingFieldException("Thiếu tên tác giả");
+            throw new ItemValidationException.MissingFieldException("Thieu ten tac gia");
 
         if (yearCreated == null || yearCreated.isEmpty())
-            throw new ItemValidationException.MissingFieldException("Thiếu tên năm sáng tác");
+            throw new ItemValidationException.MissingFieldException("Thieu nam sang tac");
 
     }
 }
