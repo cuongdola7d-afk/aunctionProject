@@ -21,13 +21,18 @@ public class ItemService {
      * 3. Tạo và Validate Object
      * 4. Lưu vào Database thông qua DAO
      */
-    // 1. Thêm "throws ItemValidationException" vào tên hàm
-        public boolean createAndSaveItem(ItemRequest req) throws ItemValidationException {
-            // 2. BỎ HOÀN TOÀN KHỐI TRY-CATCH
-            
-            // Check tên
+    public String createAndSaveItem(ItemRequest req) {
+        try {
             if (req.getItemName() == null || req.getItemName().isEmpty()) {
-                throw new ItemValidationException.MissingFieldException("Ten san pham khong duoc de trong!");
+                throw new ItemValidationException.MissingFieldException("Tên sản phẩm không được để trống!");
+            }
+            // Bước 1: Tìm xưởng sản xuất dựa trên type
+            System.out.println(">>> Đang kiem tra Category: " + req.getCategory());
+            ItemCreator creator = CreatorRegistry.getCreator(req.getCategory());
+            
+            if (creator == null) {
+                System.out.println("Khong tim thay creator cho loai: " + req.getCategory());
+                return null;
             }
             
             // Check Category
@@ -42,13 +47,19 @@ public class ItemService {
             ItemGeneric newItem = creator.createItem(req);
             newItem.validate();
             
-            // Bước 3: Lưu vào DB
-            boolean isSaved = itemDAO.addItem(newItem);
+            //Bước 3: Sau khi có Object xịn, gọi DAO để "bốc" nó vào SQL
+            String id = itemDAO.addItem(newItem);
 
-            if (isSaved) {
-                System.out.println("Service: Da luu san pham thanh cong!");
+            if (!id.isEmpty()) {
+                System.out.println("Service: Da luu san pham " + newItem.getItemName() + " thanh cong!");
             }
-            return isSaved;
+            return id;
+            
+
+        } catch (Exception e) {
+            System.err.println("Service Loi: " + e.getMessage());
+            e.printStackTrace();
+            return null;
         }
 
     /**

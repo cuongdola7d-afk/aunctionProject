@@ -40,23 +40,37 @@ public class Vehicle extends ItemGeneric<Vehicle> {
         return super.toString() + String.format(" | Brand: %s | Nam SX: %d", manufacturer , year);
     }
 
- @Override
-    protected void saveSpecificDetails(Connection con, String itemId) throws SQLException {
-        String sql = "INSERT INTO item_vehicle (id, manufacterer, year) VALUES (?, ?, ?)";
+    @Override
+    public String save(Connection con) throws SQLException {
+        String sqlInsert = "CALL insert_vehicle (?, ?, ?, ?, ?, ?)";
         
-        try (PreparedStatement pst = con.prepareStatement(sql)) {
-            pst.setString(1, itemId);          // Dùng itemId nhận được từ cha
-            pst.setString(2, this.manufacturer);       
-            pst.setInt(3, this.year); 
+        try (PreparedStatement pst1 = con.prepareStatement(sqlInsert)) {
+            pst1.setString(1, getItemName());
+            pst1.setString(2, getCategory());
+            pst1.setString(3, getDescription());
+            pst1.setString(4, getSellerName());
+            pst1.setString(5, manufacturer);
+            pst1.setInt(6, year);
             
-            pst.executeUpdate();
-            } catch (SQLException e) {
-                e.printStackTrace();
+            pst1.executeUpdate();
+
+            String sqlGetId = "SELECT @item_id AS generated_id;";
+            try (PreparedStatement pst2 = con.prepareStatement(sqlGetId);
+                ResultSet rs = pst2.executeQuery()) {
+                if (rs.next()) {
+                    String id = rs.getString("generated_id");
+                    return id;
+                }
             }
+            return null;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
         }
+    }
 
     @Override
-    public void loadSpecificDetails(Connection con) throws SQLException {
+    public void load(Connection con) throws SQLException {
         String sql = "SELECT manufacturer, year FROM item_vehicle WHERE id = ?";
         try (PreparedStatement pst = con.prepareStatement(sql)) {
             pst.setString(1, this.getId()); // Lấy ID của chính món đồ này
@@ -71,11 +85,10 @@ public class Vehicle extends ItemGeneric<Vehicle> {
 
     // Chốt chặn Validation cho phương tiện
     public void validate() throws ItemValidationException {
-        super.validate();
+        // super.validate();
 
         if (manufacturer == null || manufacturer.isEmpty())
             throw new ItemValidationException.MissingFieldException("Thiếu thông tin nhà sản xuất");
-            
         if (year < 1886) // Năm chiếc ô tô đầu tiên ra đời
             throw new ItemValidationException.InvalidValueException("Năm sản xuất không hợp lệ");
     }

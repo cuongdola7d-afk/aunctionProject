@@ -14,7 +14,7 @@ public class ItemRequest {
 
     // Thông tin riêng cho Art
     public String author;
-    public String yearCreated;
+    public int yearCreated;
 
     // Thông tin riêng cho Vehicle
     public String manufacturer;
@@ -34,7 +34,7 @@ public class ItemRequest {
     }
 
     // Gợi ý: Nếu bạn muốn tạo ArtRequest nhanh
-    public static ItemRequest createArtRequest(String itemName, String description, String category, String sellerName, String author, String year) {
+    public static ItemRequest createArtRequest(String itemName, String description, String category, String sellerName, String author, int year) {
         ItemRequest req = new ItemRequest(itemName,description,category,sellerName);
         req.author = author;
         req.yearCreated = year;

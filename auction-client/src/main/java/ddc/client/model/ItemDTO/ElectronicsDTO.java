@@ -6,6 +6,10 @@ public class ElectronicsDTO extends ItemGeneric<ElectronicsDTO>{
 
     public ElectronicsDTO () {}
 
+    public static ElectronicsDTO create() {
+        return new ElectronicsDTO();
+    }
+
     //Getters
     public String getBrand() { return brand; }
     public int getWarrantyMonths() { return warrantyMonths; }

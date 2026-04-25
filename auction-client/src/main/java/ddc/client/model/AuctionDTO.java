@@ -1,175 +1,85 @@
 package ddc.client.model;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
-public class AuctionDTO {//Data transfer objects
+import ddc.client.model.ItemDTO.ItemGeneric;
 
-    private Long auctionId;
-    private Long itemId;
-    private String itemName;
-    private String description;
+public class AuctionDTO {
+    private String auctionId;
+    private ItemGeneric item;
+    private List<BidDTO> bidHistory = new ArrayList<>();
 
-    private BigDecimal startingPrice;
-    private BigDecimal currentPrice;
-    private BigDecimal minimumNextBid;
+    private AuctionStatus status = AuctionStatus.OPEN;
 
-    private Long highestBidderId;
-    private String highestBidderName;
-
+    private UserDTO highestBidder;
+    private double currentPrice;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-
-    private String status; // OPEN, RUNNING, FINISHED,, CANCELLED
 
     public AuctionDTO() {
     }
 
-    public AuctionDTO(Long auctionId,
-                      Long itemId,
-                      String itemName,
-                      String description,
-                      BigDecimal startingPrice,
-                      BigDecimal currentPrice,
-                      BigDecimal minimumNextBid,
-                      Long highestBidderId,
-                      String highestBidderName,
-                      LocalDateTime startTime,
-                      LocalDateTime endTime,
-                      String status) {
-        this.auctionId = auctionId;
-        this.itemId = itemId;
-        this.itemName = itemName;
-        this.description = description;
-        this.startingPrice = startingPrice;
-        this.currentPrice = currentPrice;
-        this.minimumNextBid = minimumNextBid;
-        this.highestBidderId = highestBidderId;
-        this.highestBidderName = highestBidderName;
-        this.startTime = startTime;
-        this.endTime = endTime;
+    //Getters
+    public ItemGeneric getItem () { return item; }
+    public List<BidDTO> getBidHistory () { return bidHistory; }
+    public AuctionStatus getStatus () { return status; }
+    public UserDTO getHighestBidder() { return highestBidder; }
+    public double getCurrentPrice() { return currentPrice; }
+    public LocalDateTime getStartTime() { return startTime; }
+    public LocalDateTime getEndTime() { return endTime; }
+
+    //Setters
+    public AuctionDTO setItem (ItemGeneric item) {
+        this.item = item;
+        return this;
+    }
+
+    public AuctionDTO setStatus (AuctionStatus status) {
         this.status = status;
+        return this;
     }
 
-    public Long getAuctionId() {
-        return auctionId;
+    public AuctionDTO setHighestBidder (UserDTO highestBidder) {
+        this.highestBidder = highestBidder;
+        return this;
     }
 
-    public void setAuctionId(Long auctionId) {
-        this.auctionId = auctionId;
-    }
-
-    public Long getItemId() {
-        return itemId;
-    }
-
-    public void setItemId(Long itemId) {
-        this.itemId = itemId;
-    }
-
-    public String getItemName() {
-        return itemName;
-    }
-
-    public void setItemName(String itemName) {
-        this.itemName = itemName;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public BigDecimal getStartingPrice() {
-        return startingPrice;
-    }
-
-    public void setStartingPrice(BigDecimal startingPrice) {
-        this.startingPrice = startingPrice;
-    }
-
-    public BigDecimal getCurrentPrice() {
-        return currentPrice;
-    }
-
-    public void setCurrentPrice(BigDecimal currentPrice) {
+    public AuctionDTO setCurrentPrice (double currentPrice) {
         this.currentPrice = currentPrice;
+        return this;
     }
 
-    public BigDecimal getMinimumNextBid() {
-        return minimumNextBid;
-    }
-
-    public void setMinimumNextBid(BigDecimal minimumNextBid) {
-        this.minimumNextBid = minimumNextBid;
-    }
-
-    public Long getHighestBidderId() {
-        return highestBidderId;
-    }
-
-    public void setHighestBidderId(Long highestBidderId) {
-        this.highestBidderId = highestBidderId;
-    }
-
-    public String getHighestBidderName() {
-        return highestBidderName;
-    }
-
-    public void setHighestBidderName(String highestBidderName) {
-        this.highestBidderName = highestBidderName;
-    }
-
-    public LocalDateTime getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(LocalDateTime startTime) {
+    public AuctionDTO setStartTime (LocalDateTime startTime) {
         this.startTime = startTime;
+        return this;
     }
 
-    public LocalDateTime getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(LocalDateTime endTime) {
+    public AuctionDTO setEndTime (LocalDateTime endTime) {
         this.endTime = endTime;
+        return this;
     }
 
-    public String getStatus() {
-        return status;
+    public void startAuction() {
+        this.status = AuctionStatus.RUNNING;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void endAuction() {
+        this.status = AuctionStatus.FINISHED;
     }
 
-    public boolean isRunning() {
-        return "RUNNING".equalsIgnoreCase(status);
-    }
+    public void placeBid(BidDTO bid) {
+        if (status != AuctionStatus.RUNNING) {
+            throw new RuntimeException("Auction not running.");
+        }
 
-    public boolean isFinished() {
-        return "FINISHED".equalsIgnoreCase(status);
-    }
+        if (bid.getBidAmount() <= currentPrice) {
+            throw new RuntimeException("Bidded amount lower the current.");
+        }
 
-    @Override
-    public String toString() {
-        return "AuctionDTO{" +
-                "auctionId=" + auctionId +
-                ", itemId=" + itemId +
-                ", itemName='" + itemName + '\'' +
-                ", description='" + description + '\'' +
-                ", startingPrice=" + startingPrice +
-                ", currentPrice=" + currentPrice +
-                ", minimumNextBid=" + minimumNextBid +
-                ", highestBidderId=" + highestBidderId +
-                ", highestBidderName='" + highestBidderName + '\'' +
-                ", startTime=" + startTime +
-                ", endTime=" + endTime +
-                ", status='" + status + '\'' +
-                '}';
+        bidHistory.add(bid);
+        currentPrice = bid.getBidAmount();
+        highestBidder = bid.getBidder();
     }
 }
