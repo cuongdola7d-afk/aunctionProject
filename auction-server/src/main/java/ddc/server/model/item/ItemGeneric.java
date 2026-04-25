@@ -3,6 +3,7 @@ package ddc.server.model.item;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import ddc.server.exception.ItemValidationException;
 import ddc.server.model.entity.Entity;
 
 /**
@@ -43,5 +44,6 @@ public abstract class ItemGeneric<T extends ItemGeneric<T>> extends Entity<T> {
     }
 
     public abstract String save(Connection con) throws SQLException;
-    public abstract void loadSpecificDetails(Connection con) throws SQLException;
+    public abstract void load(Connection con) throws SQLException;
+    public abstract void validate() throws ItemValidationException; 
 }

@@ -4,9 +4,9 @@
  import java.util.Collections;
  import java.util.List;
 
+import ddc.server.dao.AuctionDAO;
 import ddc.server.exception.AuctionClosedException;
 import ddc.server.exception.InvalidBidException;
-import ddc.server.model.item.ItemGeneric;
 import ddc.server.model.transaction.Auction;
 import ddc.server.model.transaction.AuctionStatus;
 import ddc.server.model.transaction.Bid;
@@ -14,29 +14,27 @@ import ddc.server.model.user.Bidder;
 import ddc.server.model.user.User;
 
 public class AuctionService {
+    private final AuctionDAO auctionDAO;
 
-    public Auction createAuction(ItemGeneric item, double currentPrice, LocalDateTime startTime, LocalDateTime endTime)
-            throws InvalidBidException {
+    public AuctionService() { this.auctionDAO = new AuctionDAO(); }
 
-        if (item == null) {
-            throw new InvalidBidException("Item không được null.");
-        }
-        if (startTime == null) {
-            throw new InvalidBidException("startTime không được null.");
-        }
-        if (endTime == null) {
-            throw new InvalidBidException("endTime không được null.");
-        }
-        if (!endTime.isAfter(startTime)) {
-            throw new InvalidBidException("endTime phải sau startTime.");
-        }
+    public boolean createAuction(Auction auction) throws InvalidBidException {
 
-        Auction auction = new Auction()
-                            .setItem(item)
-                            .setStartTime(startTime)
-                            .setEndTime(endTime)
-                            .setCurrentPrice(currentPrice);
-        return auction;
+        // if (item == null) {
+        //     throw new InvalidBidException("Item không được null.");
+        // }
+        // if (startTime == null) {
+        //     throw new InvalidBidException("startTime không được null.");
+        // }
+        // if (endTime == null) {
+        //     throw new InvalidBidException("endTime không được null.");
+        // }
+        // if (!endTime.isAfter(startTime)) {
+        //     throw new InvalidBidException("endTime phải sau startTime.");
+        // }
+        boolean isSuccess = auctionDAO.createAuction(auction);
+
+        return isSuccess;
     }
 
      public void refreshAuctionStatus(Auction auction) {

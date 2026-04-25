@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import ddc.server.config.GsonConfig;
 import ddc.server.controller.RequestMessage;
 import ddc.server.controller.handler.ActionHandler;
+import ddc.server.network.response.Response;
 
 public class ClientHandler implements Runnable {
     private final Socket clientSocket;
@@ -33,14 +34,16 @@ public class ClientHandler implements Runnable {
             String response;
 
             if (handler != null) {
-                response = handler.handle(request);
+                response = gson.toJson(handler.handle(request));
             } else {
-                response = "UNDEFINED BEHAVIOR!!!";
+                response = gson.toJson(new Response().setStatus("UNDEFINED BEHAVIOR!!!"));
             }
 
             out.println(response);
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            
         }
     }
 }

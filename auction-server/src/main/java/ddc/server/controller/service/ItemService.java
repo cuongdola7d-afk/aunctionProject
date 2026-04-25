@@ -52,6 +52,7 @@ public class ItemService {
 
         } catch (Exception e) {
             System.err.println("Service Loi: " + e.getMessage());
+            e.printStackTrace();
             return null;
         }
     }

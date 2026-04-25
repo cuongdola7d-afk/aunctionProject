@@ -10,10 +10,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import com.google.gson.Gson;
+
+import ddc.client.config.GsonConfig;
 import ddc.client.exception.ItemValidationException;
+import ddc.client.model.AuctionDTO;
 import ddc.client.model.ItemDTO.ItemGeneric;
+import ddc.client.model.ItemDTO.factory.CreatorRegistry;
+import ddc.client.model.ItemDTO.factory.ItemRequest;
 import ddc.client.network.ClientToServer;
 import ddc.client.network.UserSession;
+import ddc.client.network.response.AddItemResponse;
+import ddc.client.network.response.BaseResponse;
+import ddc.client.network.response.GetItemResponse;
 import javafx.animation.FadeTransition;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
@@ -62,6 +71,8 @@ public class UploadItem implements Initializable {
 
     private Category currentCat;
     private final String currentUserUsername = UserSession.getInstance().getUsername();
+
+    private final Gson gson = GsonConfig.newGson();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -177,10 +188,10 @@ public class UploadItem implements Initializable {
     @FXML
     private void handleInitialize() {
         try {
-            String startingPrice = priceField.getText();
+            double startingPrice = Double.parseDouble(priceField.getText());
 
             // Kiểm tra giá hợp lệ
-            if (Double.parseDouble(startingPrice) <= 0)
+            if (startingPrice <= 0)
                 throw new ItemValidationException("Giá phải > 0");
             // kiểm tra ngày hợp lệ
             if (auctionDatePicker.getValue() == null) {
@@ -189,40 +200,58 @@ public class UploadItem implements Initializable {
             // Kiểm tra nếu ngày chọn là ngày trong quá khứ
             if (auctionDatePicker.getValue().isBefore(LocalDate.now())) {
                 throw new ItemValidationException.InvalidDurationException("Ngày kết thúc không được ở quá khứ!");
-            }
+            }   
+                
+                DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
-            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+                LocalDate date = auctionDatePicker.getValue();
+                LocalTime time = LocalTime.parse(timeField.getText(), timeFormatter);
 
-            LocalDate date = auctionDatePicker.getValue();
-            LocalTime time = LocalTime.parse(timeField.getText(), timeFormatter);
+                LocalDateTime datetime = LocalDateTime.of(date, time);
 
-            LocalDateTime datetime = LocalDateTime.of(date, time);
+                String itemName = itemNameField.getText();
+                String description = itemDescriptionArea.getText();
+                String sellerName = currentUserUsername;
+                
+                registerButton.setText("Đang xử lý... ");
+                registerButton.setDisable(true); // Khóa nút để tránh bấm lung tung
+                registerButton.setStyle("-fx-background-color: #555555; -fx-text-fill: white;");
 
-            registerButton.setText("Đang xử lý... ");
-            registerButton.setDisable(true); // Khóa nút để tránh bấm lung tung
-            registerButton.setStyle("-fx-background-color: #555555; -fx-text-fill: white;");
+                //
+                ItemGeneric item = currentCat.getItemData(itemName, description, sellerName);
+                String addedItemJson = ClientToServer.sendRequest("ADD_ITEM", item);
+                AddItemResponse addedItemResponse = gson.fromJson(addedItemJson, AddItemResponse.class);
 
-            String itemName = itemNameField.getText();
-            String description = itemDescriptionArea.getText();
-            String sellerName = currentUserUsername;
-            
-            //
-            ItemGeneric item = currentCat.getItemData(itemName, description, sellerName);
-            String response = ClientToServer.sendRequest("ADD_ITEM", item);
+                if (addedItemResponse != null && addedItemResponse.getStatus().contains("SUCCESS")) {
+                    String getItemJson = ClientToServer.sendRequest("GET_ITEM", addedItemResponse.getId());
+                    GetItemResponse gottenItemResponse = gson.fromJson(getItemJson, GetItemResponse.class);
 
-            if (response != null && response.contains("SUCCESS")) {
-                registerButton.setText("Thành công! ✔");
-                registerButton.setStyle("-fx-background-color: #28a745; -fx-text-fill: white; -fx-font-weight: bold;");
+                    if (gottenItemResponse != null && gottenItemResponse.getStatus().contains("SUCCESS")) {
+                        ItemRequest gottenItemRequest = gson.fromJson(gottenItemResponse.getItemJson(), ItemRequest.class);
+                        ItemGeneric gottenItem = CreatorRegistry.getCreator(gottenItemRequest.getCategory()).createItem(gottenItemRequest);
+                        
+                        AuctionDTO auction = new AuctionDTO()
+                                            .setItem(gottenItem)
+                                            .setCurrentPrice(startingPrice)
+                                            .setStartTime(LocalDateTime.now())
+                                            .setEndTime(datetime);
+                        String createAuctionJson = ClientToServer.sendRequest("CREATE_AUCTION", auction);
+                        BaseResponse response = gson.fromJson(createAuctionJson, BaseResponse.class);
 
-                // 4. Đợi 1 giây rồi tắt cửa sổ
-                PauseTransition closePause = new PauseTransition(Duration.seconds(1));
-                closePause.setOnFinished(event -> {
-                    Stage stage = (Stage) registerButton.getScene().getWindow();
-                    stage.close();
-                });
-                closePause.play();
-            }
-        
+                        if (response != null && response.getStatus().contains("SUCCESS")) {
+                            registerButton.setText("Thành công! ✔");
+                            registerButton.setStyle("-fx-background-color: #28a745; -fx-text-fill: white; -fx-font-weight: bold;");
+
+                            // 4. Đợi 1 giây rồi tắt cửa sổ
+                            PauseTransition closePause = new PauseTransition(Duration.seconds(1));
+                            closePause.setOnFinished(event -> {
+                                Stage stage = (Stage) registerButton.getScene().getWindow();
+                                stage.close();
+                            });
+                            closePause.play();
+                        }
+                    }
+                }
         } catch (ItemValidationException e) {
             showErrorAlert("Lỗi nhập liệu", e.getMessage());
         } catch (NumberFormatException e) {

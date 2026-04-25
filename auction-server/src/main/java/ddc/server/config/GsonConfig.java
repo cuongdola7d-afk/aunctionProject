@@ -15,6 +15,10 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
+import ddc.server.model.item.Art;
+import ddc.server.model.item.Electronics;
+import ddc.server.model.item.ItemGeneric;
+import ddc.server.model.item.Vehicle;
 import ddc.server.model.user.User;
 
 public class GsonConfig {
@@ -62,6 +66,29 @@ public class GsonConfig {
                         }
 
                         return user;
+                    }
+                })
+                .registerTypeAdapter(ItemGeneric.class, new JsonDeserializer<ItemGeneric>() {
+                    @Override
+                    public ItemGeneric deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                        JsonObject jsonObject = json.getAsJsonObject();
+
+                        if (!jsonObject.has("category")) {
+                            throw new JsonParseException("Không tìm thấy trường phân loại (category) trong JSON");
+                        }
+                        
+                        String category = jsonObject.get("category").getAsString();
+
+                        switch (category) {
+                            case "ELECTRONICS":
+                                return context.deserialize(json, Electronics.class);
+                            case "VEHICLE":
+                                return context.deserialize(json, Vehicle.class);
+                            case "ART":
+                                return context.deserialize(json, Art.class);
+                            default:
+                                throw new JsonParseException("Không hỗ trợ loại sản phẩm này: " + category);
+                        }
                     }
                 })
                 .create();

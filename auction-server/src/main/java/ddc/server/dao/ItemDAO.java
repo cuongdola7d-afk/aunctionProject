@@ -46,7 +46,7 @@ public class ItemDAO {
             pst.setString(1, id);
             try (ResultSet rs = pst.executeQuery()) {
                 if (rs.next()) {
-                    // Bước 1: Đổ dữ liệu từ DB vào ItemRequest (DTO)
+                    // Bước 1: Đổ dữ liệu từ DB vào ItemRequest
                     ItemRequest request = new ItemRequest(rs.getString("item_name"),
                                                           rs.getString("description"),
                                                           rs.getString("category"),
@@ -62,13 +62,12 @@ public class ItemDAO {
                         item = CreatorRegistry.getCreator(category).createItem(request);
                     } catch (ItemValidationException e) {
                         System.out.println("Lỗi validation khi load item: " + e.getMessage());
-                        // Bạn có thể xử lý thêm ở đây
+                        e.printStackTrace();
                     }
 
                     if (item != null) {
                         item.setId(itemId);
-                        // Bước 3: Load nốt các thuộc tính riêng từ bảng phụ
-                        item.loadSpecificDetails(con);
+                        item.load(con);
                         try {
                             item.validate(); 
                         } catch (ItemValidationException e) {

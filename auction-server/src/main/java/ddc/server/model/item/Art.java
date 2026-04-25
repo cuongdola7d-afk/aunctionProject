@@ -40,8 +40,6 @@ public class Art extends ItemGeneric<Art> {
     public String save(Connection con) throws SQLException {
         String sqlInsert = "CALL insert_art (?, ?, ?, ?, ?, ?)";
 
-        String sqlGetId = "SELECT @item_id AS generated_id;";
-        
         try (PreparedStatement pst1 = con.prepareStatement(sqlInsert)) {
             pst1.setString(1, getItemName());
             pst1.setString(2, getCategory());
@@ -50,15 +48,14 @@ public class Art extends ItemGeneric<Art> {
             pst1.setString(5, author);
             pst1.setInt(6, yearCreated);
             
-            int rowExecuted = pst1.executeUpdate();
-
-            if (rowExecuted > 0) {
-                try (PreparedStatement pst2 = con.prepareStatement(sqlGetId);
-                    ResultSet rs = pst2.executeQuery()) {
-                    if (rs.next()) {
-                        String id = rs.getString("generated_id");
-                        return id;
-                    }
+            pst1.executeUpdate();
+            
+            String sqlGetId = "SELECT @item_id AS generated_id;";
+            try (PreparedStatement pst2 = con.prepareStatement(sqlGetId);
+                ResultSet rs = pst2.executeQuery()) {
+                if (rs.next()) {
+                    String id = rs.getString("generated_id");
+                    return id;
                 }
             }
             return null;
@@ -70,7 +67,7 @@ public class Art extends ItemGeneric<Art> {
     
     // Trong file Art.java
     @Override
-    public void loadSpecificDetails(Connection con) throws SQLException {
+    public void load(Connection con) throws SQLException {
         String sql = "SELECT author, year_created FROM item_art WHERE id = ?";
         try (PreparedStatement pst = con.prepareStatement(sql)) {
             pst.setString(1, this.getId()); // Lấy ID của chính món đồ này
@@ -90,8 +87,8 @@ public class Art extends ItemGeneric<Art> {
         if (author == null || author.isEmpty())
             throw new ItemValidationException.MissingFieldException("Thiếu tên tác giả");
 
-        // if (yearCreated == null || yearCreated.isEmpty())
-        //     throw new ItemValidationException.MissingFieldException("Thiếu tên năm sáng tác");
+        if (yearCreated < 0)
+            throw new ItemValidationException.MissingFieldException("Nam sang tac khong hop le!");
 
     }
 }

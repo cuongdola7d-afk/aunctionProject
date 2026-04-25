@@ -38,8 +38,6 @@ public class Electronics extends ItemGeneric<Electronics> {
     @Override
     public String save(Connection con) throws SQLException {
         String sqlInsert = "CALL insert_electronics (?, ?, ?, ?, ?, ?)";
-
-        String sqlGetId = "SELECT @item_id AS generated_id;";
         
         try (PreparedStatement pst1 = con.prepareStatement(sqlInsert)) {
             pst1.setString(1, getItemName());
@@ -49,15 +47,14 @@ public class Electronics extends ItemGeneric<Electronics> {
             pst1.setString(5, brand);
             pst1.setInt(6, warrantyMonths);
             
-            int rowExecuted = pst1.executeUpdate();
+            pst1.executeUpdate();
 
-            if (rowExecuted > 0) {
-                try (PreparedStatement pst2 = con.prepareStatement(sqlGetId);
-                    ResultSet rs = pst2.executeQuery()) {
-                    if (rs.next()) {
-                        String id = rs.getString("generated_id");
-                        return id;
-                    }
+            String sqlGetId = "SELECT @item_id AS generated_id;";
+            try (PreparedStatement pst2 = con.prepareStatement(sqlGetId);
+                ResultSet rs = pst2.executeQuery()) {
+                if (rs.next()) {
+                    String id = rs.getString("generated_id");
+                    return id;
                 }
             }
             return null;
@@ -69,7 +66,7 @@ public class Electronics extends ItemGeneric<Electronics> {
 
     
     @Override
-    public void loadSpecificDetails(Connection con) throws SQLException {
+    public void load(Connection con) throws SQLException {
         String sql = "SELECT brand, warranty_months FROM item_electronics WHERE id = ?";
         try (PreparedStatement pst = con.prepareStatement(sql)) {
             pst.setString(1, this.getId()); // Lấy ID của chính món đồ này

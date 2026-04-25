@@ -16,32 +16,32 @@ public class General extends ItemGeneric<General> {
     public String save (Connection con) {
         String sqlInsert = "INSERT INTO ddc_items (item_name, category, description, seller_name) VALUES (?, ?, ?, ?)";
 
-        String sqlGetId = "SELECT @item_id AS generated_id;";
-
         try (PreparedStatement pst1 = con.prepareStatement(sqlInsert)) {
             pst1.setString(1, getItemName());
             pst1.setString(2, getCategory());
             pst1.setString(3, getDescription());
             pst1.setString(4, getSellerName());
-            int rowExecuted = pst1.executeUpdate();
 
-            if (rowExecuted > 0) {
-                try (PreparedStatement pst2 = con.prepareStatement(sqlGetId);
-                    ResultSet rs = pst2.executeQuery()) {
-                    if (rs.next()) {
-                        String id = rs.getString("generated_id");
-                        return id;
-                    }
+            pst1.executeUpdate();
+
+            String sqlGetId = "SELECT @item_id AS generated_id;";
+            try (PreparedStatement pst2 = con.prepareStatement(sqlGetId);
+                ResultSet rs = pst2.executeQuery()) {
+                if (rs.next()) {
+                    String id = rs.getString("generated_id");
+                    return id;
                 }
             }
             return null;
-        }
-        catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
             return null;
         }
     }
 
     @Override
-    public void loadSpecificDetails(Connection con) {} 
+    public void load(Connection con) {} 
+
+    @Override
+    public void validate() {}
 }
