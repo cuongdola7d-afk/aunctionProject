@@ -7,7 +7,7 @@ public class UserSession {
     private String username;
     private String email;
     private String phone;
-    private String Id;
+    private String id;
 
     private UserSession() {}
 
@@ -19,19 +19,34 @@ public class UserSession {
     }
 
     public String getUsername() { return username; }
-    public void setUsername(String username) { this.username = username; }
+    public UserSession setUsername(String username) { 
+        this.username = username;
+        return this; 
+    }
 
     public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    public UserSession setEmail(String email) { 
+        this.email = email; 
+        return this; 
+    }
 
     public String getPhone() { return phone; }
-    public void setPhone(String phone) { this.phone = phone; }
+    public UserSession setPhone(String phone) { 
+        this.phone = phone; 
+        return this; 
+    }
 
     public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public UserSession setName(String name) { 
+        this.name = name; 
+        return this; 
+    }
 
-    public String getId() { return Id; }
-    public void setId(String name) { this.Id = Id; }
+    public String getId() { return id; }
+    public UserSession setId(String id) { 
+        this.id = id; 
+        return this; 
+    }
 
     public void cleanUserSession() {
         username = null;

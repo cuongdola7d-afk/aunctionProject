@@ -26,7 +26,7 @@ public void initialize() {
     txtPhone.setText(session.getPhone());
     txtId.setText(session.getId());
     
-    // Vô hiệu hóa chỉnh sửa cho UserID (vì thường ID không được sửa)
+    txtName.setEditable(false);
     txtId.setEditable(false);
     
     

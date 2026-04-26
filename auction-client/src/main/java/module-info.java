@@ -8,7 +8,7 @@ module ddc.client {
 
     opens ddc.client to javafx.fxml, javafx.graphics;
     opens ddc.client.controller.notify to javafx.fxml;
-    opens ddc.client.controller.loginregister to javafx.fxml;
+    opens ddc.client.controller.loginregister to javafx.fxml,com.google.gson;
     opens ddc.client.controller.bidding to javafx.fxml;
     opens ddc.client.controller.selling to javafx.fxml;
     opens ddc.client.controller.home to javafx.fxml;
