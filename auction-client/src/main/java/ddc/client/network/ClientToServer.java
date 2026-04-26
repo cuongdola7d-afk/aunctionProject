@@ -7,10 +7,11 @@ import java.net.Socket;
 
 import com.google.gson.Gson;
 
+import ddc.client.config.GsonConfig;
 import ddc.client.model.Request;
 
 public class ClientToServer {
-    private static final Gson gson = new Gson();
+    private static final Gson gson = GsonConfig.newGson();
 
     public static String sendRequest (String action, Object obj) {
         try (Socket socket = new Socket("localhost", 8080);
@@ -24,6 +25,7 @@ public class ClientToServer {
             out.println(jsonString);
 
             String response = in.readLine();
+
             System.out.println("Response2: " + response);
 
             return response;

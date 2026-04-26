@@ -36,27 +36,37 @@ public class Electronics extends ItemGeneric<Electronics> {
     }
 
     @Override
-    public String toString() {
-        return super.toString() + String.format(" | Hãng: %s | Bảo hành: %d", brand, warrantyMonths);
+    public String save(Connection con) throws SQLException {
+        String sqlInsert = "CALL insert_electronics (?, ?, ?, ?, ?, ?)";
+        
+        try (PreparedStatement pst1 = con.prepareStatement(sqlInsert)) {
+            pst1.setString(1, getItemName());
+            pst1.setString(2, getCategory());
+            pst1.setString(3, getDescription());
+            pst1.setString(4, getSellerName());
+            pst1.setString(5, brand);
+            pst1.setInt(6, warrantyMonths);
+            
+            pst1.executeUpdate();
+
+            String sqlGetId = "SELECT @item_id AS generated_id;";
+            try (PreparedStatement pst2 = con.prepareStatement(sqlGetId);
+                ResultSet rs = pst2.executeQuery()) {
+                if (rs.next()) {
+                    String id = rs.getString("generated_id");
+                    return id;
+                }
+            }
+            return null;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
-    @Override
-    protected void saveSpecificDetails(Connection con, String itemId) throws SQLException {
-        String sql = "INSERT INTO item_electronics (id, brand, warranty_months) VALUES (?, ?, ?)";
-        
-        try (PreparedStatement pst = con.prepareStatement(sql)) {
-            pst.setString(1, itemId);          // Dùng itemId nhận được từ cha
-            pst.setString(2, this.brand);       
-            pst.setInt(3, this.warrantyMonths); 
-            
-            pst.executeUpdate();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
     
     @Override
-    public void loadSpecificDetails(Connection con) throws SQLException {
+    public void load(Connection con) throws SQLException {
         String sql = "SELECT brand, warranty_months FROM item_electronics WHERE id = ?";
         try (PreparedStatement pst = con.prepareStatement(sql)) {
             pst.setString(1, this.getId()); // Lấy ID của chính món đồ này
@@ -71,12 +81,9 @@ public class Electronics extends ItemGeneric<Electronics> {
 
     // Chốt chặn Validation
     public void validate() throws ItemValidationException {
-        super.validate();
+        // super.validate();
 
         if (brand == null || brand.isEmpty())
             throw new ItemValidationException.MissingFieldException("Thiếu thương hiệu (Brand)");
-            
-        if (warrantyMonths < 0)
-            throw new ItemValidationException.InvalidValueException("Thời gian bảo hành không hợp lệ");
     }
 }

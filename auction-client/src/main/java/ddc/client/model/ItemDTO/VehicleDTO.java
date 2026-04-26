@@ -6,6 +6,10 @@ public class VehicleDTO extends ItemGeneric<VehicleDTO>{
 
     public VehicleDTO () {}
 
+    public static VehicleDTO create() {
+        return new VehicleDTO();
+    }
+
     //Getters
     public String getManufacturer() { return manufacturer; }
     public int getYear() { return year; }

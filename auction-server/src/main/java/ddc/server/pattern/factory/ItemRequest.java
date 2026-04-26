@@ -1,5 +1,6 @@
-package ddc.server.pattern.factory.ItemCreating;
-//Class lưu lại thông tin của item để nhét vào constructor -> createItem
+
+package ddc.server.pattern.factory;
+
 
 public class ItemRequest {
     // Thông tin chung
@@ -14,7 +15,7 @@ public class ItemRequest {
 
     // Thông tin riêng cho Art
     public String author;
-    public String yearCreated;
+    public int yearCreated;
 
     // Thông tin riêng cho Vehicle
     public String manufacturer;
@@ -34,7 +35,7 @@ public class ItemRequest {
     }
 
     // Gợi ý: Nếu bạn muốn tạo ArtRequest nhanh
-    public static ItemRequest createArtRequest(String itemName, String description, String category, String sellerName, String author, String year) {
+    public static ItemRequest createArtRequest(String itemName, String description, String category, String sellerName, String author, int year) {
         ItemRequest req = new ItemRequest(itemName,description,category,sellerName);
         req.author = author;
         req.yearCreated = year;
@@ -93,7 +94,7 @@ public class ItemRequest {
         return this;
     }
 
-    public ItemRequest setYearCreated(String yearCreated) {
+    public ItemRequest setYearCreated(int yearCreated) {
         this.yearCreated = yearCreated;
         return this;
     }
@@ -119,7 +120,7 @@ public class ItemRequest {
     public int getWarrantyMonths() { return warrantyMonths; }
 
     public String getAuthor() { return author; }
-    public String getYearCreated() { return yearCreated; }
+    public int getYearCreated() { return yearCreated; }
 
     public String getManufacturer() { return manufacturer; }
     public int getYear() { return year; }

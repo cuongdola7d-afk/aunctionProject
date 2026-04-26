@@ -8,28 +8,30 @@ import java.sql.SQLException;
 import ddc.server.config.DatabaseConnection;
 import ddc.server.exception.ItemValidationException;
 import ddc.server.model.item.ItemGeneric;
-import ddc.server.pattern.factory.ItemCreating.CreatorRegistry;
-import ddc.server.pattern.factory.ItemCreating.ItemRequest;
+
+import ddc.server.pattern.factory.CreatorRegistry;
+import ddc.server.pattern.factory.ItemRequest;
+
 
 public class ItemDAO {
 
-   public boolean addItem (ItemGeneric item) {
+   public String addItem (ItemGeneric item) {
         try (Connection con = DatabaseConnection.getConnection()) {
             con.setAutoCommit(false);
 
             try {
-                item.save(con);
+                String id = item.save(con);
 
                 con.commit();
-                return true;
+                return id;
             } catch (SQLException e) {
                 con.rollback();
                 e.printStackTrace();
-                return false;
+                return null;
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
+            return null;
         }
         
     }
@@ -43,7 +45,7 @@ public class ItemDAO {
             pst.setString(1, id);
             try (ResultSet rs = pst.executeQuery()) {
                 if (rs.next()) {
-                    // Bước 1: Đổ dữ liệu từ DB vào ItemRequest (DTO)
+                    // Bước 1: Đổ dữ liệu từ DB vào ItemRequest
                     ItemRequest request = new ItemRequest(rs.getString("item_name"),
                                                           rs.getString("description"),
                                                           rs.getString("category"),
@@ -59,13 +61,12 @@ public class ItemDAO {
                         item = CreatorRegistry.getCreator(category).createItem(request);
                     } catch (ItemValidationException e) {
                         System.out.println("Lỗi validation khi load item: " + e.getMessage());
-                        // Bạn có thể xử lý thêm ở đây
+                        e.printStackTrace();
                     }
 
                     if (item != null) {
                         item.setId(itemId);
-                        // Bước 3: Load nốt các thuộc tính riêng từ bảng phụ
-                        item.loadSpecificDetails(con);
+                        item.load(con);
                         try {
                             item.validate(); 
                         } catch (ItemValidationException e) {
@@ -81,21 +82,4 @@ public class ItemDAO {
         }
         return null;
     }
-
-   /* private ItemGeneric buildItemByCategory(String category) {
-        if (category == null) {
-            return null;
-        }
-
-        switch (category.toUpperCase()) {
-            case "ART":
-                return new Art();
-            case "ELECTRONICS":
-                return new Electronics();
-            case "VEHICLE":
-                return new Vehicle();
-            default:
-                return null;
-        }
-    }*/
 }

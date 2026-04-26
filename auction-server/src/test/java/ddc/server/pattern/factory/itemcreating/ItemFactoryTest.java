@@ -1,17 +1,17 @@
 package ddc.server.pattern.factory.ItemCreating;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Test;
 
 import ddc.server.exception.ItemValidationException;
 import ddc.server.model.item.Art;
 import ddc.server.model.item.Electronics;
 import ddc.server.model.item.ItemGeneric;
 import ddc.server.model.item.Vehicle;
+import ddc.server.pattern.factory.CreatorRegistry;
+import ddc.server.pattern.factory.ItemCreator;
+import ddc.server.pattern.factory.ItemRequest;
 
 public class ItemFactoryTest {
    

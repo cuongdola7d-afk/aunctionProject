@@ -1,4 +1,5 @@
-package ddc.server.pattern.factory.ItemCreating;
+
+package ddc.server.pattern.factory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,6 +16,7 @@ public class CreatorRegistry {
         creators.put("ART", new ArtCreator());
         creators.put("ELECTRONICS", new ElectronicsCreator());
         creators.put("VEHICLE", new VehicleCreator());
+        creators.put("GENERAL", new GeneralCreator());
     }
 
     //Hàm lấy Creator

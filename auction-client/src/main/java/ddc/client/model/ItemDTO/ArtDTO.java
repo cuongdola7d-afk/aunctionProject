@@ -2,12 +2,16 @@ package ddc.client.model.ItemDTO;
 
 public class ArtDTO extends ItemGeneric<ArtDTO>{
     private String author;
-    private String yearCreated;
+    private int yearCreated;
 
     public ArtDTO () {}
 
+    public static ArtDTO create() {
+        return new ArtDTO();
+    }
+
     public String getAuthor() { return author; }
-    public String getyearCreated() { return yearCreated; }
+    public int getyearCreated() { return yearCreated; }
 
     //Setters
     public ArtDTO setAuthor (String author) {
@@ -15,7 +19,7 @@ public class ArtDTO extends ItemGeneric<ArtDTO>{
         return this;
     }
 
-    public ArtDTO setyearCreated (String yearCreated) {
+    public ArtDTO setyearCreated (int yearCreated) {
         this.yearCreated = yearCreated;
         return this;
     }
