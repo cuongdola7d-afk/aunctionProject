@@ -42,12 +42,12 @@ public class UserDAO {
             ResultSet rs = pst.executeQuery();
 
             if (rs.next()) {
-                User user = new User();
-                user.setId(rs.getString("id"));
-                user.setUsername(rs.getString("username"));
-                user.setName(rs.getString("name"));
-                user.setEmail(rs.getString("email"));
-                user.setPassword(rs.getString("password"));
+                User user = new User()
+                .setId(rs.getString("id"))
+                .setUsername(rs.getString("username"))
+                .setName(rs.getString("name"))
+                .setEmail(rs.getString("email"))
+                .setPassword(rs.getString("password"));
                 return user;
             }
         } catch (SQLException e) {

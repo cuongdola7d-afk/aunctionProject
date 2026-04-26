@@ -1,4 +1,4 @@
-package ddc.server.pattern.factory.itemcreating;
+package ddc.server.pattern.factory.ItemCreating;
 //Class lưu lại thông tin của item để nhét vào constructor -> createItem
 
 public class ItemRequest {

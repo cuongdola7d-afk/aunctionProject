@@ -1,4 +1,4 @@
-package ddc.server.pattern.factory.itemcreating;
+package ddc.server.pattern.factory.ItemCreating;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -32,7 +32,7 @@ public class LoginHandler implements ActionHandler {
 
         if (user.getPassword().equals(requestUser.getPassword())) {
             System.out.println("Success!");
-            return "\"SUCCESS\"";
+            return "SUCCESS:" + gson.toJson(user);
         } else {
             System.out.println(user);
             System.out.println("Wrong Password!");

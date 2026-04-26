@@ -5,7 +5,7 @@ import com.google.gson.Gson;
 import ddc.server.config.GsonConfig;
 import ddc.server.controller.RequestMessage;
 import ddc.server.controller.service.ItemService;
-import ddc.server.pattern.factory.itemcreating.ItemRequest;
+import ddc.server.pattern.factory.ItemCreating.ItemRequest;
 
 public class AddItemHandler implements ActionHandler {
     private final Gson gson = GsonConfig.newGson();

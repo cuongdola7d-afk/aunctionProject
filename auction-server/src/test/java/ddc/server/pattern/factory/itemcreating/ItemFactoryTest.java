@@ -1,4 +1,4 @@
-package ddc.server.pattern.factory.itemcreating;
+package ddc.server.pattern.factory.ItemCreating;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

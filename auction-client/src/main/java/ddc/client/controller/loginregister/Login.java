@@ -44,7 +44,17 @@ public class Login {
                 String response = ClientToServer.sendRequest("LOGIN", user);
 
                 if (response.contains("SUCCESS")) {
-                    UserSession.getInstance().setUsername(username);
+                    String json = response.substring(8); // Cắt bỏ "SUCCESS:" để lấy phần JSON
+                    // Parse JSON thành object User
+                    UserDTO fullUser = gson.fromJson(json, UserDTO.class);
+
+                    // Lưu vào UserSession để dùng cho màn hình Profile
+                    UserSession session = UserSession.getInstance();
+                    session.setUserId(fullUser.getId());
+                    session.setFullName(fullUser.getName());
+                    session.setUsername(fullUser.getUsername());
+                    session.setEmail(fullUser.getEmail());
+                    session.setPhone(fullUser.getPhone());
                     Platform.runLater(() -> errorLabel.setText("Đăng nhập thành công!"));
                 
                 try {

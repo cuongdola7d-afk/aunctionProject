@@ -5,7 +5,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import ddc.server.model.item.ItemGeneric;
-import ddc.server.pattern.factory.itemcreating.ItemRequest;
+import ddc.server.pattern.factory.ItemCreating.ItemRequest;
 import ddc.server.exception.ItemValidationException;
 import ddc.server.exception.ItemValidationException.InvalidCategoryException;
 import ddc.server.exception.ItemValidationException.MissingFieldException;

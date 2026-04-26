@@ -3,9 +3,9 @@ package ddc.server.controller.service;
 import ddc.server.dao.ItemDAO;
 import ddc.server.exception.ItemValidationException;
 import ddc.server.model.item.ItemGeneric;
-import ddc.server.pattern.factory.itemcreating.CreatorRegistry;
-import ddc.server.pattern.factory.itemcreating.ItemCreator;
-import ddc.server.pattern.factory.itemcreating.ItemRequest;
+import ddc.server.pattern.factory.ItemCreating.CreatorRegistry;
+import ddc.server.pattern.factory.ItemCreating.ItemCreator;
+import ddc.server.pattern.factory.ItemCreating.ItemRequest;
 
 public class ItemService {
     private final ItemDAO itemDAO;
