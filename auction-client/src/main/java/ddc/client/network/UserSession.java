@@ -6,7 +6,6 @@ public class UserSession {
     private String name;
     private String username;
     private String email;
-    private String phone;
     private String id;
 
     private UserSession() {}
@@ -30,11 +29,6 @@ public class UserSession {
         return this; 
     }
 
-    public String getPhone() { return phone; }
-    public UserSession setPhone(String phone) { 
-        this.phone = phone; 
-        return this; 
-    }
 
     public String getName() { return name; }
     public UserSession setName(String name) { 

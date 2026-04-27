@@ -6,12 +6,10 @@ public class User extends Entity<User> {
     private String username;
     private String name;
     private String email;
-    private String phone;
     private String password;
 
     public User() {}
 
-    public String getPhone() { return phone;}
     public String getUsername() { return username; }
     public String getName() { return name; }
     public String getEmail() { return email; }
@@ -35,11 +33,6 @@ public class User extends Entity<User> {
 
     public User setPassword (String password) {
         this.password = password;
-        return this;
-    }
-
-    public User setPhone (String phone){
-        this.phone = phone;
         return this;
     }
 }

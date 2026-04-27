@@ -10,7 +10,7 @@ import javafx.event.ActionEvent;
 
 
 public class Personalinfo {
-@FXML private TextField txtUsername, txtEmail, txtPhone, txtId, txtName;
+@FXML private TextField txtUsername, txtEmail, txtId, txtName;
 @FXML private Button btnSave;
 
 @FXML
@@ -23,7 +23,6 @@ public void initialize() {
     txtName.setText(session.getName());
     txtUsername.setText("@" + session.getUsername());
     txtEmail.setText(session.getEmail());
-    txtPhone.setText(session.getPhone());
     txtId.setText(session.getId());
     
     txtName.setEditable(false);
@@ -38,7 +37,6 @@ public void initialize() {
 
     txtUsername.textProperty().addListener((observable, oldValue, newValue) -> checkChanges.run());
     txtEmail.textProperty().addListener((observable, oldValue, newValue) -> checkChanges.run());
-    txtPhone.textProperty().addListener((observable, oldValue, newValue) -> checkChanges.run());
 }
 
 
