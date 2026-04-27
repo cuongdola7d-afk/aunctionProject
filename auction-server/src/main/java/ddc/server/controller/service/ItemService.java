@@ -6,6 +6,7 @@ import ddc.server.model.item.ItemGeneric;
 import ddc.server.pattern.factory.ItemCreating.CreatorRegistry;
 import ddc.server.pattern.factory.ItemCreating.ItemCreator;
 import ddc.server.pattern.factory.ItemCreating.ItemRequest;
+import java.util.List;
 
 public class ItemService {
     private final ItemDAO itemDAO;
@@ -61,5 +62,9 @@ public class ItemService {
      */
     public ItemGeneric getItemDetails(String id) {
         return itemDAO.getItem(id);
+    }
+
+    public List<ItemGeneric> getAllItems(){
+            return itemDAO.getAllItems();
     }
 }
