@@ -3,7 +3,10 @@ package ddc.client.network;
 public class UserSession {
     private static UserSession instance;
 
+    private String name;
     private String username;
+    private String email;
+    private String id;
 
     private UserSession() {}
 
@@ -15,7 +18,29 @@ public class UserSession {
     }
 
     public String getUsername() { return username; }
-    public void setUsername(String username) { this.username = username; }
+    public UserSession setUsername(String username) { 
+        this.username = username;
+        return this; 
+    }
+
+    public String getEmail() { return email; }
+    public UserSession setEmail(String email) { 
+        this.email = email; 
+        return this; 
+    }
+
+
+    public String getName() { return name; }
+    public UserSession setName(String name) { 
+        this.name = name; 
+        return this; 
+    }
+
+    public String getId() { return id; }
+    public UserSession setId(String id) { 
+        this.id = id; 
+        return this; 
+    }
 
     public void cleanUserSession() {
         username = null;

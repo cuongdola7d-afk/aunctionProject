@@ -11,6 +11,7 @@ import ddc.server.exception.AuctionNotFoundException;
 import ddc.server.exception.BidderNotFoundException;
 import ddc.server.model.transaction.Auction;
 import ddc.server.model.user.Bidder;
+import ddc.server.pattern.Singleton.AuctionManager;
 
 public class AuctionManagerTest {
 

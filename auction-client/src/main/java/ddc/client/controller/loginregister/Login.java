@@ -2,8 +2,11 @@ package ddc.client.controller.loginregister;
 
 import ddc.client.controller.SceneSwitcher;
 import ddc.client.model.UserDTO;
+import ddc.client.network.response.UserResponse;
 import ddc.client.network.ClientToServer;
 import ddc.client.network.UserSession;
+import com.google.gson.Gson;
+import ddc.client.config.GsonConfig;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -17,6 +20,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
+
 public class Login {
     @FXML
     private TextField usernameTextField;
@@ -24,6 +28,7 @@ public class Login {
     private PasswordField passwordField;
     @FXML
     private Label errorLabel;
+    private final Gson gson = new Gson();
 
     @FXML
     private void login(ActionEvent event) {
@@ -40,11 +45,19 @@ public class Login {
                             .setPassword(password);
 
             new Thread(() -> {
-                
                 String response = ClientToServer.sendRequest("LOGIN", user);
+                UserResponse userRes = gson.fromJson(response, UserResponse.class);
+                
 
-                if (response.contains("SUCCESS")) {
-                    UserSession.getInstance().setUsername(username);
+                if ("SUCCESS".equals(userRes.getStatus())) {
+                    UserDTO User = userRes.getData(); // Lấy "cục" data đã được giải mã
+                    // Đổ vào UserSession như cũ
+                        UserSession.getInstance()
+                                    .setId(User.getId())
+                                    .setName(User.getName())
+                                    .setUsername(User.getUsername())
+                                    .setEmail(User.getEmail());
+                    
                     Platform.runLater(() -> errorLabel.setText("Đăng nhập thành công!"));
                 
                 try {

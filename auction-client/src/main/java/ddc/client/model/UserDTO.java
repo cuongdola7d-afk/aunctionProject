@@ -5,6 +5,7 @@ public class UserDTO {
     private String password;
     private String name;
     private String email;
+    private String id;
 
     public UserDTO () {}
 
@@ -13,6 +14,7 @@ public class UserDTO {
     public String getPassword () { return password; }
     public String getName () { return name; }
     public String getEmail () { return email; }
+    public String getId () { return id;}
     
     //Setters
     public UserDTO setUsername (String username) {
@@ -32,6 +34,12 @@ public class UserDTO {
 
     public UserDTO setEmail (String email) {
         this.email = email;
+        return this;
+    }
+
+
+    public UserDTO setId(String id){
+        this.id = id;
         return this;
     }
 }

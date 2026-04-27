@@ -5,15 +5,30 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import ddc.client.controller.SceneSwitcher;
+import ddc.client.network.UserSession;
 import javafx.event.ActionEvent;
 
 
 public class Personalinfo {
-@FXML private TextField txtUsername, txtEmail, txtPhone;
+@FXML private TextField txtUsername, txtEmail, txtId, txtName;
 @FXML private Button btnSave;
 
 @FXML
 public void initialize() {
+    
+    // Lấy dữ liệu từ Session
+    UserSession session = UserSession.getInstance();
+
+    // Đổ dữ liệu vào các ô TextField
+    txtName.setText(session.getName());
+    txtUsername.setText("@" + session.getUsername());
+    txtEmail.setText(session.getEmail());
+    txtId.setText(session.getId());
+    
+    txtName.setEditable(false);
+    txtId.setEditable(false);
+    
+    
     // Tạo một hàm kiểm tra sự thay đổi
     Runnable checkChanges = () -> {
         btnSave.setDisable(false);
@@ -22,7 +37,6 @@ public void initialize() {
 
     txtUsername.textProperty().addListener((observable, oldValue, newValue) -> checkChanges.run());
     txtEmail.textProperty().addListener((observable, oldValue, newValue) -> checkChanges.run());
-    txtPhone.textProperty().addListener((observable, oldValue, newValue) -> checkChanges.run());
 }
 
 

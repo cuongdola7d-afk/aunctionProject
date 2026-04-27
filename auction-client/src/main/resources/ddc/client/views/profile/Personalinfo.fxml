@@ -46,7 +46,7 @@
                               <Font name="System Bold" size="20.0" />
                            </font>
                         </Label>
-                        <TextField editable="false" prefHeight="10.0" style="-fx-background-color: transparent;" text="Đỗ Đức Cường">
+                        <TextField fx:id="txtName" editable="false" prefHeight="10.0" style="-fx-background-color: transparent;" text="Đỗ Đức Cường">
                            <font>
                               <Font size="24.0" />
                            </font>
@@ -98,23 +98,6 @@
                   </HBox>
                   <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="65.0" minHeight="-Infinity" prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-radius: 10;">
                      <children>
-                        <Label prefWidth="120.0" text="• SĐT:">
-                           <font>
-                              <Font name="System Bold" size="20.0" />
-                           </font>
-                           <HBox.margin>
-                              <Insets />
-                           </HBox.margin>
-                        </Label>
-                        <TextField fx:id="txtPhone" style="-fx-background-color: transparent;" text="0858797451">
-                           <font>
-                              <Font size="24.0" />
-                           </font>
-                        </TextField>
-                     </children>
-                  </HBox>
-                  <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="65.0" minHeight="-Infinity" prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-radius: 10;">
-                     <children>
                         <Label prefWidth="120.0" text="• UserID:">
                            <font>
                               <Font name="System Bold" size="20.0" />
@@ -123,7 +106,7 @@
                               <Insets />
                            </HBox.margin>
                         </Label>
-                        <TextField style="-fx-background-color: transparent;" text="viet69">
+                        <TextField fx:id="txtId" style="-fx-background-color: transparent;" text="viet69">
                            <font>
                               <Font size="24.0" />
                            </font>

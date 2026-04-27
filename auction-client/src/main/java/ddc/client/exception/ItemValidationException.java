@@ -6,8 +6,8 @@ public class ItemValidationException extends Exception {
     }
 
     // Ngoại lệ về giá (Selling)
-    public static class InvalidPriceException extends ItemValidationException {
-        public InvalidPriceException(String message) {
+    public static class InvalidValueException extends ItemValidationException {
+        public InvalidValueException(String message) {
             super(message);
         }
     }

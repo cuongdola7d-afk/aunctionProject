@@ -42,7 +42,7 @@ public enum Category {
                     .setCategory("ART")
                     .setSellerName(sellerName)
                     .setAuthor(authorField.getText())
-                    .setyearCreated(yearCreatedField.getText());
+                    .setyearCreated(Integer.parseInt(yearCreatedField.getText()));
         }
     },
 
