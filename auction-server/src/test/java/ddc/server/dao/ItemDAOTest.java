@@ -1,6 +1,7 @@
 package ddc.server.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
@@ -16,12 +17,14 @@ public class ItemDAOTest {
     void testAddItem_Success() {
         Art art = new Art()
                     .setItemName("Tranh Test ID Tự Động")
-                    .setSellerName("AdminTest")
+                    .setSellerName("cuongdo123")
                     .setyearCreated(1999)
+                    .setDescription("abc")
                     .setAuthor("Artist Test");
 
-        boolean isSaved = !itemDAO.addItem(art).isEmpty();
-        assertTrue(isSaved, "DAO phai luu thanh cong ma khong can truyen ID");
+        String generatedId = itemDAO.addItem(art); 
+        assertNotNull(generatedId, "DAO phai tra ve ID ");
+        assertFalse(generatedId.trim().isEmpty(), "ID tra ve khong duoc rong");
     }
 
     // 2: Chỉ test chức năng GET

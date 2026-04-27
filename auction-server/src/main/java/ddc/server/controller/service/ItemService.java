@@ -23,7 +23,7 @@ public class ItemService {
      * 3. Tạo và Validate Object
      * 4. Lưu vào Database thông qua DAO
      */
-    public String createAndSaveItem(ItemRequest req) {
+    public String createAndSaveItem(ItemRequest req) throws ItemValidationException{
         try {
             if (req.getItemName() == null || req.getItemName().isEmpty()) {
                 throw new ItemValidationException.MissingFieldException("Tên sản phẩm không được để trống!");
@@ -55,6 +55,8 @@ public class ItemService {
             return id;
             
 
+        } catch (ItemValidationException e){
+            throw e;
         } catch (Exception e) {
             System.err.println("Service Loi: " + e.getMessage());
             e.printStackTrace();

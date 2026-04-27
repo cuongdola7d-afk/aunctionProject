@@ -67,12 +67,16 @@ public class ItemServiceTest {
         ItemRequest req = new ItemRequest()
                 .setItemName("Binh co trieu dai Thanh")
                 .setCategory("ART")
+                .setDescription("abc")
                 .setAuthor("An danh")
-                .setSellerName("Nguyen Van A")
+                .setSellerName("cuongdo123")
                 .setYearCreated(1991);
-        boolean result = !itemService.createAndSaveItem(req).isEmpty();
         
-        assertTrue(result, "Service phai tra ve true khi luu thanh cong");
+
+        String generatedId = itemService.createAndSaveItem(req);
+        // 3. Kiểm chứng (Assertions)
+        assertNotNull(generatedId, "ID khong tra ve null"); 
+        assertTrue(generatedId.length() > 0, "ID khong duoc de trong");
     }
 
     //5. TEST TRA VE ITEM DUNG
