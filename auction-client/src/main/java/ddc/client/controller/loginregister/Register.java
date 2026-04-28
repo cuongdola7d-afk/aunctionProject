@@ -1,8 +1,13 @@
 package ddc.client.controller.loginregister;
 
+import com.google.gson.Gson;
+
+import ddc.client.config.GsonConfig;
 import ddc.client.controller.SceneSwitcher;
 import ddc.client.model.UserDTO;
 import ddc.client.network.ClientToServer;
+import ddc.client.network.response.BaseResponse;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -17,32 +22,43 @@ public class Register {
     @FXML
     private Label errorLabel;
 
+    private final Gson gson = GsonConfig.newGson();
+
     @FXML
     @SuppressWarnings("unused")
     private void register(ActionEvent event) {
-        if (usernameTextField.getText().isEmpty() || passwordField.getText().isEmpty() || emailTextField.getText().isEmpty()) {
-            errorLabel.setText("Bạn chưa điền thông tin vào chỗ trống.");
+        String username = usernameTextField.getText() == null ? "" : usernameTextField.getText().trim();
+        String email = emailTextField.getText() == null ? "" : emailTextField.getText().trim();
+        String password = passwordField.getText() == null ? "" : passwordField.getText();
+
+        if (username.isEmpty() || password.isEmpty() || email.isEmpty()) {
+            errorLabel.setText("Ban chua dien day du thong tin.");
+            return;
         }
-        else {
-            String username = usernameTextField.getText();
-            String email = emailTextField.getText();
-            String password = passwordField.getText();
 
-            UserDTO user = new UserDTO()
-                            .setUsername(username)
-                            .setEmail(email)
-                            .setPassword(password);
+        UserDTO user = new UserDTO()
+                .setUsername(username)
+                .setEmail(email)
+                .setPassword(password);
 
+        errorLabel.setText("Dang dang ky...");
+        new Thread(() -> {
             String response = ClientToServer.sendRequest("REGISTER", user);
+            BaseResponse baseResponse = gson.fromJson(response, BaseResponse.class);
+            String status = baseResponse == null ? null : baseResponse.getStatus();
+            Platform.runLater(() -> errorLabel.setText(registerMessage(status)));
+        }).start();
+    }
 
-            if (response.contains("SUCCESS")) {
-                errorLabel.setText("Đăng ký thành công!");
-            } else if (response.contains("PASSWORD LESS THAN 8")) {
-                errorLabel.setText("Mật khẩu phải có từ 8 ký tự trở lên!");
-            } else if (response.contains("DUPLICATE")) {
-                errorLabel.setText("Tài khoản đã tồn tại.");
-            }
-        }
+    private String registerMessage(String status) {
+        return switch (status == null ? "" : status) {
+            case "SUCCESS" -> "Dang ky thanh cong.";
+            case "PASSWORD_LESS_THAN_8" -> "Mat khau phai co tu 8 ky tu tro len.";
+            case "INVALID_EMAIL" -> "Email khong hop le.";
+            case "DUPLICATE" -> "Tai khoan da ton tai.";
+            case "CONNECTION_ERROR" -> "Khong ket noi duoc server.";
+            default -> "Dang ky that bai.";
+        };
     }
 
     @FXML

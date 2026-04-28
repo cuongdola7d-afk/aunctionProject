@@ -2,13 +2,14 @@ package ddc.server.model.item;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import ddc.server.model.item.ItemGeneric;
 
 import ddc.server.exception.ItemValidationException;
 import ddc.server.model.entity.Entity;
 
 /**
  * ItemGeneric đóng vai trò là lớp hỗ trợ Builder (Fluent Interface).
- * T giúp các lớp con (Art, Electronics, Vehicle) trả về đúng kiểu của chúng.
+ * T giúp các lớp con (Art, Electronics, Vehicle) trả về đúng kiểu của chúng.p
  */
 public abstract class ItemGeneric<T extends ItemGeneric<T>> extends Entity<T> {
     private String itemName;

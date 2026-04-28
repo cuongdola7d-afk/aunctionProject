@@ -1,5 +1,8 @@
 package ddc.server.controller.handler;
 
+import com.google.gson.Gson;
+
+import ddc.server.config.GsonConfig;
 import ddc.server.controller.RequestMessage;
 import ddc.server.controller.service.ItemService;
 import ddc.server.model.item.ItemGeneric;
@@ -7,28 +10,32 @@ import ddc.server.network.response.BaseResponse;
 import ddc.server.network.response.GetItemResponse;
 import ddc.server.network.response.Response;
 
-public class GetItemHandler implements ActionHandler{
+public class GetItemHandler implements ActionHandler {
     private final ItemService itemService = new ItemService();
+    private final Gson gson = GsonConfig.newGson();
 
     @Override
     public Response handle(RequestMessage request) {
         try {
-            System.out.println("Getting item...");
-
-            if (request.getData() == null) return new BaseResponse().setStatus("FAIL");
-
-            ItemGeneric item = itemService.getItemDetails(gson.fromJson(request.getData(), String.class));
-
-            if (item != null) {
-                System.out.println("DONE!");
-                return new GetItemResponse().setStatus("SUCCESS")
-                                            .setItemJson(gson.toJson(item));
-            } else {
-                return new BaseResponse().setStatus("FAIL");
+            String itemId = request.getData();
+            if (isBlank(itemId)) {
+                return new BaseResponse().setStatus("INVALID_INPUT").setMessage("Thieu ID san pham.");
             }
+
+            ItemGeneric item = itemService.getItemDetails(itemId.trim());
+            if (item == null) {
+                return new BaseResponse().setStatus("NOT_FOUND").setMessage("Khong tim thay san pham.");
+            }
+
+            return new GetItemResponse()
+                    .setItemJson(gson.toJson(item))
+                    .setStatus("SUCCESS");
         } catch (Exception e) {
-            e.printStackTrace();
-            return new BaseResponse().setStatus("FAIL");
+            return new BaseResponse().setStatus("SERVER_ERROR").setMessage("Loi server khi lay san pham.");
         }
+    }
+
+    private boolean isBlank(String value) {
+        return value == null || value.trim().isEmpty();
     }
 }
