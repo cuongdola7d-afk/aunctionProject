@@ -1,4 +1,4 @@
-package ddc.server.pattern.factory.ItemCreating;
+package ddc.server.pattern.factory.itemcreating;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
