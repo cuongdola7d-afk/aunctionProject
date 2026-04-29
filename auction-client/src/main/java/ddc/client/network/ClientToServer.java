@@ -44,7 +44,7 @@ public class ClientToServer {
     }
 
     private static String errorJson(String status, String message) {
-        return gson.toJson(new BaseResponse().setMessage(message).setStatus(status));
+        return gson.toJson(new BaseResponse().setStatus(status).setMessage(message));
     }
 
     private static String readConfig(String envName, String propertyName, String defaultValue) {

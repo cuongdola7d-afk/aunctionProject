@@ -81,7 +81,7 @@ public class Electronics extends ItemGeneric<Electronics> {
 
     // Chốt chặn Validation
     public void validate() throws ItemValidationException {
-        // super.validate();
+        super.validate();
 
         if (brand == null || brand.isEmpty())
             throw new ItemValidationException.MissingFieldException("Thiếu thương hiệu (Brand)");

@@ -1,6 +1,7 @@
 package ddc.server.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
@@ -15,17 +16,16 @@ public class ItemDAOTest {
 
     @Test
     void testAddItem_Success() {
-        assumeTrue(hasDbConfig(), "Bo qua test DB khi chua cau hinh DDC_DB_*");
-
         Art art = new Art()
-                .setItemName("Tranh Test ID Tu Dong")
-                .setSellerName("AdminTest")
-                .setyearCreated(1999)
-                .setAuthor("Artist Test");
+                    .setItemName("Tranh Test ID Tự Động")
+                    .setSellerName("cuongdo123")
+                    .setyearCreated(1999)
+                    .setDescription("abc")
+                    .setAuthor("Artist Test");
 
-        String id = itemDAO.addItem(art);
-        assertNotNull(id, "DAO phai tra ve id sau khi luu");
-        assertTrue(!id.isEmpty(), "DAO phai luu thanh cong ma khong can truyen ID");
+        String generatedId = itemDAO.addItem(art); 
+        assertNotNull(generatedId, "DAO phai tra ve ID ");
+        assertFalse(generatedId.trim().isEmpty(), "ID tra ve khong duoc rong");
     }
 
     @Test

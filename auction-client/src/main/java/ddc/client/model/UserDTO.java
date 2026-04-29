@@ -37,7 +37,6 @@ public class UserDTO {
         return this;
     }
 
-
     public UserDTO setId(String id){
         this.id = id;
         return this;

@@ -62,13 +62,16 @@ public class ItemServiceTest {
         ItemRequest req = new ItemRequest()
                 .setItemName("Binh co trieu dai Thanh")
                 .setCategory("ART")
+                .setDescription("abc")
                 .setAuthor("An danh")
-                .setSellerName("Nguyen Van A")
+                .setSellerName("cuongdo123")
                 .setYearCreated(1991);
+        
 
-        String id = itemService.createAndSaveItem(req);
-        assertNotNull(id, "Service phai tra ve id khi luu thanh cong");
-        assertTrue(!id.isEmpty(), "Service phai tra ve id khi luu thanh cong");
+        String generatedId = itemService.createAndSaveItem(req);
+        // 3. Kiểm chứng (Assertions)
+        assertNotNull(generatedId, "ID khong tra ve null"); 
+        assertTrue(generatedId.length() > 0, "ID khong duoc de trong");
     }
 
     @Test
