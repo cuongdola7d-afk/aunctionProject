@@ -46,5 +46,16 @@ public abstract class ItemGeneric<T extends ItemGeneric<T>> extends Entity<T> {
 
     public abstract String save(Connection con) throws SQLException;
     public abstract void load(Connection con) throws SQLException;
-    public abstract void validate() throws ItemValidationException; 
+    
+    public void validate() throws ItemValidationException{
+        if (itemName == null || itemName.trim().isEmpty()) {
+            throw new ItemValidationException("Tên sản phẩm không được để trống.");
+        }
+        if (category == null || category.trim().isEmpty()) {
+            throw new ItemValidationException("Loại sản phẩm không hợp lệ.");
+        }
+        if (sellerName == null || sellerName.trim().isEmpty()) {
+            throw new ItemValidationException("Tên người bán không được để trống.");
+        }
+    }
 }

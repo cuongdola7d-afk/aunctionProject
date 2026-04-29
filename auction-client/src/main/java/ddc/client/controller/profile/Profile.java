@@ -3,16 +3,28 @@ package ddc.client.controller.profile;
 import java.io.IOException;
 
 import ddc.client.controller.SceneSwitcher;
+import ddc.client.network.UserSession;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 public class Profile {
+    @FXML private Label nameLabel, usernameLabel;
+
+    public void initialize(){
+        UserSession session = UserSession.getInstance();
+
+    // Đổ dữ liệu vào các ô TextField
+        nameLabel.setText(session.getName());
+        usernameLabel.setText("@" + session.getUsername());
+    }
+
     @FXML
     @SuppressWarnings("unused")
     private void switchToSelling (MouseEvent event) {
@@ -36,6 +48,17 @@ public class Profile {
     private void switchToPersonalInfo (MouseEvent event) {
         SceneSwitcher.goTo(event, "/ddc/client/views/profile/Personalinfo.fxml");
     }
+
+    @FXML
+    private void switchToNotify(MouseEvent event) {
+        SceneSwitcher.goTo(event, "/ddc/client/views/notify/Notify.fxml");
+    }
+
+    @FXML
+    private void switchToSecurity(MouseEvent event) {
+        SceneSwitcher.goTo(event, "/ddc/client/views/profile/Security.fxml");
+    }
+
     @FXML
     @SuppressWarnings({"unused", "CallToPrintStackTrace"})
     private void showLogoutPopup(MouseEvent event) {
@@ -70,10 +93,5 @@ public class Profile {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-    
-    @FXML
-    private void switchToNotify(MouseEvent event) {
-        SceneSwitcher.goTo(event, "/ddc/client/views/notify/Notify.fxml");
     }
 }

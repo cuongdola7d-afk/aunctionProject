@@ -61,7 +61,36 @@ public class UserDAO {
         return null;
     }
 
+
     private boolean isBlank(String value) {
         return value == null || value.trim().isEmpty();
     }
+
+
+    public boolean changePassword(String username, String newPassword) {
+        // Câu lệnh SQL để cập nhật mật khẩu
+        String sql = "UPDATE ddc_users SET password = ? WHERE username = ?";
+
+        // Sử dụng try-with-resources để tự động đóng Connection và PreparedStatement
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            // Gán các giá trị vào dấu "?"
+            pstmt.setString(1, newPassword);
+            pstmt.setString(2, username);
+
+            // Thực thi lệnh Update
+            int rowsAffected = pstmt.executeUpdate();
+            System.out.println(rowsAffected);
+
+            // Nếu số dòng bị ảnh hưởng > 0 tức là đã cập nhật thành công
+            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            System.err.println("Lỗi khi thực thi changePassword SQL:");
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
+
