@@ -37,11 +37,11 @@ public class Login {
         String password = passwordField.getText() == null ? "" : passwordField.getText();
 
         if (username.isEmpty() || password.isEmpty()) {
-            errorLabel.setText("Vui long nhap day du thong tin.");
+            errorLabel.setText("Vui lòng nhập đầy đủ thông tin.");
             return;
         }
 
-        errorLabel.setText("Dang dang nhap...");
+        errorLabel.setText("Đang đăng nhập...");
         UserDTO user = new UserDTO()
                 .setUsername(username)
                 .setPassword(password);
@@ -68,10 +68,10 @@ public class Login {
 
     private String loginErrorMessage(String status) {
         return switch (status == null ? "" : status) {
-            case "PASSWORD_LESS_THAN_8" -> "Mat khau phai co tu 8 ky tu tro len.";
-            case "INVALID_CREDENTIALS" -> "Tai khoan hoac mat khau khong dung.";
-            case "CONNECTION_ERROR" -> "Khong ket noi duoc server.";
-            default -> "Dang nhap that bai.";
+            case "PASSWORD_LESS_THAN_8" -> "Mật khẩu phải có từ 8 ký tự trở lên.";
+            case "INVALID_CREDENTIALS" -> "Tài khoản hoặc mật khẩu không đúng.";
+            case "CONNECTION_ERROR" -> "Không kết nối được với server.";
+            default -> "Đăng nhập thất bại.";
         };
     }
 
@@ -89,7 +89,7 @@ public class Login {
             stage.setScene(new Scene(root, 800, 600));
             stage.show();
         } catch (Exception e) {
-            errorLabel.setText("Khong mo duoc trang Home.");
+            errorLabel.setText("Giao diện bị lỗi.");
         }
     }
 
