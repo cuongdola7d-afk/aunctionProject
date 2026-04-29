@@ -1,4 +1,4 @@
-package ddc.server.pattern.factory.itemcreating;
+package ddc.server.pattern.factory;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -6,10 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import ddc.server.exception.ItemValidationException.InvalidCategoryException;
-import ddc.server.pattern.factory.ArtCreator;
-import ddc.server.pattern.factory.CreatorRegistry;
-import ddc.server.pattern.factory.ItemCreator;
-import ddc.server.pattern.factory.VehicleCreator;
 
 public class CreatorRegistryTest {
 

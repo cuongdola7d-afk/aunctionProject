@@ -82,7 +82,7 @@ public class Art extends ItemGeneric<Art> {
     
     // Kiểm tra toàn bộ Exception trước khi trả về
     public void validate() throws ItemValidationException {
-        // super.validate();
+        super.validate();
 
         if (author == null || author.isEmpty())
             throw new ItemValidationException.MissingFieldException("Thieu ten tac gia");

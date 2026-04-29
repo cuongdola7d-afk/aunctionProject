@@ -85,7 +85,7 @@ public class Vehicle extends ItemGeneric<Vehicle> {
 
     // Chốt chặn Validation cho phương tiện
     public void validate() throws ItemValidationException {
-        // super.validate();
+        super.validate();
 
         if (manufacturer == null || manufacturer.isEmpty())
             throw new ItemValidationException.MissingFieldException("Thiếu thông tin nhà sản xuất");
