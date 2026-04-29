@@ -9,6 +9,7 @@ import ddc.server.model.item.ItemGeneric;
 import ddc.server.model.user.User;
 
 public class Auction extends Entity<Auction> {
+    private String auctionId;
     private ItemGeneric item;
     private List<Bid> bidHistory = new ArrayList<>();
 
