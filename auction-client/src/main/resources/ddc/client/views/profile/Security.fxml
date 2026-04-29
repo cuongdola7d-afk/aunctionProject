@@ -10,9 +10,40 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ddc.client.controller.profile.Security">
    <children>
+      <HBox layoutX="10.0" layoutY="10.0" maxWidth="1.7976931348623157E308" prefHeight="100.0" spacing="10.0">
+         <children>
+            <Label onMouseClicked="#switchBackToProfile" style="-fx-background-color: transparent;" text="⬅">
+               <font>
+                  <Font size="24.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Label>
+            <Label text="Thay đổi mật khẩu" textFill="DARKBLUE">
+               <font>
+                  <Font name="System Bold" size="24.0" />
+               </font>
+               <padding>
+                  <Insets bottom="20.0" />
+               </padding>
+            </Label>
+         </children>
+      </HBox>
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="200.0">
+         <children>
+            <Button fx:id="btnChangePassword" alignment="CENTER" maxHeight="50.0" maxWidth="100.0" minHeight="35.0" minWidth="50.0" mnemonicParsing="false" onAction="#handleChangePassword" prefHeight="20.0" prefWidth="100.0" style="-fx-background-color: darkblue;" text="Đổi mật khẩu" textFill="WHITE">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Button>
+         </children>
+      </HBox>
       <HBox alignment="CENTER" spacing="40.0" style="-fx-border-color: black; -fx-border-radius: 10;" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
          <children>
             <Label alignment="CENTER" text="🗑" textFill="#9e0000">
@@ -49,21 +80,10 @@
             </Button>
          </children>
       </HBox>
-      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" style="-fx-border-radius: 10; -fx-border-color: black; -fx-background-color: cyan; -fx-background-radius: 10;" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+      <VBox alignment="CENTER" prefHeight="150.0" prefWidth="100.0" style="-fx-border-radius: 10; -fx-border-color: black; -fx-background-color: cyan; -fx-background-radius: 10;" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="60.0">
          <children>
-            <VBox prefHeight="200.0" prefWidth="100.0">
+            <VBox prefHeight="154.0" prefWidth="400.0">
                <children>
-                  <Label text="Thay đổi mật khẩu" textFill="DARKBLUE">
-                     <font>
-                        <Font name="System Bold" size="24.0" />
-                     </font>
-                     <padding>
-                        <Insets bottom="20.0" />
-                     </padding>
-                     <VBox.margin>
-                        <Insets top="10.0" />
-                     </VBox.margin>
-                  </Label>
                   <Label text="Mật khẩu hiện tại">
                      <font>
                         <Font name="System Bold" size="16.0" />
@@ -106,6 +126,7 @@
                   <Insets bottom="15.0" left="10.0" />
                </VBox.margin>
             </HBox>
+            <Label fx:id="errorLabel" alignment="CENTER" textFill="RED" />
          </children>
       </VBox>
    </children>

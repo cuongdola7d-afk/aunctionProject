@@ -7,6 +7,7 @@ public class UserSession {
     private String username;
     private String email;
     private String id;
+    private String password;
 
     private UserSession() {}
 
@@ -40,6 +41,12 @@ public class UserSession {
     public UserSession setId(String id) { 
         this.id = id; 
         return this; 
+    }
+
+    public String getPassword(){ return password; }
+    public UserSession setPassword(String password){
+        this.password = password;
+        return this;
     }
 
     public void cleanUserSession() {

@@ -56,7 +56,8 @@ public class Login {
                                     .setId(User.getId())
                                     .setName(User.getName())
                                     .setUsername(User.getUsername())
-                                    .setEmail(User.getEmail());
+                                    .setEmail(User.getEmail())
+                                    .setPassword(User.getPassword());
                     
                     Platform.runLater(() -> errorLabel.setText("Đăng nhập thành công!"));
                 
