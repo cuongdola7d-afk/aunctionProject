@@ -49,7 +49,6 @@ public class Login {
         new Thread(() -> handleLoginResponse(event, ClientToServer.sendRequest("LOGIN", user))).start();
     }
 
-<<<<<<< HEAD
     private void handleLoginResponse(ActionEvent event, String response) {
         UserResponse userRes = gson.fromJson(response, UserResponse.class);
         if (userRes != null && "SUCCESS".equals(userRes.getStatus()) && userRes.getData() != null) {
@@ -59,27 +58,6 @@ public class Login {
                     .setName(user.getName())
                     .setUsername(user.getUsername())
                     .setEmail(user.getEmail());
-=======
-                if ("SUCCESS".equals(userRes.getStatus())) {
-                    UserDTO User = userRes.getData(); // Lấy "cục" data đã được giải mã
-                    // Đổ vào UserSession như cũ
-                        UserSession.getInstance()
-                                    .setId(User.getId())
-                                    .setName(User.getName())
-                                    .setUsername(User.getUsername())
-                                    .setEmail(User.getEmail())
-                                    .setPassword(User.getPassword());
-                    
-                    Platform.runLater(() -> errorLabel.setText("Đăng nhập thành công!"));
-                
-                try {
-                    Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        System.out.println("IO Error!" + e.getMessage());
-                    } catch (Exception e) {
-                        System.out.println("Error!" + e.getMessage());
-                    }
->>>>>>> feature/auction-selling
 
             Platform.runLater(() -> openHome(event));
             return;
