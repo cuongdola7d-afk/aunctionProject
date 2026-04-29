@@ -5,9 +5,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DatabaseConnection {
-    private static final String URL = readConfig("DDC_DB_URL", "ddc.db.url");
-    private static final String USER = readConfig("DDC_DB_USER", "ddc.db.user");
-    private static final String PASSWORD = readConfig("DDC_DB_PASSWORD", "ddc.db.password");
+    private static final String URL = "jdbc:mysql://ddc-ddcauction.g.aivencloud.com:13354/ddc_auction";
+    private static final String USER = "avnadmin";
+    private static final String PASSWORD = "AVNS_ADGuqntT-uPYf-21kYy";
 
     public static Connection getConnection() throws SQLException {
         if (isBlank(URL) || isBlank(USER) || isBlank(PASSWORD)) {
