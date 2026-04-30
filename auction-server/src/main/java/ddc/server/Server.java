@@ -5,7 +5,7 @@ import java.net.Socket;
 
 import ddc.server.network.RequestClientHandler;
 import ddc.server.network.client.RealtimeClientHandler;
-import ddc.server.service.AuctionService;
+import ddc.server.controller.service.AuctionService;
 
 public class Server {
 
