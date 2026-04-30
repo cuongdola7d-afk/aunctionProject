@@ -1,5 +1,6 @@
 module ddc.server {
     requires java.sql;
+    requires java.logging;
     requires com.google.gson;
 
     exports ddc.server;
