@@ -22,6 +22,7 @@ public class AuctionDTO {
     }
 
     //Getters
+    public String getAuctionId () { return auctionId; }
     public ItemGeneric getItem () { return item; }
     public List<BidDTO> getBidHistory () { return bidHistory; }
     public AuctionStatus getStatus () { return status; }
@@ -31,13 +32,18 @@ public class AuctionDTO {
     public LocalDateTime getEndTime() { return endTime; }
 
     //Setters
+    public AuctionDTO setAuctionId (String auctionId) {
+        this.auctionId = auctionId;
+        return this;
+    }
+
     public AuctionDTO setItem (ItemGeneric item) {
         this.item = item;
         return this;
     }
 
-    public AuctionDTO setStatus (AuctionStatus status) {
-        this.status = status;
+    public AuctionDTO setStatus (String status) {
+        this.status = AuctionStatus.valueOf(status);
         return this;
     }
 

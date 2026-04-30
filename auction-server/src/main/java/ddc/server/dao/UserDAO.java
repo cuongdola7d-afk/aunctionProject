@@ -36,7 +36,7 @@ public class UserDAO {
         return false;
     }
 
-    public User loginUser(String username, String password) {
+    public User getUser(String username) {
         String sql = "SELECT * FROM ddc_users WHERE username = ?";
 
         try (Connection con = DatabaseConnection.getConnection();
@@ -51,7 +51,7 @@ public class UserDAO {
                         .setUsername(rs.getString("username"))
                         .setName(rs.getString("name"))
                         .setEmail(rs.getString("email"))
-                        .setPassword(null);
+                        .setPassword(rs.getString("password"));
                         return user;
                 }
             }
@@ -65,7 +65,6 @@ public class UserDAO {
     private boolean isBlank(String value) {
         return value == null || value.trim().isEmpty();
     }
-
 
     public boolean changePassword(String username, String newPassword) {
         // Câu lệnh SQL để cập nhật mật khẩu

@@ -3,9 +3,9 @@ package ddc.server;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import ddc.server.controller.service.AuctionService;
 import ddc.server.network.RequestClientHandler;
 import ddc.server.network.client.RealtimeClientHandler;
-import ddc.server.service.AuctionService;
 
 public class Server {
 

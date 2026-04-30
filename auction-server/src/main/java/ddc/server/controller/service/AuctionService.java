@@ -18,23 +18,14 @@ public class AuctionService {
 
     public AuctionService() { this.auctionDAO = new AuctionDAO(); }
 
-    public boolean createAuction(Auction auction) throws InvalidBidException {
-
-        // if (item == null) {
-        //     throw new InvalidBidException("Item không được null.");
-        // }
-        // if (startTime == null) {
-        //     throw new InvalidBidException("startTime không được null.");
-        // }
-        // if (endTime == null) {
-        //     throw new InvalidBidException("endTime không được null.");
-        // }
-        // if (!endTime.isAfter(startTime)) {
-        //     throw new InvalidBidException("endTime phải sau startTime.");
-        // }
+    public boolean createAuction(Auction auction) {
         boolean isSuccess = auctionDAO.createAuction(auction);
 
         return isSuccess;
+    }
+
+    public List<Auction> getAll() {
+        return auctionDAO.getAllAuctions();
     }
 
      public void refreshAuctionStatus(Auction auction) {
@@ -49,11 +40,11 @@ public class AuctionService {
          LocalDateTime now = LocalDateTime.now();
 
          if (now.isBefore(auction.getStartTime())) {
-             auction.setStatus(AuctionStatus.OPEN);
+             auction.setStatus("OPEN");
          } else if (now.isBefore(auction.getEndTime())) {
-             auction.setStatus(AuctionStatus.RUNNING);
+             auction.setStatus("RUNNING");
          } else {
-             auction.setStatus(AuctionStatus.FINISHED);
+             auction.setStatus("FINISHED");
          }
      }
 
@@ -146,7 +137,7 @@ public class AuctionService {
             return;
         }
 
-        auction.setStatus(AuctionStatus.CANCELLED);
+        auction.setStatus("CANCELLED");
     }
 
     public User getHighestBidder(Auction auction) {

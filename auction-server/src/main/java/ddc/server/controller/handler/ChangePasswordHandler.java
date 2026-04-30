@@ -1,15 +1,13 @@
 package ddc.server.controller.handler;
 
 import com.google.gson.Gson;
+
 import ddc.server.controller.RequestMessage;
-import ddc.server.network.response.Response;
-import ddc.server.controller.service.UserService;
-import ddc.server.network.response.BaseResponse;
 import ddc.server.model.user.User;
+import ddc.server.network.response.BaseResponse;
+import ddc.server.network.response.Response;
 
 public class ChangePasswordHandler implements ActionHandler {
-    // Sử dụng Service để xử lý logic và gọi DAO
-    private final UserService userService = new UserService(); 
     private static final Gson gson = new Gson();
 
     @Override
