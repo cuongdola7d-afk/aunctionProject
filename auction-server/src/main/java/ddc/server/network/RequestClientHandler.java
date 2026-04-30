@@ -42,11 +42,11 @@ public class RequestClientHandler implements Runnable {
         } catch (Exception e) {
             LOGGER.log(Level.WARNING, "Loi xu ly request client.", e);
         } finally {
-            try {
-                clientSocket.close();
-            } catch (Exception e) {
-                LOGGER.log(Level.FINE, "Khong the dong socket client.", e);
-            }
+            // try {
+            //     clientSocket.close();
+            // } catch (Exception e) {
+            //     LOGGER.log(Level.FINE, "Khong the dong socket client.", e);
+            // }
         }
     }
 

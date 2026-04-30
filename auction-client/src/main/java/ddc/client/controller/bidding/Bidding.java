@@ -110,6 +110,8 @@ public class Bidding {
     private void loadSampleData() {
         itemList.clear();
 
+        
+
         itemList.add(new AuctionItemViewModel(
                 "AUCT-001",
                 "Đồng hồ thông minh",

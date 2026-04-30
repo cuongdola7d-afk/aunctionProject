@@ -58,7 +58,16 @@ public class Login {
                     .setName(user.getName())
                     .setUsername(user.getUsername())
                     .setEmail(user.getEmail());
+            Platform.runLater(() -> errorLabel.setText("Đăng nhập thành công!"));
 
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                System.out.println("IO Error!" + e.getMessage());
+            } catch (Exception e) {
+                System.out.println("Error!" + e.getMessage());
+            }
+            
             Platform.runLater(() -> openHome(event));
             return;
         }
@@ -69,7 +78,8 @@ public class Login {
     private String loginErrorMessage(String status) {
         return switch (status == null ? "" : status) {
             case "PASSWORD_LESS_THAN_8" -> "Mật khẩu phải có từ 8 ký tự trở lên.";
-            case "INVALID_CREDENTIALS" -> "Tài khoản hoặc mật khẩu không đúng.";
+            case "UNAVAILABLE" -> "Tài khoản không tồn tại.";
+            case "INVALID PASSWORD" -> "Mật khẩu không đúng.";
             case "CONNECTION_ERROR" -> "Không kết nối được với server.";
             default -> "Đăng nhập thất bại.";
         };

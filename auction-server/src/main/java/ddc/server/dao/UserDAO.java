@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 
 import ddc.server.config.DatabaseConnection;
 import ddc.server.model.user.User;
+import ddc.server.security.PasswordUtil;
 
 public class UserDAO {
     private static final Logger LOGGER = Logger.getLogger(UserDAO.class.getName());
@@ -36,7 +37,7 @@ public class UserDAO {
         return false;
     }
 
-    public User loginUser(String username, String password) {
+    public User getUser(String username) {
         String sql = "SELECT * FROM ddc_users WHERE username = ?";
 
         try (Connection con = DatabaseConnection.getConnection();
@@ -46,12 +47,17 @@ public class UserDAO {
 
             try (ResultSet rs = pst.executeQuery()) {
                 if (rs.next()) {
+                    String storedPassword = rs.getString("password");
+                    if (!PasswordUtil.verifyPassword(password, storedPassword)) {
+                        return null;
+                    }
+
                     User user = new User()
                         .setId(rs.getString("id"))
                         .setUsername(rs.getString("username"))
                         .setName(rs.getString("name"))
                         .setEmail(rs.getString("email"))
-                        .setPassword(null);
+                        .setPassword(rs.getString("password"));
                         return user;
                 }
             }
@@ -65,7 +71,6 @@ public class UserDAO {
     private boolean isBlank(String value) {
         return value == null || value.trim().isEmpty();
     }
-
 
     public boolean changePassword(String username, String newPassword) {
         // Câu lệnh SQL để cập nhật mật khẩu
