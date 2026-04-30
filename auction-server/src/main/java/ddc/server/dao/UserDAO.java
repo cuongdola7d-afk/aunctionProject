@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 
 import ddc.server.config.DatabaseConnection;
 import ddc.server.model.user.User;
+import ddc.server.security.PasswordUtil;
 
 public class UserDAO {
     private static final Logger LOGGER = Logger.getLogger(UserDAO.class.getName());
@@ -46,6 +47,11 @@ public class UserDAO {
 
             try (ResultSet rs = pst.executeQuery()) {
                 if (rs.next()) {
+                    String storedPassword = rs.getString("password");
+                    if (!PasswordUtil.verifyPassword(password, storedPassword)) {
+                        return null;
+                    }
+
                     User user = new User()
                         .setId(rs.getString("id"))
                         .setUsername(rs.getString("username"))
