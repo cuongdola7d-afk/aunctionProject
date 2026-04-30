@@ -4,14 +4,12 @@ import com.google.gson.Gson;
 
 import ddc.server.config.GsonConfig;
 import ddc.server.controller.RequestMessage;
-import ddc.server.controller.service.ItemService;
 import ddc.server.model.item.ItemGeneric;
 import ddc.server.network.response.BaseResponse;
 import ddc.server.network.response.GetItemResponse;
 import ddc.server.network.response.Response;
 
 public class GetItemHandler implements ActionHandler {
-    private final ItemService itemService = new ItemService();
     private final Gson gson = GsonConfig.newGson();
 
     @Override
