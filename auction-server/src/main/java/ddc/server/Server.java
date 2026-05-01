@@ -2,6 +2,8 @@ package ddc.server;
 
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import ddc.server.controller.service.AuctionService;
 import ddc.server.network.RequestClientHandler;
@@ -30,6 +32,9 @@ public class Server {
      */
     private static final int REALTIME_PORT = 5555;
 
+
+    private static final ExecutorService requestPool = Executors.newFixedThreadPool(100);
+    private static final ExecutorService realtimePool = Executors.newVirtualThreadPerTaskExecutor();
     public static void main(String[] args) {
 
         /**
@@ -41,30 +46,11 @@ public class Server {
          */
         AuctionService auctionService = new AuctionService();
 
-        /**
-         * Thread chạy server cổng 8080.
-         * Server này chuyên nhận request thường.
-         */
-        Thread requestServerThread = new Thread(
-                () -> startRequestServer(),
-                "request-server-8080"
-        );
-
-        /**
-         * Thread chạy server cổng 5555.
-         * Server này chuyên nhận kết nối realtime cho đấu giá.
-         */
-        Thread realtimeServerThread = new Thread(
-                () -> startRealtimeServer(auctionService),
-                "realtime-server-5555"
-        );
+        Thread requestServerThread = new Thread(() -> startRequestServer(), "request-server-8080");
+        Thread realtimeServerThread = new Thread(() -> startRealtimeServer(auctionService), "realtime-server-5555");
 
         requestServerThread.start();
         realtimeServerThread.start();
-
-        System.out.println("Server system started:");
-        System.out.println("- Request server:  " + REQUEST_PORT);
-        System.out.println("- Realtime server: " + REALTIME_PORT);
     }
 
     /**
@@ -76,22 +62,16 @@ public class Server {
      * Mỗi client kết nối vào sẽ được giao cho 1 thread riêng để xử lý.
      */
     private static void startRequestServer() {
-        try (ServerSocket serverSocket = new ServerSocket(REQUEST_PORT)) {
-            System.out.println("Request server opened at port " + REQUEST_PORT);
-
+       try (ServerSocket serverSocket = new ServerSocket(REQUEST_PORT)) {
+            System.out.println("[" + Thread.currentThread().getName() + "] Request server opened at port " + REQUEST_PORT);
             while (true) {
-                // Chờ client thường kết nối vào cổng 8080
                 Socket clientSocket = serverSocket.accept();
-                System.out.println("[8080] New Client: " + clientSocket.getInetAddress());
-
-                // Tạo handler riêng cho client này
                 RequestClientHandler handler = new RequestClientHandler(clientSocket);
-
-                // Chạy handler trên thread riêng để không block các client khác
-                new Thread(handler).start();
+                
+                // Thay vì new Thread().start(), hãy giao cho Pool xử lý
+                requestPool.execute(handler);
             }
         } catch (Exception e) {
-            System.out.println("Request Server Error! " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -107,22 +87,13 @@ public class Server {
      */
     private static void startRealtimeServer(AuctionService auctionService) {
         try (ServerSocket serverSocket = new ServerSocket(REALTIME_PORT)) {
-            System.out.println("Realtime server opened at port " + REALTIME_PORT);
-
+            System.out.println("[" + Thread.currentThread().getName() + "] Request server opened at port " + REALTIME_PORT);
             while (true) {
-                // Chờ client realtime kết nối vào cổng 5555
                 Socket clientSocket = serverSocket.accept();
-                System.out.println("[5555] New Realtime Client: " + clientSocket.getInetAddress());
-
-                // Tạo handler realtime cho client này
-                RealtimeClientHandler handler = new RealtimeClientHandler(clientSocket, auctionService);
-
-                // Chạy handler trên thread riêng
-                new Thread(handler).start();
+                // Virtual Thread sẽ tự động xử lý việc "đợi" mạng cho bạn
+                realtimePool.execute(new RealtimeClientHandler(clientSocket, auctionService));
             }
-
         } catch (Exception e) {
-            System.out.println("Realtime Server Error! " + e.getMessage());
             e.printStackTrace();
         }
     }
