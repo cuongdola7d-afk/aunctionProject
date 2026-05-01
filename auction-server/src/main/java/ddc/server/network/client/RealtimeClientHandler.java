@@ -7,7 +7,7 @@ import java.net.Socket;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import ddc.server.service.AuctionService;
+import ddc.server.controller.service.AuctionService;
 
 public class RealtimeClientHandler implements Runnable {
     private static final Set<ClientConnection> ACTIVE_CONNECTIONS =

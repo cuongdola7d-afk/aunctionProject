@@ -1,5 +1,6 @@
 package ddc.client.model.ItemDTO;
 
+
 public abstract class ItemGeneric<T extends ItemGeneric<T>> {
     private String id;
     private String itemName;

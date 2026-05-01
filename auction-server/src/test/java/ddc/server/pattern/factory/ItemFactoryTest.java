@@ -1,4 +1,5 @@
-package ddc.server.pattern.factory.itemcreating;
+
+package ddc.server.pattern.factory;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -9,9 +10,6 @@ import ddc.server.model.item.Art;
 import ddc.server.model.item.Electronics;
 import ddc.server.model.item.ItemGeneric;
 import ddc.server.model.item.Vehicle;
-import ddc.server.pattern.factory.CreatorRegistry;
-import ddc.server.pattern.factory.ItemCreator;
-import ddc.server.pattern.factory.ItemRequest;
 
 public class ItemFactoryTest {
    

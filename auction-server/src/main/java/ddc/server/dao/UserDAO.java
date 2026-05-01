@@ -4,57 +4,74 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import ddc.server.config.DatabaseConnection;
 import ddc.server.model.user.User;
+import ddc.server.security.PasswordUtil;
 
 public class UserDAO {
+    private static final Logger LOGGER = Logger.getLogger(UserDAO.class.getName());
 
     public boolean registerUser(User user) {
-        String sql = "INSERT INTO ddc_users (id, username, name, email, password) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO ddc_users (username, name, email, password) VALUES (?, ?, ?, ?)";
+
+        if (user == null || isBlank(user.getUsername()) || isBlank(user.getEmail()) || isBlank(user.getPassword())) {
+            return false;
+        }
 
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement pst = con.prepareStatement(sql)) {
 
-            pst.setString(1, user.getId());
-            pst.setString(2, user.getUsername());
-            pst.setString(3, user.getName());
-            pst.setString(4, user.getEmail());
-            pst.setString(5, user.getPassword());
+            pst.setString(1, user.getUsername().trim());
+            pst.setString(2, user.getName());
+            pst.setString(3, user.getEmail().trim());
+            pst.setString(4, user.getPassword());
 
             int insert = pst.executeUpdate();
             return insert > 0;
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            LOGGER.log(Level.WARNING, "Khong the dang ky user.", e);
         }
         return false;
     }
 
     public User loginUser(String username, String password) {
-        String sql = "SELECT * FROM ddc_users WHERE username = ? AND password = ?";
+        String sql = "SELECT * FROM ddc_users WHERE username = ?";
 
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement pst = con.prepareStatement(sql)) {
 
-            pst.setString(1, username);
-            pst.setString(2, password);
+            pst.setString(1, username.trim());
 
-            ResultSet rs = pst.executeQuery();
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    String storedPassword = rs.getString("password");
+                    if (!PasswordUtil.verifyPassword(password, storedPassword)) {
+                        return null;
+                    }
 
-            if (rs.next()) {
-                User user = new User()
-                .setId(rs.getString("id"))
-                .setUsername(rs.getString("username"))
-                .setName(rs.getString("name"))
-                .setEmail(rs.getString("email"))
-                .setPassword(rs.getString("password"));
-                return user;
+                    User user = new User()
+                        .setId(rs.getString("id"))
+                        .setUsername(rs.getString("username"))
+                        .setName(rs.getString("name"))
+                        .setEmail(rs.getString("email"))
+                        .setPassword(null);
+                        return user;
+                }
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            LOGGER.log(Level.WARNING, "Khong the dang nhap user.", e);
         }
         return null;
     }
+
+
+    private boolean isBlank(String value) {
+        return value == null || value.trim().isEmpty();
+    }
+
 
     public boolean changePassword(String username, String newPassword) {
         // Câu lệnh SQL để cập nhật mật khẩu
@@ -82,3 +99,4 @@ public class UserDAO {
         }
     }
 }
+

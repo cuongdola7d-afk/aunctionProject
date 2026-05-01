@@ -12,23 +12,28 @@ public class CreateAuctionHandler implements ActionHandler {
     @Override
     public Response handle(RequestMessage request) {
         try {
-            System.out.println("Creating Auction...");
-
-            if (request.getData() == null) return new BaseResponse().setStatus("FAIL");
+            if (request.getData() == null || request.getData().isBlank()) {
+                return new BaseResponse().setStatus("INVALID_INPUT");
+            }
 
             Auction auction = gson.fromJson(request.getData(), Auction.class);
-            System.out.println(auction.getItem().getItemName());
-            System.out.println(auction.getItem().getId());            
-            boolean isSuccess = auctionService.createAuction(auction);
+            if (auction == null || auction.getItem() == null || auction.getItem().getId() == null) {
+                return new BaseResponse().setStatus("INVALID_INPUT");
+            }
+            if (auction.getStartTime() == null
+                    || auction.getEndTime() == null
+                    || !auction.getEndTime().isAfter(auction.getStartTime())
+                    || auction.getCurrentPrice() <= 0) {
+                return new BaseResponse().setStatus("INVALID_INPUT");
+            }
 
+            boolean isSuccess = auctionService.createAuction(auction);
             if (isSuccess) {
                 return new BaseResponse().setStatus("SUCCESS");
-            } else {
-                return new BaseResponse().setStatus("FAIL");
             }
-        } catch (Exception e) {
-            e.printStackTrace();
             return new BaseResponse().setStatus("FAIL");
+        } catch (Exception e) {
+            return new BaseResponse().setStatus("SERVER_ERROR");
         }
     }
 }

@@ -1,15 +1,18 @@
 package ddc.server.controller.service;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import ddc.server.dao.ItemDAO;
 import ddc.server.exception.ItemValidationException;
 import ddc.server.model.item.ItemGeneric;
-
 import ddc.server.pattern.factory.CreatorRegistry;
 import ddc.server.pattern.factory.ItemCreator;
 import ddc.server.pattern.factory.ItemRequest;
 
-
 public class ItemService {
+    private static final Logger LOGGER = Logger.getLogger(ItemService.class.getName());
+
     private final ItemDAO itemDAO;
 
     public ItemService() {
@@ -24,7 +27,6 @@ public class ItemService {
      * 4. Lưu vào Database thông qua DAO
      */
     public String createAndSaveItem(ItemRequest req) throws ItemValidationException{
-        try {
             if (req.getItemName() == null || req.getItemName().isEmpty()) {
                 throw new ItemValidationException.MissingFieldException("Tên sản phẩm không được để trống!");
             }
@@ -42,32 +44,36 @@ public class ItemService {
                 throw new ItemValidationException.InvalidCategoryException("Category khong duoc de trong!");
             }
 
-            // Bước 2: Tạo Object và Validate (Hàm này cũng throws MissingFieldException...)
+            if (isBlank(req.getItemName())) {
+                throw new ItemValidationException.MissingFieldException("Ten san pham khong duoc de trong.");
+            }
+
+            if (isBlank(req.getCategory())) {
+                throw new ItemValidationException.InvalidCategoryException("Category khong duoc de trong.");
+            }
+
+
             ItemGeneric newItem = creator.createItem(req);
             newItem.validate();
-            
-            //Bước 3: Sau khi có Object xịn, gọi DAO để "bốc" nó vào SQL
-            String id = itemDAO.addItem(newItem);
 
-            if (!id.isEmpty()) {
-                System.out.println("Service: Da luu san pham " + newItem.getItemName() + " thanh cong!");
+            String id = itemDAO.addItem(newItem);
+            if (isBlank(id)) {
+                LOGGER.log(Level.WARNING, "Khong the luu san pham: {0}", newItem.getItemName());
+                return null;
             }
             return id;
-            
+        }
 
-        } catch (ItemValidationException e){
-            throw e;
-        } catch (Exception e) {
-            System.err.println("Service Loi: " + e.getMessage());
-            e.printStackTrace();
+
+    public ItemGeneric getItemDetails(String id) {
+        if (isBlank(id)) {
             return null;
         }
+        return itemDAO.getItem(id.trim());
     }
 
-    /**
-     * Lấy thông tin sản phẩm chi tiết
-     */
-    public ItemGeneric getItemDetails(String id) {
-        return itemDAO.getItem(id);
+    private boolean isBlank(String value) {
+        return value == null || value.trim().isEmpty();
     }
 }
+

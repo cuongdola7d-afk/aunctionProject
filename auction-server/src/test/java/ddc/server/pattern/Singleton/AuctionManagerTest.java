@@ -4,14 +4,12 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import org.junit.jupiter.api.Test;
 
 import ddc.server.exception.AuctionNotFoundException;
 import ddc.server.exception.BidderNotFoundException;
 import ddc.server.model.transaction.Auction;
 import ddc.server.model.user.Bidder;
-import ddc.server.pattern.Singleton.AuctionManager;
 
 public class AuctionManagerTest {
 

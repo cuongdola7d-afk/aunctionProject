@@ -5,8 +5,8 @@ import java.util.Map;
 
 import ddc.server.controller.handler.*;
 
-public class RequestRouter {
-    private static final Map<String, ActionHandler> routes = new HashMap<>();
+ public class RequestRouter {
+     private static final Map<String, ActionHandler> routes = new HashMap<>();
 
     static {
         routes.put("LOGIN", new LoginHandler());
@@ -20,4 +20,4 @@ public class RequestRouter {
     public static ActionHandler getHandler (String action) {
         return routes.get(action);
     }
-}
+ }
