@@ -1,11 +1,15 @@
 package ddc.server.network.response;
 
+import java.util.List;
+
+import ddc.server.model.transaction.Auction;
+
 public class GetAllAuctionsResponse extends Response<GetAllAuctionsResponse>{
-    private Object data;
+    private List<Auction> data;
 
-    public Object getData () { return data; }
+    public List<Auction> getData () { return data; }
 
-    public GetAllAuctionsResponse setData (Object data) {
+    public GetAllAuctionsResponse setData (List<Auction> data) {
         this.data = data;
         return this;
     }

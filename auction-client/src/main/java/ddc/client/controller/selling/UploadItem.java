@@ -18,7 +18,8 @@ import ddc.client.model.AuctionDTO;
 import ddc.client.model.ItemDTO.ItemGeneric;
 import ddc.client.model.ItemDTO.factory.CreatorRegistry;
 import ddc.client.model.ItemDTO.factory.ItemRequest;
-import ddc.client.network.ClientToServer;
+import ddc.client.model.Request;
+import ddc.client.network.RequestToServer;
 import ddc.client.network.UserSession;
 import ddc.client.network.response.AddItemResponse;
 import ddc.client.network.response.BaseResponse;
@@ -220,11 +221,11 @@ public class UploadItem implements Initializable {
             new Thread(() -> {
                 try {
                     ItemGeneric item = currentCat.getItemData(itemName, description, sellerName);
-                    String addedItemJson = ClientToServer.sendRequest("ADD_ITEM", item);
+                    String addedItemJson = RequestToServer.sendRequest(new Request().setAction("ADD_ITEM").setData(item));
                     AddItemResponse addedItemResponse = gson.fromJson(addedItemJson, AddItemResponse.class);
 
                     if (addedItemResponse != null && addedItemResponse.getStatus().contains("SUCCESS")) {
-                        String getItemJson = ClientToServer.sendRequest("GET_ITEM", addedItemResponse.getId());
+                        String getItemJson = RequestToServer.sendRequest(new Request().setAction("GET_ITEM").setData(addedItemResponse.getId()));
                         GetItemResponse gottenItemResponse = gson.fromJson(getItemJson, GetItemResponse.class);
 
                         if (gottenItemResponse != null && gottenItemResponse.getStatus().contains("SUCCESS")) {
@@ -236,7 +237,7 @@ public class UploadItem implements Initializable {
                                                 .setCurrentPrice(startingPrice)
                                                 .setStartTime(LocalDateTime.now())
                                                 .setEndTime(datetime);
-                            String createAuctionJson = ClientToServer.sendRequest("CREATE_AUCTION", auction);
+                            String createAuctionJson = RequestToServer.sendRequest(new Request().setAction("CREATE_AUCTION").setData(auction));
                             BaseResponse response = gson.fromJson(createAuctionJson, BaseResponse.class);
 
                             if (response != null && response.getStatus().contains("SUCCESS")) {

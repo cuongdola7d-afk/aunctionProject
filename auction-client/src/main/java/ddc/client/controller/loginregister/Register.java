@@ -4,8 +4,9 @@ import com.google.gson.Gson;
 
 import ddc.client.config.GsonConfig;
 import ddc.client.controller.SceneSwitcher;
+import ddc.client.model.Request;
 import ddc.client.model.UserDTO;
-import ddc.client.network.ClientToServer;
+import ddc.client.network.RequestToServer;
 import ddc.client.network.response.BaseResponse;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -43,7 +44,8 @@ public class Register {
 
         errorLabel.setText("Dang dang ky...");
         new Thread(() -> {
-            String response = ClientToServer.sendRequest("REGISTER", user);
+            Request request = new Request().setAction("REGISTER").setData(user);
+            String response = RequestToServer.sendRequest(request);
             BaseResponse baseResponse = gson.fromJson(response, BaseResponse.class);
             String status = baseResponse == null ? null : baseResponse.getStatus();
             Platform.runLater(() -> errorLabel.setText(registerMessage(status)));

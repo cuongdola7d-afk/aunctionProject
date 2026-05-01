@@ -2,10 +2,10 @@ package ddc.client.controller.profile;
 
 import com.google.gson.Gson;
 
-import ddc.client.Client;
 import ddc.client.controller.SceneSwitcher;
+import ddc.client.model.Request;
 import ddc.client.model.UserDTO;
-import ddc.client.network.ClientToServer;
+import ddc.client.network.RequestToServer;
 import ddc.client.network.UserSession;
 import ddc.client.network.response.BaseResponse;
 import javafx.animation.KeyFrame;
@@ -15,9 +15,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.input.MouseEvent;
-
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.util.Duration;
 
 public class Security {
@@ -94,7 +91,7 @@ public class Security {
                     .setPassword(newPass); 
 
         // 1. Gửi request
-        String jsonResponse = ClientToServer.sendRequest("UPDATE_PASSWORD", user);
+        String jsonResponse = RequestToServer.sendRequest(new Request().setAction("UPDATE_PASSWORD").setData(user));
 
         // 2. Parse kết quả trả về từ Server
         Gson gson = new Gson();

@@ -4,8 +4,9 @@ import com.google.gson.Gson;
 
 import ddc.client.config.GsonConfig;
 import ddc.client.controller.SceneSwitcher;
+import ddc.client.model.Request;
 import ddc.client.model.UserDTO;
-import ddc.client.network.ClientToServer;
+import ddc.client.network.RequestToServer;
 import ddc.client.network.UserSession;
 import ddc.client.network.response.UserResponse;
 import javafx.application.Platform;
@@ -45,8 +46,10 @@ public class Login {
         UserDTO user = new UserDTO()
                 .setUsername(username)
                 .setPassword(password);
+        
+        Request loginRequest = new Request().setAction("LOGIN").setData(user);
 
-        new Thread(() -> handleLoginResponse(event, ClientToServer.sendRequest("LOGIN", user))).start();
+        new Thread(() -> handleLoginResponse(event, RequestToServer.sendRequest(loginRequest))).start();
     }
 
     private void handleLoginResponse(ActionEvent event, String response) {

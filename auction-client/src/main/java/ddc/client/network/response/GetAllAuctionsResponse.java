@@ -1,11 +1,13 @@
 package ddc.client.network.response;
 
+import ddc.client.model.AuctionDTO;
+
 public class GetAllAuctionsResponse extends Response<GetAllAuctionsResponse>{
-    private Object data;
+    private AuctionDTO[] data;
 
-    public Object getData () { return data; }
+    public AuctionDTO[] getData () { return data; }
 
-    public GetAllAuctionsResponse setData (Object data) {
+    public GetAllAuctionsResponse setData (AuctionDTO[] data) {
         this.data = data;
         return this;
     }

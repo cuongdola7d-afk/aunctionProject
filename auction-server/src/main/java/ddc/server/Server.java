@@ -115,8 +115,7 @@ public class Server {
                 System.out.println("[5555] New Realtime Client: " + clientSocket.getInetAddress());
 
                 // Tạo handler realtime cho client này
-                RealtimeClientHandler handler =
-                        new RealtimeClientHandler(clientSocket, auctionService);
+                RealtimeClientHandler handler = new RealtimeClientHandler(clientSocket, auctionService);
 
                 // Chạy handler trên thread riêng
                 new Thread(handler).start();

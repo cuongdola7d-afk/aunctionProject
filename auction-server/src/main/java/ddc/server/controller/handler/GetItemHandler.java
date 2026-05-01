@@ -15,20 +15,18 @@ public class GetItemHandler implements ActionHandler {
     @Override
     public Response handle(RequestMessage request) {
         try {
-            String itemId = request.getData();
+            String itemId = gson.fromJson(request.getData(), String.class);
             if (isBlank(itemId)) {
                 return new BaseResponse().setStatus("INVALID_INPUT").setMessage("Thieu ID san pham.");
             }
-
-            ItemGeneric item = itemService.getItemDetails(itemId.trim());
-            if (item == null) {
-                return new BaseResponse().setStatus("NOT_FOUND").setMessage("Khong tim thay san pham.");
-            }
+            System.out.println("GONNA GET ITEM RIGHT NOW");
+            ItemGeneric item = itemService.getItemDetails(itemId);
 
             return new GetItemResponse()
                     .setItemJson(gson.toJson(item))
                     .setStatus("SUCCESS");
         } catch (Exception e) {
+            e.printStackTrace();
             return new BaseResponse().setStatus("SERVER_ERROR").setMessage("Loi server khi lay san pham.");
         }
     }

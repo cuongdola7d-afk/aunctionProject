@@ -9,7 +9,6 @@ public class DatabaseConnection {
         private static final String USER = EnvConfig.get("DDC_DB_USER", "ddc.db.user");
         private static final String PASSWORD = EnvConfig.get("DDC_DB_PASSWORD", "ddc.db.password");
 
-
     public static Connection getConnection() throws SQLException {
         if (isBlank(URL) || isBlank(USER) || isBlank(PASSWORD)) {
             throw new SQLException("Thieu cau hinh DB. Can DDC_DB_URL, DDC_DB_USER, DDC_DB_PASSWORD.");
