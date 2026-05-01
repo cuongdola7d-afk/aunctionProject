@@ -8,7 +8,7 @@ import javafx.scene.control.TextField;
 
 public enum Category {
 
-    BASE_ITEM("Chung") {
+    GENERAL("Chung") {
         @Override
         public void renderUI(FieldBuilder builder) {
         }

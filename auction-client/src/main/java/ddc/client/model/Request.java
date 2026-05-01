@@ -9,6 +9,8 @@ public class Request {
     private String action;
     private String data;
 
+    public Request () {}
+
     public Request (String action, Object dataObj) {
         this.action = action;
         this.data = gson.toJson(dataObj);
@@ -16,4 +18,14 @@ public class Request {
 
     public String getAction () { return action; }
     public String getData () { return data; }
+
+    public Request setAction (String action) {
+        this.action = action;
+        return this;
+    }
+
+    public Request setData (Object dataObj) {
+        this.data = gson.toJson(dataObj);
+        return this;
+    }
 }

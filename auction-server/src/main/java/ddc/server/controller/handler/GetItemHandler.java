@@ -4,33 +4,29 @@ import com.google.gson.Gson;
 
 import ddc.server.config.GsonConfig;
 import ddc.server.controller.RequestMessage;
-import ddc.server.controller.service.ItemService;
 import ddc.server.model.item.ItemGeneric;
 import ddc.server.network.response.BaseResponse;
 import ddc.server.network.response.GetItemResponse;
 import ddc.server.network.response.Response;
 
 public class GetItemHandler implements ActionHandler {
-    private final ItemService itemService = new ItemService();
     private final Gson gson = GsonConfig.newGson();
 
     @Override
     public Response handle(RequestMessage request) {
         try {
-            String itemId = request.getData();
+            String itemId = gson.fromJson(request.getData(), String.class);
             if (isBlank(itemId)) {
                 return new BaseResponse().setStatus("INVALID_INPUT").setMessage("Thieu ID san pham.");
             }
-
-            ItemGeneric item = itemService.getItemDetails(itemId.trim());
-            if (item == null) {
-                return new BaseResponse().setStatus("NOT_FOUND").setMessage("Khong tim thay san pham.");
-            }
+            System.out.println("GONNA GET ITEM RIGHT NOW");
+            ItemGeneric item = itemService.getItemDetails(itemId);
 
             return new GetItemResponse()
                     .setItemJson(gson.toJson(item))
                     .setStatus("SUCCESS");
         } catch (Exception e) {
+            e.printStackTrace();
             return new BaseResponse().setStatus("SERVER_ERROR").setMessage("Loi server khi lay san pham.");
         }
     }

@@ -31,7 +31,7 @@ public class ItemService {
                 throw new ItemValidationException.MissingFieldException("Tên sản phẩm không được để trống!");
             }
             // Bước 1: Tìm xưởng sản xuất dựa trên type
-            System.out.println(">>> Đang kiem tra Category: " + req.getCategory());
+            System.out.println(">>> Dang kiem tra Category: " + req.getCategory());
             ItemCreator creator = CreatorRegistry.getCreator(req.getCategory());
             
             if (creator == null) {
@@ -61,6 +61,7 @@ public class ItemService {
                 LOGGER.log(Level.WARNING, "Khong the luu san pham: {0}", newItem.getItemName());
                 return null;
             }
+            LOGGER.log(Level.FINE, "Luu san pham thanh cong!");
             return id;
         }
 
@@ -69,7 +70,8 @@ public class ItemService {
         if (isBlank(id)) {
             return null;
         }
-        return itemDAO.getItem(id.trim());
+        System.out.println("LET'S GO");
+        return itemDAO.getItem(id);
     }
 
     private boolean isBlank(String value) {

@@ -1,9 +1,11 @@
 package ddc.client.controller.profile;
 
 import com.google.gson.Gson;
+
 import ddc.client.controller.SceneSwitcher;
+import ddc.client.model.Request;
 import ddc.client.model.UserDTO;
-import ddc.client.network.ClientToServer;
+import ddc.client.network.RequestToServer;
 import ddc.client.network.UserSession;
 import ddc.client.network.response.BaseResponse;
 import javafx.animation.KeyFrame;
@@ -83,9 +85,10 @@ public class Security {
         errorLabel.setStyle("-fx-text-fill: #3498db;");
 
         Task<String> changePasswordTask = new Task<>() {
+            Request rq = new Request("UPDATE_PASSWORD", user);
             @Override
             protected String call() throws Exception {
-                return ClientToServer.sendRequest("UPDATE_PASSWORD", user);
+                return RequestToServer.sendRequest(rq);
             }
         };
 

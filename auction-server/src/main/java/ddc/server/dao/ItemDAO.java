@@ -11,7 +11,6 @@ import ddc.server.config.DatabaseConnection;
 import ddc.server.exception.ItemValidationException;
 import ddc.server.model.item.ItemGeneric;
 import ddc.server.pattern.factory.CreatorRegistry;
-import ddc.server.pattern.factory.ItemCreator;
 import ddc.server.pattern.factory.ItemRequest;
 
 public class ItemDAO {
@@ -41,45 +40,47 @@ public class ItemDAO {
     }
 
     public ItemGeneric getItem(String id) {
-        if (isBlank(id)) {
-            return null;
-        }
-
         String sql = "SELECT * FROM ddc_items WHERE id = ?";
 
         try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement pst = con.prepareStatement(sql)) {
+            PreparedStatement pst = con.prepareStatement(sql)) {
 
             pst.setString(1, id.trim());
-            try (ResultSet rs = pst.executeQuery()) {
-                if (!rs.next()) {
-                    return null;
-                }
 
-                String category = rs.getString("category");
-                ItemCreator creator = CreatorRegistry.getCreator(category);
-                if (creator == null) {
-                    LOGGER.log(Level.WARNING, "Category trong DB khong hop le: {0}", category);
-                    return null;
-                }
+            ResultSet rs = pst.executeQuery();
 
+            // BẮT BUỘC PHẢI GỌI rs.next() Ở ĐÂY
+            if (rs.next()) { 
                 ItemRequest request = new ItemRequest(
                         rs.getString("item_name"),
                         rs.getString("description"),
-                        category,
-                        rs.getString("seller_name"));
+                        rs.getString("category"),
+                        rs.getString("seller_name")
+                );
 
-                ItemGeneric item = creator.createItem(request);
-                item.setId(rs.getString("id"));
+                String category = rs.getString("category");
+                String itemId = rs.getString("id");
+
+                ItemGeneric item = CreatorRegistry.getCreator(category).createItem(request);
+                System.out.println(item.getItemName());
+
+                item.setId(itemId);
                 item.load(con);
-                item.validate();
-                return item;
+                
+                try {
+                    item.validate();
+                } catch (ItemValidationException e) {
+                    e.printStackTrace();
+                }
+                return item;            
             }
+
         } catch (SQLException e) {
-            LOGGER.log(Level.WARNING, "Khong the lay item tu DB.", e);
+            e.printStackTrace();
         } catch (ItemValidationException e) {
-            LOGGER.log(Level.WARNING, "Du lieu item trong DB khong hop le.", e);
+            e.printStackTrace();
         }
+        
         return null;
     }
 
