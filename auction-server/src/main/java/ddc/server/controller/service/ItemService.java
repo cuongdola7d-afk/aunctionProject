@@ -70,7 +70,6 @@ public class ItemService {
         if (isBlank(id)) {
             return null;
         }
-        System.out.println("LET'S GO");
         return itemDAO.getItem(id);
     }
 
