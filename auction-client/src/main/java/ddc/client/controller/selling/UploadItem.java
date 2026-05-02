@@ -12,6 +12,7 @@ import java.util.ResourceBundle;
 
 import com.google.gson.Gson;
 
+import ddc.client.config.ClientContext;
 import ddc.client.config.GsonConfig;
 import ddc.client.exception.ItemValidationException;
 import ddc.client.model.AuctionDTO;
@@ -27,6 +28,7 @@ import ddc.client.network.response.GetItemResponse;
 import javafx.animation.FadeTransition;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -218,50 +220,71 @@ public class UploadItem implements Initializable {
             registerButton.setDisable(true); // Khóa nút để tránh bấm lung tung
             registerButton.setStyle("-fx-background-color: #555555; -fx-text-fill: white;");
 
-            new Thread(() -> {
-                try {
+            Task<Boolean> uploadTask = new Task<>() {
+                @Override
+                protected Boolean call() throws Exception {
+                    // In tên luồng để kiểm tra như bạn muốn
+                    System.out.println("[" + Thread.currentThread().getName() + "] Bat dau dang tai...");
+
+                    // 1. ADD_ITEM
                     ItemGeneric item = currentCat.getItemData(itemName, description, sellerName);
                     String addedItemJson = RequestToServer.sendRequest(new Request().setAction("ADD_ITEM").setData(item));
-                    AddItemResponse addedItemResponse = gson.fromJson(addedItemJson, AddItemResponse.class);
+                    AddItemResponse addedRes = gson.fromJson(addedItemJson, AddItemResponse.class);
 
-                    if (addedItemResponse != null && addedItemResponse.getStatus().contains("SUCCESS")) {
-                        String getItemJson = RequestToServer.sendRequest(new Request().setAction("GET_ITEM").setData(addedItemResponse.getId()));
-                        GetItemResponse gottenItemResponse = gson.fromJson(getItemJson, GetItemResponse.class);
+                    if (addedRes == null || !addedRes.getStatus().contains("SUCCESS")) return false;
 
-                        if (gottenItemResponse != null && gottenItemResponse.getStatus().contains("SUCCESS")) {
-                            ItemRequest gottenItemRequest = gson.fromJson(gottenItemResponse.getItemJson(), ItemRequest.class);
-                            ItemGeneric gottenItem = CreatorRegistry.getCreator(gottenItemRequest.getCategory()).createItem(gottenItemRequest);
-                            
-                            AuctionDTO auction = new AuctionDTO()
-                                                .setItem(gottenItem)
-                                                .setCurrentPrice(startingPrice)
-                                                .setStartTime(LocalDateTime.now())
-                                                .setEndTime(datetime);
-                            String createAuctionJson = RequestToServer.sendRequest(new Request().setAction("CREATE_AUCTION").setData(auction));
-                            BaseResponse response = gson.fromJson(createAuctionJson, BaseResponse.class);
+                    // 2. GET_ITEM (để lấy đầy đủ thông tin/ID)
+                    String getItemJson = RequestToServer.sendRequest(new Request().setAction("GET_ITEM").setData(addedRes.getId()));
+                    GetItemResponse gottenRes = gson.fromJson(getItemJson, GetItemResponse.class);
 
-                            if (response != null && response.getStatus().contains("SUCCESS")) {
-                                Platform.runLater(() -> {
-                                    registerButton.setText("Thành công! ✔");
-                                    registerButton.setStyle("-fx-background-color: #28a745; -fx-text-fill: white; -fx-font-weight: bold;");
+                    if (gottenRes == null || !gottenRes.getStatus().contains("SUCCESS")) return false;
 
-                                    // 4. Đợi 1 giây rồi tắt cửa sổ
-                                    PauseTransition closePause = new PauseTransition(Duration.seconds(1));
-                                    closePause.setOnFinished(event -> {
-                                        Stage stage = (Stage) registerButton.getScene().getWindow();
-                                        stage.close();
-                                    });
-                                    closePause.play();
-                                });
-                            }
-                        }
-                    }
-                } catch (ItemValidationException e) {
-                    showErrorAlert("Lỗi nhập liệu", e.getMessage());
-                    e.printStackTrace();
-                    resetButtonState();
+                    // Parse item vừa lấy về
+                    ItemRequest gottenItemReq = gson.fromJson(gottenRes.getItemJson(), ItemRequest.class);
+                    ItemGeneric gottenItem = CreatorRegistry.getCreator(gottenItemReq.getCategory()).createItem(gottenItemReq);
+
+                    // 3. CREATE_AUCTION
+                    AuctionDTO auction = new AuctionDTO()
+                            .setItem(gottenItem)
+                            .setCurrentPrice(startingPrice)
+                            .setStartTime(LocalDateTime.now())
+                            .setEndTime(datetime);
+
+                    String createAuctionJson = RequestToServer.sendRequest(new Request().setAction("CREATE_AUCTION").setData(auction));
+                    BaseResponse finalRes = gson.fromJson(createAuctionJson, BaseResponse.class);
+
+                    return finalRes != null && finalRes.getStatus().contains("SUCCESS");
                 }
-            }).start();
+            };
+
+        // --- BƯỚC 4: XỬ LÝ KẾT QUẢ (Tự động quay về UI Thread) ---
+        uploadTask.setOnSucceeded(e -> {
+            boolean isSuccess = uploadTask.getValue();
+            if (isSuccess) {
+                System.out.println("[" + Thread.currentThread().getName() + "] Đăng tải thành công!");
+                registerButton.setText("Thành công! ✔");
+                registerButton.setStyle("-fx-background-color: #28a745; -fx-text-fill: white; -fx-font-weight: bold;");
+
+                PauseTransition closePause = new PauseTransition(Duration.seconds(1));
+                closePause.setOnFinished(ev -> {
+                    ((Stage) registerButton.getScene().getWindow()).close();
+                });
+                closePause.play();
+            } else {
+                showErrorAlert("Lỗi Server", "Không thể hoàn thành quy trình đăng tải sản phẩm.");
+                resetButtonState();
+            }
+        });
+
+        uploadTask.setOnFailed(e -> {
+            System.err.println("[" + Thread.currentThread().getName() + "] Task thất bại!");
+            showErrorAlert("Lỗi kết nối", "Có lỗi xảy ra trong quá trình gửi dữ liệu.");
+            uploadTask.getException().printStackTrace();
+            resetButtonState();
+        });
+
+        // --- BƯỚC 5: CHẠY BẰNG VIRTUAL THREAD EXECUTOR ---
+        ClientContext.EXECUTOR.execute(uploadTask);
             
         } catch (ItemValidationException e) {
             showErrorAlert("Lỗi nhập liệu", e.getMessage());

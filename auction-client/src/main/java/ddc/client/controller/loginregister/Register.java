@@ -2,18 +2,20 @@ package ddc.client.controller.loginregister;
 
 import com.google.gson.Gson;
 
+import ddc.client.config.ClientContext;
 import ddc.client.config.GsonConfig;
 import ddc.client.controller.SceneSwitcher;
 import ddc.client.model.Request;
 import ddc.client.model.UserDTO;
 import ddc.client.network.RequestToServer;
 import ddc.client.network.response.BaseResponse;
-import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Button;
 
 public class Register {
     @FXML
@@ -22,35 +24,65 @@ public class Register {
     private PasswordField passwordField;
     @FXML
     private Label errorLabel;
+    @FXML
+    private Button registerButton;
 
     private final Gson gson = GsonConfig.newGson();
 
     @FXML
-    @SuppressWarnings("unused")
-    private void register(ActionEvent event) {
-        String username = usernameTextField.getText() == null ? "" : usernameTextField.getText().trim();
-        String email = emailTextField.getText() == null ? "" : emailTextField.getText().trim();
-        String password = passwordField.getText() == null ? "" : passwordField.getText();
+@SuppressWarnings("unused")
+private void register(ActionEvent event) {
+    String username = usernameTextField.getText() == null ? "" : usernameTextField.getText().trim();
+    String email = emailTextField.getText() == null ? "" : emailTextField.getText().trim();
+    String password = passwordField.getText() == null ? "" : passwordField.getText();
 
-        if (username.isEmpty() || password.isEmpty() || email.isEmpty()) {
-            errorLabel.setText("Ban chua dien day du thong tin.");
-            return;
-        }
-
-        UserDTO user = new UserDTO()
-                .setUsername(username)
-                .setEmail(email)
-                .setPassword(password);
-
-        errorLabel.setText("Dang dang ky...");
-        new Thread(() -> {
-            Request request = new Request().setAction("REGISTER").setData(user);
-            String response = RequestToServer.sendRequest(request);
-            BaseResponse baseResponse = gson.fromJson(response, BaseResponse.class);
-            String status = baseResponse == null ? null : baseResponse.getStatus();
-            Platform.runLater(() -> errorLabel.setText(registerMessage(status)));
-        }).start();
+    if (username.isEmpty() || password.isEmpty() || email.isEmpty()) {
+        errorLabel.setText("Bạn chưa điền đầy đủ thông tin.");
+        return;
     }
+
+    UserDTO user = new UserDTO()
+            .setUsername(username)
+            .setEmail(email)
+            .setPassword(password);
+
+    errorLabel.setText("Đang đăng ký...");
+    registerButton.setDisable(true); // Khóa nút để tránh spam request
+
+    // Tạo Task xử lý logic ngầm
+    Task<String> registerTask = new Task<>() {
+        @Override
+        protected String call() throws Exception {
+            System.out.println("[" + Thread.currentThread().getName() + "] Dang gui request dang ki cho: " + username);
+            Request request = new Request().setAction("REGISTER").setData(user);
+            return RequestToServer.sendRequest(request);
+        }
+    };
+
+    // Xử lý khi đăng ký xong (Tự động quay về luồng UI)
+    registerTask.setOnSucceeded(e -> {
+        registerButton.setDisable(false);
+        String response = registerTask.getValue();
+        BaseResponse baseResponse = gson.fromJson(response, BaseResponse.class);
+        String status = baseResponse == null ? null : baseResponse.getStatus();
+        errorLabel.setText(registerMessage(status));
+        
+        // Nếu thành công, có thể tự động chuyển sang màn hình login hoặc thông báo
+        if ("SUCCESS".equalsIgnoreCase(status)) {
+            System.out.println("Dang ky thanh cong!");
+        }
+    });
+
+    // Xử lý khi lỗi
+    registerTask.setOnFailed(e -> {
+        registerButton.setDisable(false);
+        errorLabel.setText("Lỗi kết nối máy chủ khi đăng ký.");
+        registerTask.getException().printStackTrace();
+    });
+
+    // Chạy bằng Executor dùng chung
+    ClientContext.EXECUTOR.execute(registerTask);
+}
 
     private String registerMessage(String status) {
         return switch (status == null ? "" : status) {

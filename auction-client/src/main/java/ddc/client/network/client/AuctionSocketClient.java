@@ -48,9 +48,10 @@ public class AuctionSocketClient {
         writer = new PrintWriter(socket.getOutputStream(), true);
         connected = true;
 
-        readerThread = new Thread(this::readLoop, "auction-client-reader");
-        readerThread.setDaemon(true);
-        readerThread.start();
+        // readerThread = new Thread(this::readLoop, "auction-client-reader");
+        // readerThread.setDaemon(true);
+        // readerThread.start();
+        Thread.ofVirtual().name("auction-reader-").start(this::readLoop);
     }
 
     public synchronized void disconnect() {

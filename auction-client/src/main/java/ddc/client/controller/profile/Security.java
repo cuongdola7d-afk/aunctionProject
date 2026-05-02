@@ -2,6 +2,7 @@ package ddc.client.controller.profile;
 
 import com.google.gson.Gson;
 
+import ddc.client.config.ClientContext;
 import ddc.client.controller.SceneSwitcher;
 import ddc.client.model.Request;
 import ddc.client.model.UserDTO;
@@ -111,19 +112,16 @@ public class Security {
             }
         });
 
-        // Xử lý khi có lỗi kết nối (Server sập, timeout...)
+        // Xử lý khi có lỗi
         changePasswordTask.setOnFailed(e -> {
             btnChangePassword.setDisable(false);
             errorLabel.setStyle("-fx-text-fill: red;");
             showError("Khong the ket noi toi may chu!");
-            // In lỗi ra console để debug
             changePasswordTask.getException().printStackTrace();
         });
 
         // Kích hoạt luồng phụ chạy
-        Thread thread = new Thread(changePasswordTask);
-        thread.setDaemon(true); // Đảm bảo thread này tự tắt khi đóng App
-        thread.start();
+        ClientContext.EXECUTOR.execute(changePasswordTask);
     }
 
     private void showSuccessEffect() {
@@ -140,7 +138,7 @@ public class Security {
                 btnChangePassword.setText(originalText);
                 btnChangePassword.setStyle(originalStyle);
                 btnChangePassword.setDisable(false);
-                errorLabel.setText(""); // Xóa chữ "Đang xử lý..."
+                errorLabel.setText("");
             }
         ));
         timeline.play();

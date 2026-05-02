@@ -13,22 +13,20 @@ public class ManualSocketClient {
                 PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
                 BufferedReader consoleReader = new BufferedReader(new InputStreamReader(System.in))
         ) {
-            Thread readerThread = new Thread(() -> {
+            System.out.println("Connected to server.");
+            System.out.println("Type JSON messages below:");
+            // Dùng Virtual Thread để lắng nghe phản hồi từ Server
+            Thread.ofVirtual().name("debug-reader").start(() -> {
                 try {
                     String line;
                     while ((line = serverReader.readLine()) != null) {
-                        System.out.println("[SERVER] " + line);
+                        System.out.println("[SERVER PHAN HOI] " + line);
+                        System.out.print("> "); // Dấu nhắc nhắc người dùng nhập tiếp
                     }
                 } catch (Exception e) {
-                    System.out.println("Disconnected from server: " + e.getMessage());
+                    System.err.println("\nDisconnected from server: " + e.getMessage());
                 }
             });
-
-            readerThread.setDaemon(true);
-            readerThread.start();
-
-            System.out.println("Connected to server.");
-            System.out.println("Type JSON messages below:");
 
             String input;
             while ((input = consoleReader.readLine()) != null) {
