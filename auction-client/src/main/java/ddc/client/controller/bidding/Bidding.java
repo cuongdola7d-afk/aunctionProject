@@ -1,6 +1,7 @@
 package ddc.client.controller.bidding;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -131,7 +132,7 @@ public class Bidding {
                     itemList.add(new AuctionItemViewModel(
                         auction.getAuctionId(),
                         auction.getItem().getItemName(),
-                        auction.getCurrentPrice() + "đ",
+                        new DecimalFormat("#,###").format(auction.getCurrentPrice()) + " đ",
                         TimeCalculate(LocalDateTime.now(), auction.getEndTime()),
                         "/ddc/client/views/bidding/image/watch.jpg",
                         auction.getItem().getCategory()
