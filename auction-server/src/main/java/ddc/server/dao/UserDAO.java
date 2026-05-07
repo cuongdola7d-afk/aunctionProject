@@ -86,7 +86,30 @@ public class UserDAO {
             return rowsAffected > 0;
 
         } catch (SQLException e) {
-            System.err.println("Lỗi khi thực thi changePassword SQL:");
+            System.err.println("Loi khi thuc thi changePassword SQL:");
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean updateUserProfile(User user) {
+        String sql = "UPDATE ddc_users SET name = ?, email = ? WHERE id = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection(); 
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            // Set các tham số theo thứ tự dấu hỏi chấm
+            pstmt.setString(1, user.getName());
+            pstmt.setString(2, user.getEmail());
+            pstmt.setString(3, user.getId());
+            
+            // executeUpdate trả về số dòng bị tác động
+            int rowsAffected = pstmt.executeUpdate();       
+            // Nếu > 0 nghĩa là đã cập nhật thành công ít nhất 1 dòng
+            return rowsAffected > 0;
+            
+        } catch (SQLException e) {
+            System.err.println("Loi khi cap nhat thong tin User: " + e.getMessage());
             e.printStackTrace();
             return false;
         }
