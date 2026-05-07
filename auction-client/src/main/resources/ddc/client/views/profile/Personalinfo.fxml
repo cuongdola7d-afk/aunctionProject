@@ -46,7 +46,7 @@
                               <Font name="System Bold" size="20.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="txtName" editable="false" prefHeight="10.0" style="-fx-background-color: transparent;" text="Đỗ Đức Cường">
+                        <TextField fx:id="txtName" prefHeight="10.0" style="-fx-background-color: transparent;" text="Đỗ Đức Cường">
                            <font>
                               <Font size="24.0" />
                            </font>
@@ -96,6 +96,7 @@
                         </TextField>
                      </children>
                   </HBox>
+                  <Label fx:id="lblErrorEmail" textFill="RED" />
                   <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="65.0" minHeight="-Infinity" prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-radius: 10;">
                      <children>
                         <Label prefWidth="120.0" text="• UserID:">
