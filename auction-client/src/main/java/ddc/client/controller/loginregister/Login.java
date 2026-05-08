@@ -2,13 +2,16 @@ package ddc.client.controller.loginregister;
 
 import com.google.gson.Gson;
 
+import ddc.client.config.ClientContext;
 import ddc.client.config.GsonConfig;
 import ddc.client.controller.SceneSwitcher;
+import ddc.client.model.Request;
 import ddc.client.model.UserDTO;
-import ddc.client.network.ClientToServer;
+import ddc.client.network.RequestToServer;
 import ddc.client.network.UserSession;
 import ddc.client.network.response.UserResponse;
 import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,6 +21,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
@@ -28,6 +32,8 @@ public class Login {
     private PasswordField passwordField;
     @FXML
     private Label errorLabel;
+    @FXML
+    private Button loginButton;
 
     private final Gson gson = GsonConfig.newGson();
 
@@ -41,14 +47,40 @@ public class Login {
             return;
         }
 
+        // 1. Cập nhật trạng thái UI ban đầu
         errorLabel.setText("Đang đăng nhập...");
-        UserDTO user = new UserDTO()
-                .setUsername(username)
-                .setPassword(password);
+        loginButton.setDisable(true); // Nên disable nút để tránh bấm nhiều lần
 
-        new Thread(() -> handleLoginResponse(event, ClientToServer.sendRequest("LOGIN", user))).start();
+        UserDTO user = new UserDTO().setUsername(username).setPassword(password);
+        Request loginRequest = new Request().setAction("LOGIN").setData(user);
+
+        // 2. Tạo Task để xử lý đăng nhập ngầm
+        Task<String> loginTask = new Task<>() {
+            @Override
+            protected String call() throws Exception {
+                // In để kiểm tra luồng ảo của Java 25
+                System.out.println("[" + Thread.currentThread().getName() + "] Dang gui request login...");
+                return RequestToServer.sendRequest(loginRequest);
+            }
+        };
+
+        // 3. Xử lý khi đăng nhập xong (Tự động quay về UI Thread)
+        loginTask.setOnSucceeded(e -> {
+            loginButton.setDisable(false);
+            String response = loginTask.getValue();
+            handleLoginResponse(event, response);
+        });
+
+        // 4. Xử lý khi có lỗi
+        loginTask.setOnFailed(e -> {
+            loginButton.setDisable(false);
+            errorLabel.setText("Lỗi kết nối đến máy chủ.");
+            loginTask.getException().printStackTrace();
+        });
+
+        // 5. Giao cho Executor xử lý thay vì tạo Thread mới
+        ClientContext.EXECUTOR.execute(loginTask);
     }
-
     private void handleLoginResponse(ActionEvent event, String response) {
         UserResponse userRes = gson.fromJson(response, UserResponse.class);
         if (userRes != null && "SUCCESS".equals(userRes.getStatus()) && userRes.getData() != null) {
@@ -57,8 +89,18 @@ public class Login {
                     .setId(user.getId())
                     .setName(user.getName())
                     .setUsername(user.getUsername())
-                    .setEmail(user.getEmail());
+                    .setEmail(user.getEmail())
+                    .setPassword(user.getPassword());
+            Platform.runLater(() -> errorLabel.setText("Đăng nhập thành công!"));
 
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                System.out.println("IO Error!" + e.getMessage());
+            } catch (Exception e) {
+                System.out.println("Error!" + e.getMessage());
+            }
+            
             Platform.runLater(() -> openHome(event));
             return;
         }
@@ -69,7 +111,8 @@ public class Login {
     private String loginErrorMessage(String status) {
         return switch (status == null ? "" : status) {
             case "PASSWORD_LESS_THAN_8" -> "Mật khẩu phải có từ 8 ký tự trở lên.";
-            case "INVALID_CREDENTIALS" -> "Tài khoản hoặc mật khẩu không đúng.";
+            case "UNAVAILABLE" -> "Tài khoản không tồn tại.";
+            case "INVALID PASSWORD" -> "Mật khẩu không đúng.";
             case "CONNECTION_ERROR" -> "Không kết nối được với server.";
             default -> "Đăng nhập thất bại.";
         };

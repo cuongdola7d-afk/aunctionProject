@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 
 import ddc.server.config.GsonConfig;
 import ddc.server.controller.RequestMessage;
-import ddc.server.controller.service.ItemService;
 import ddc.server.exception.ItemValidationException;
 import ddc.server.network.response.AddItemResponse;
 import ddc.server.network.response.BaseResponse;
@@ -12,7 +11,6 @@ import ddc.server.network.response.Response;
 import ddc.server.pattern.factory.ItemRequest;
 
 public class AddItemHandler implements ActionHandler {
-    private final ItemService itemService = new ItemService();
     private final Gson gson = GsonConfig.newGson();
 
     @Override

@@ -25,14 +25,18 @@ public class LoginHandler implements ActionHandler {
             return new BaseResponse().setStatus("PASSWORD_LESS_THAN_8");
         }
 
-        User user = userDAO.loginUser(requestUser.getUsername(), requestUser.getPassword());
-        if (user != null) {
-            return new UserResponse()
-                    .setData(user)
-                    .setStatus("SUCCESS");
+        User user = userDAO.getUser(requestUser.getUsername());
+        if (user == null) {
+            return new BaseResponse().setStatus("UNAVAILABLE");
         }
 
-        return new BaseResponse().setStatus("INVALID_CREDENTIALS");
+        if (!user.getPassword().equals(requestUser.getPassword())) {
+            return new BaseResponse().setStatus("INVALID PASSWORD");
+        }
+
+        return new UserResponse()
+                .setData(user)
+                .setStatus("SUCCESS");    
     }
 
     private boolean isBlank(String value) {

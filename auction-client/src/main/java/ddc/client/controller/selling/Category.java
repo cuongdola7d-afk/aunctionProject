@@ -8,11 +8,12 @@ import javafx.scene.control.TextField;
 
 public enum Category {
 
-    BASE_ITEM("Chung") {
+    GENERAL("Chung") {
         @Override
         public void renderUI(FieldBuilder builder) {
         }
 
+        @SuppressWarnings("rawtypes")
         @Override
         public ItemGeneric getItemData(String itemName, String description, String sellerName) {
             return new ArtDTO()
@@ -34,6 +35,7 @@ public enum Category {
             this.yearCreatedField = builder.add("Năm sáng tác: ","Nhập năm sáng tác.");
         }
 
+        @SuppressWarnings("rawtypes")
         @Override
         public ItemGeneric getItemData(String itemName, String description, String sellerName) {
             return new ArtDTO()
@@ -57,6 +59,7 @@ public enum Category {
         this.warrantyField = builder.add("Thời gian bảo hành (tháng): ", "Nhập số tháng bảo hành.");
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
     public ItemGeneric getItemData(String itemName, String description, String sellerName) {
         // Trả về đối tượng ElectronicsDTO với các thông tin đã nhập
@@ -81,6 +84,7 @@ public enum Category {
             this.yearField = builder.add("Năm sản xuất: ", "Nhập tên năm sản xuất.");
         }
 
+        @SuppressWarnings("rawtypes")
         @Override
         public ItemGeneric getItemData(String itemName, String description, String sellerName) {
             return new VehicleDTO()
@@ -105,6 +109,7 @@ public enum Category {
 
     public abstract void renderUI(FieldBuilder builder);
 
+    @SuppressWarnings("rawtypes")
     public abstract ItemGeneric getItemData(String itemName, String description, String sellerName);
 
     public static Category fromDisplayName(String itemName) {

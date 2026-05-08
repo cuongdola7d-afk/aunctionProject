@@ -1,11 +1,22 @@
 package ddc.client.controller.bidding;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import com.google.gson.Gson;
+
+import ddc.client.config.GsonConfig;
 import ddc.client.controller.SceneSwitcher;
+import ddc.client.model.AuctionDTO;
 import ddc.client.model.AuctionItemViewModel;
+import ddc.client.model.Request;
+import ddc.client.network.RealtimeToServer;
+import ddc.client.network.response.GetAllAuctionsResponse;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -41,6 +52,7 @@ public class Bidding {
     private Label lblEmptyState;
 
     private final List<AuctionItemViewModel> itemList = new ArrayList<>();
+    private final Gson gson = GsonConfig.newGson();
 
     // bidder hiện tại sẽ được scene trước truyền vào
     //private String currentBidderId;
@@ -109,6 +121,27 @@ public class Bidding {
 
     private void loadSampleData() {
         itemList.clear();
+
+        new Thread(() -> {
+            String JsonResponse = RealtimeToServer.sendRequest(new Request().setAction("GET_ALL"));
+
+            GetAllAuctionsResponse response = gson.fromJson(JsonResponse, GetAllAuctionsResponse.class);
+            if ("SUCCESS".equals(response.getStatus())) {
+                List<AuctionDTO> auctions = Arrays.asList(response.getData());
+                for (AuctionDTO auction : auctions) {
+                    itemList.add(new AuctionItemViewModel(
+                        auction.getAuctionId(),
+                        auction.getItem().getItemName(),
+                        new DecimalFormat("#,###").format(auction.getCurrentPrice()) + " đ",
+                        TimeCalculate(LocalDateTime.now(), auction.getEndTime()),
+                        "/ddc/client/views/bidding/image/watch.jpg",
+                        auction.getItem().getCategory()
+                    ));
+                }
+            }
+        }).start();
+
+        
 
         itemList.add(new AuctionItemViewModel(
                 "AUCT-001",
@@ -195,6 +228,7 @@ public class Bidding {
         );
     }
 
+    @SuppressWarnings("CallToPrintStackTrace")
     private void renderItems(List<AuctionItemViewModel> items) {
         auctionContainer.getChildren().clear();
 
@@ -222,7 +256,23 @@ public class Bidding {
         }
     }
 
+    private static String TimeCalculate (LocalDateTime start, LocalDateTime end) {
+        Duration duration = Duration.between(start, end);
+
+        if (duration.isNegative() || duration.isZero()) {
+            return "Đã kết thúc.";
+        }
+
+        long hours = duration.toHours(); 
+        long minutes = duration.toMinutesPart();
+        long seconds = duration.toSecondsPart();
+
+        String timeRemaining = String.format("%02d:%02d:%02d", hours, minutes, seconds);
+        return timeRemaining;
+    }
+
     @FXML
+    @SuppressWarnings("unused")
     private void handleClearFilters() {
         txtSearch.clear();
         categoryTree.getSelectionModel().clearSelection();
@@ -231,26 +281,31 @@ public class Bidding {
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void handleScrollTop() {
         mainScrollPane.setVvalue(0);
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void switchToHome(MouseEvent event) {
         SceneSwitcher.goTo(event, "/ddc/client/views/home/Home.fxml");
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void switchToSelling(MouseEvent event) {
         SceneSwitcher.goTo(event, "/ddc/client/views/selling/Selling.fxml");
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void switchToProfile(MouseEvent event) {
         SceneSwitcher.goTo(event, "/ddc/client/views/profile/Profile.fxml");
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void switchToNotify(MouseEvent event) {
         SceneSwitcher.goTo(event, "/ddc/client/views/notify/Notify.fxml");
     }

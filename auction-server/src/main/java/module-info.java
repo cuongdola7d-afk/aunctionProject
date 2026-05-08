@@ -2,6 +2,7 @@ module ddc.server {
     requires java.sql;
     requires java.logging;
     requires com.google.gson;
+    requires com.zaxxer.hikari;
 
     exports ddc.server;
     // exports ddc.server.config;
@@ -34,5 +35,7 @@ module ddc.server {
     opens ddc.server.pattern.factory to com.google.gson, org.junit.platform.commons;
 
     opens ddc.server.exception to com.google.gson;
-    opens ddc.server.pattern.Singleton to org.junit.platform.commons;   
+    opens ddc.server.pattern.Singleton to org.junit.platform.commons;
+    
+    opens ddc.server.config to com.zaxxer.hikari;
 }

@@ -14,7 +14,9 @@ import ddc.server.controller.handler.*;
         routes.put("ADD_ITEM", new AddItemHandler());
         routes.put("GET_ITEM", new GetItemHandler());
         routes.put("CREATE_AUCTION", new CreateAuctionHandler());
+        routes.put("GET_ALL", new GetAllAuctionHandler());
         routes.put("UPDATE_PASSWORD", new ChangePasswordHandler());
+        routes.put("UPDATE_PROFILE", new UpdateProfileHandler());
     }
 
     public static ActionHandler getHandler (String action) {
