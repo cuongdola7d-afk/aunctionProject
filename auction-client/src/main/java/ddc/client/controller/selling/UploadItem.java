@@ -126,6 +126,7 @@ public class UploadItem implements Initializable {
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void handleNextStep() {
         boolean hasError = false;
         // Kiểm tra Danh mục (ComboBox)
@@ -189,6 +190,7 @@ public class UploadItem implements Initializable {
     }
 
     @FXML
+    @SuppressWarnings({"CallToPrintStackTrace", "unused"})
     private void handleInitialize() {
         try {
             double startingPrice = Double.parseDouble(priceField.getText());
@@ -227,6 +229,7 @@ public class UploadItem implements Initializable {
                     System.out.println("[" + Thread.currentThread().getName() + "] Bat dau dang tai...");
 
                     // 1. ADD_ITEM
+                    @SuppressWarnings("rawtypes")
                     ItemGeneric item = currentCat.getItemData(itemName, description, sellerName);
                     String addedItemJson = RequestToServer.sendRequest(new Request().setAction("ADD_ITEM").setData(item));
                     AddItemResponse addedRes = gson.fromJson(addedItemJson, AddItemResponse.class);
@@ -241,6 +244,7 @@ public class UploadItem implements Initializable {
 
                     // Parse item vừa lấy về
                     ItemRequest gottenItemReq = gson.fromJson(gottenRes.getItemJson(), ItemRequest.class);
+                    @SuppressWarnings("rawtypes")
                     ItemGeneric gottenItem = CreatorRegistry.getCreator(gottenItemReq.getCategory()).createItem(gottenItemReq);
 
                     // 3. CREATE_AUCTION
