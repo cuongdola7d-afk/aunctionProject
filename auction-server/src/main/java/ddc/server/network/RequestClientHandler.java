@@ -34,57 +34,52 @@ public class RequestClientHandler implements Runnable {
     public void run() {
         try {
             clientSocket.setSoTimeout(SOCKET_TIMEOUT_MS);
-            InputStream rawIn = clientSocket.getInputStream();
+            // Sử dụng DataInputStream xuyên suốt để đọc cả Text và Byte
+            DataInputStream dis = new DataInputStream(clientSocket.getInputStream());
             PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
 
-            // 1. Đọc dòng JSON đầu tiên thủ công (Tránh dùng BufferedReader gây mất byte ảnh)
-            String rawRequest = readLineCustom(rawIn); 
+            // 1. Đọc dòng JSON đầu tiên
+            String rawRequest = readLineCustom(dis); 
             if (rawRequest == null) return;
 
-            RequestMessage request = null;
-            try {
-                request = gson.fromJson(rawRequest, RequestMessage.class);
-            } catch (JsonSyntaxException e) {
-                out.println(fail("INVALID_JSON", "JSON khong hop le."));
-                return;
-            }
+            RequestMessage request = gson.fromJson(rawRequest, RequestMessage.class);
 
-            // 2. Đọc tiếp byte ảnh ngay trên luồng đó nếu là ADD_ITEM
+            // 2. Kiểm tra và đọc ảnh
             if (request != null && "ADD_ITEM".equals(request.getAction())) {
-                DataInputStream dis = new DataInputStream(rawIn);
                 try {
-                    int imageLength = dis.readInt(); // Đọc 4 byte độ dài
+                    // Đọc độ dài ảnh (writeInt bên Client tương ứng readInt ở đây)
+                    int imageLength = dis.readInt(); 
                     if (imageLength > 0) {
                         byte[] imageData = new byte[imageLength];
-                        dis.readFully(imageData); // Đọc đủ số byte ảnh
-                        request.setImageData(imageData); // Gán ngược lại vào request
+                        dis.readFully(imageData); // Đảm bảo đọc đủ số byte
+                        request.setImageData(imageData);
+                        System.out.println(">>> SERVER DA NHAN ANH: " + imageLength + " bytes");
+                    } else {
+                        System.out.println(">>> SERVER NHAN: imageLength = 0");
                     }
                 } catch (IOException e) {
-                    LOGGER.log(Level.WARNING, "Loi khi doc byte anh: " + e.getMessage());
+                    System.out.println(">>> LOI DOC ANH: " + e.getMessage());
                 }
             }
 
-            // 3. Sử dụng hàm handleRawRequest để xử lý logic (Giữ nguyên hàm của bạn)
+            // 3. Xử lý và phản hồi
             String responseJson = handleRawRequest(request, rawRequest);
-            
-            // 4. Trả phản hồi về Client
             out.println(responseJson);
 
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Loi thuc thi RequestClientHandler", e);
+            LOGGER.log(Level.SEVERE, "Loi RequestClientHandler", e);
         } finally {
             try {
-                if (!clientSocket.isClosed()) clientSocket.close();
+                if (clientSocket != null && !clientSocket.isClosed()) {
+                    clientSocket.close();
+                }
             } catch (IOException e) {
                 LOGGER.log(Level.SEVERE, "Khong the dong socket", e);
             }
         }
     }
 
-    /**
-     * Hàm đọc từng byte cho đến khi gặp dấu xuống dòng.
-     * Giúp con trỏ InputStream dừng lại đúng vị trí để đọc dữ liệu nhị phân sau đó.
-     */
+    // Sửa lại hàm này để nhận InputStream hoặc DataInputStream
     private String readLineCustom(InputStream in) throws IOException {
         StringBuilder sb = new StringBuilder();
         int b;
@@ -94,6 +89,7 @@ public class RequestClientHandler implements Runnable {
         }
         return (sb.length() == 0 && b == -1) ? null : sb.toString();
     }
+
 
     // GIỮ NGUYÊN HÀM NÀY NHƯ YÊU CẦU
     private String handleRawRequest(RequestMessage request, String rawRequest) {

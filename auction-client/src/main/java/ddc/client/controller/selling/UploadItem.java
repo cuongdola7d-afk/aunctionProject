@@ -245,7 +245,6 @@ public class UploadItem implements Initializable {
     }
 
     @FXML
-    @SuppressWarnings({"CallToPrintStackTrace", "unused"})
     private void handleInitialize() {
         try {
             if (selectedFile == null) {
@@ -289,8 +288,16 @@ public class UploadItem implements Initializable {
                     byte[] imageBytes = null;
                     String uniqueFileName = "";
 
-                    // 1. ADD_ITEM
-                    @SuppressWarnings("rawtypes")
+                    if (selectedFile != null) {
+                        // Đọc ảnh thành mảng byte
+                        imageBytes = java.nio.file.Files.readAllBytes(selectedFile.toPath());
+                        
+                        // Tạo tên file duy nhất để gửi cho Server lưu vào DB
+                        String extension = selectedFile.getName().substring(selectedFile.getName().lastIndexOf("."));
+                        uniqueFileName = java.util.UUID.randomUUID().toString() + extension;
+                    }
+
+                    // 1. Tạo đối tượng Item và gán tên file cho nó
                     ItemGeneric item = currentCat.getItemData(itemName, description, sellerName);
                     item.setImageUrl(uniqueFileName); // Gán cái tên file "abc.jpg" vào đây
 

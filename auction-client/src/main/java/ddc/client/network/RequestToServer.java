@@ -3,6 +3,7 @@ package ddc.client.network;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetSocketAddress;
@@ -72,28 +73,34 @@ public class RequestToServer {
         try (Socket socket = new Socket()) {
             socket.connect(new InetSocketAddress(HOST, PORT), TIMEOUT_MS);
             
-            // Dùng DataOutputStream để ghi cả text và byte trên cùng 1 luồng
             DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            InputStream is = socket.getInputStream();
 
-            // Bước 1: Gửi JSON + dấu xuống dòng (\n) - RẤT QUAN TRỌNG
-            dos.writeBytes(gson.toJson(request) + "\n");
+            // Bước 1: Gửi JSON + dấu xuống dòng (Dùng writeBytes để giống println)
+            String json = gson.toJson(request);
+            dos.writeBytes(json + "\n");
             dos.flush(); 
 
             // Bước 2: Gửi dữ liệu ảnh
             if (imageData != null && imageData.length > 0) {
-                dos.writeInt(imageData.length);
-                dos.write(imageData);
+                dos.writeInt(imageData.length); // Gửi 4-byte int
+                dos.write(imageData);           // Gửi mảng byte
             } else {
                 dos.writeInt(0);
             }
             dos.flush();
 
-            // Bước 3: Đọc phản hồi
-            return in.readLine();
+            // Bước 3: Đọc phản hồi (Đọc từng byte cho đến \n)
+            StringBuilder sb = new StringBuilder();
+            int b;
+            while ((b = is.read()) != -1) {
+                if (b == '\n') break;
+                sb.append((char) b);
+            }
+            return sb.toString().trim();
+
         } catch (Exception e) {
-            e.printStackTrace();
-            return errorJson("ERROR", "Lỗi gửi ảnh");
+            return errorJson("ERROR", "Loi gui anh: " + e.getMessage());
         }
     }
 }
