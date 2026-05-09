@@ -7,6 +7,7 @@ public abstract class ItemGeneric<T extends ItemGeneric<T>> {
     private String category;
     private String description;
     private String sellerName;
+    private String imageUrl;
 
     public ItemGeneric () {}
 
@@ -15,6 +16,7 @@ public abstract class ItemGeneric<T extends ItemGeneric<T>> {
     public String getCategory() { return category; }
     public String getDescription() { return description; }
     public String getSellerName() { return sellerName; }
+    public String getImageUrl() { return imageUrl; }
 
     protected T self () {
         return (T) this;
@@ -42,6 +44,11 @@ public abstract class ItemGeneric<T extends ItemGeneric<T>> {
 
     public T setSellerName (String sellerName) {
         this.sellerName = sellerName;
+        return self();
+    }
+
+    public T setImageUrl (String ImgUrl) {
+        this.imageUrl = ImgUrl;
         return self();
     }
 }

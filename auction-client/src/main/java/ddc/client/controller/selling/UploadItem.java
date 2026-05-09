@@ -1,5 +1,6 @@
 package ddc.client.controller.selling;
 
+import java.io.File;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -41,9 +42,13 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -63,10 +68,15 @@ public class UploadItem implements Initializable {
     private DatePicker auctionDatePicker;
     @FXML
     private Label nameErrorLabel, desErrorLabel;
-
-    // @FXML private ImageView mainImageView;
     @FXML
-    private Button registerButton;
+    private Label imageInfoLabel, imageErrorLabel;
+
+    @FXML
+    private ImageView imgProduct;
+
+    private File selectedFile;
+    @FXML
+    private Button registerButton, uploadBtn, removeImageBtn;
 
     // Bảng chứa TextField và ErrorLabel thêm vào
     private final List<TextField> dynamicTextFields = new ArrayList<>();
@@ -111,6 +121,7 @@ public class UploadItem implements Initializable {
         priceField.textProperty().addListener((o, old, newVal) -> { updateRegisterButtonState(); });
         auctionDatePicker.valueProperty().addListener((o, old, newVal) -> { updateRegisterButtonState(); });
         timeField.textProperty().addListener((o, old, nemVal) -> { updateRegisterButtonState(); });
+        setImageSelectedState(false);
 
         //Không cho DatePicker editable
         TextField editor = auctionDatePicker.getEditor();
@@ -189,8 +200,57 @@ public class UploadItem implements Initializable {
     }
 
     @FXML
+    private void handleSelectImage(MouseEvent event) {
+        if (event != null) {
+            event.consume();
+        }
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Chọn ảnh sản phẩm");
+        
+        // Lọc chỉ hiện các định dạng ảnh
+        fileChooser.getExtensionFilters().add(
+            new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg")
+        );
+
+        // Mở cửa sổ chọn file
+        Stage stage = (Stage) imgProduct.getScene().getWindow();
+        selectedFile = fileChooser.showOpenDialog(stage);
+
+        if (selectedFile != null) {
+            // 1. Hiển thị ảnh lên giao diện cho người dùng xem
+            Image image = new Image(selectedFile.toURI().toString(), 450, 200, true, true);
+            imgProduct.setImage(image);
+            imageInfoLabel.setText(selectedFile.getName());
+            imageErrorLabel.setText("");
+            setImageSelectedState(true);
+            updateRegisterButtonState();
+
+            System.out.println("Da chon file: " + selectedFile.getAbsolutePath());
+        }
+    }
+
+    @FXML
+    private void handleRemoveImage(MouseEvent event) {
+        if (event != null) {
+            event.consume();
+        }
+
+        selectedFile = null;
+        imgProduct.setImage(null);
+        imageInfoLabel.setText("Chua chon anh san pham");
+        setImageSelectedState(false);
+        updateRegisterButtonState();
+    }
+
+    @FXML
     private void handleInitialize() {
         try {
+            if (selectedFile == null) {
+                imageErrorLabel.setText("Vui long chon anh san pham.");
+                throw new ItemValidationException("Vui long chon anh san pham.");
+            }
+
             double startingPrice = Double.parseDouble(priceField.getText());
 
             // Kiểm tra giá hợp lệ
@@ -223,12 +283,29 @@ public class UploadItem implements Initializable {
             Task<Boolean> uploadTask = new Task<>() {
                 @Override
                 protected Boolean call() throws Exception {
-                    // In tên luồng để kiểm tra như bạn muốn
-                    System.out.println("[" + Thread.currentThread().getName() + "] Bat dau dang tai...");
+                    // 0. Chuẩn bị dữ liệu ảnh
+                    byte[] imageBytes = null;
+                    String uniqueFileName = "";
 
-                    // 1. ADD_ITEM
+                    if (selectedFile != null) {
+                        // Đọc ảnh thành mảng byte
+                        imageBytes = java.nio.file.Files.readAllBytes(selectedFile.toPath());
+                        
+                        // Tạo tên file duy nhất để gửi cho Server lưu vào DB
+                        String extension = selectedFile.getName().substring(selectedFile.getName().lastIndexOf("."));
+                        uniqueFileName = java.util.UUID.randomUUID().toString() + extension;
+                    }
+
+                    // 1. Tạo đối tượng Item và gán tên file cho nó
                     ItemGeneric item = currentCat.getItemData(itemName, description, sellerName);
-                    String addedItemJson = RequestToServer.sendRequest(new Request().setAction("ADD_ITEM").setData(item));
+                    item.setImageUrl(uniqueFileName); // Gán cái tên file "abc.jpg" vào đây
+
+                    // 2. GỬI DỮ LIỆU TÁCH BIỆT (Đây là phần quan trọng nhất)
+                    // Thay vì gọi RequestToServer.sendRequest(json), ta gọi hàm mới:
+                    String addedItemJson = RequestToServer.sendRequestWithImage(
+                        new Request().setAction("ADD_ITEM").setData(item), 
+                        imageBytes
+                    );
                     AddItemResponse addedRes = gson.fromJson(addedItemJson, AddItemResponse.class);
 
                     if (addedRes == null || !addedRes.getStatus().contains("SUCCESS")) return false;
@@ -303,7 +380,9 @@ public class UploadItem implements Initializable {
         // Kiểm tra: giá không trống VÀ ngày đã được chọn
         boolean isPriceEntered = priceField.getText() != null && !priceField.getText().trim().isEmpty();
         boolean isDateSelected = auctionDatePicker.getValue() != null;
-        boolean canProceed = isPriceEntered && isDateSelected;
+        boolean isTimeEntered = timeField.getText() != null && !timeField.getText().trim().isEmpty();
+        boolean isImageSelected = selectedFile != null;
+        boolean canProceed = isPriceEntered && isDateSelected && isTimeEntered && isImageSelected;
         // Nếu cả 2 đều thỏa mãn thì enable nút, ngược lại thì disable
         registerButton.setDisable(!canProceed);
 
@@ -360,6 +439,17 @@ public class UploadItem implements Initializable {
     private void hideFieldError(TextInputControl control, Label errorLabel) {
         control.setStyle("");
         errorLabel.setText("");
+    }
+
+    private void setImageSelectedState(boolean selected) {
+        if (removeImageBtn != null) {
+            removeImageBtn.setVisible(selected);
+            removeImageBtn.setManaged(selected);
+        }
+
+        if (uploadBtn != null) {
+            uploadBtn.setText(selected ? "Doi anh" : "Chon anh");
+        }
     }
 
     private void setUpVisibleFalse(Node child) {

@@ -11,6 +11,7 @@ public class GeneralCreator extends ItemCreator{
                 .setItemName(req.itemName)
                 .setDescription(req.description)
                 .setCategory(req.category)
-                .setSellerName(req.sellerName);
+                .setSellerName(req.sellerName)
+                .setImageUrl(req.imageUrl);
     }
 }

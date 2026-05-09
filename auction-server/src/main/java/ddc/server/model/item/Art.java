@@ -38,7 +38,7 @@ public class Art extends ItemGeneric<Art> {
 
     @Override
     public String save(Connection con) throws SQLException {
-        String sqlInsert = "CALL insert_art (?, ?, ?, ?, ?, ?)";
+        String sqlInsert = "CALL insert_art (?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement pst1 = con.prepareStatement(sqlInsert)) {
             pst1.setString(1, getItemName());
@@ -47,6 +47,7 @@ public class Art extends ItemGeneric<Art> {
             pst1.setString(4, getSellerName());
             pst1.setString(5, author);
             pst1.setInt(6, yearCreated);
+            pst1.setString(7, getImageUrl());
             
             pst1.executeUpdate();
             

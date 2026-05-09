@@ -14,13 +14,14 @@ public class General extends ItemGeneric<General> {
 
     @Override
     public String save (Connection con) {
-        String sqlInsert = "INSERT INTO ddc_items (item_name, category, description, seller_name) VALUES (?, ?, ?, ?)";
+        String sqlInsert = "INSERT INTO ddc_items (item_name, category, description, seller_name, image_url) VALUES (?, ?, ?, ?, ?)";
 
         try (PreparedStatement pst1 = con.prepareStatement(sqlInsert)) {
             pst1.setString(1, getItemName());
             pst1.setString(2, getCategory());
             pst1.setString(3, getDescription());
             pst1.setString(4, getSellerName());
+            pst1.setString(5, getImageUrl());
 
             pst1.executeUpdate();
 

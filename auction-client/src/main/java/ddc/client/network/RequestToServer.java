@@ -1,6 +1,8 @@
 package ddc.client.network;
 
 import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetSocketAddress;
@@ -63,6 +65,41 @@ public class RequestToServer {
             return Integer.parseInt(value);
         } catch (NumberFormatException e) {
             return defaultValue;
+        }
+    }
+
+    public static String sendRequestWithImage(Request request, byte[] imageData) {
+        try (Socket socket = new Socket()) {
+            socket.connect(new InetSocketAddress(HOST, PORT), TIMEOUT_MS);
+            socket.setSoTimeout(TIMEOUT_MS);
+
+            // Dùng PrintWriter cho JSON để giống hàm sendRequest (Login)
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+            // BƯỚC 1: Gửi JSON bằng println (Đồng bộ với Login)
+            String jsonRequest = gson.toJson(request);
+            out.println(jsonRequest); 
+
+            // BƯỚC 2: Gửi dữ liệu ảnh
+            if (imageData != null && imageData.length > 0) {
+                dos.writeInt(imageData.length);
+                dos.write(imageData);
+                dos.flush();
+            } else {
+                dos.writeInt(0);
+                dos.flush();
+            }
+
+            // BƯỚC 3: Đọc phản hồi bằng readLine
+            String response = in.readLine();
+            return (response == null || response.isBlank()) ? 
+                    errorJson("EMPTY_RESPONSE", "Lỗi server") : response;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return errorJson("CONNECTION_ERROR", "Lỗi kết nối");
         }
     }
 }

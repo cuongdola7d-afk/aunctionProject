@@ -55,7 +55,8 @@ public class ItemDAO {
                         rs.getString("item_name"),
                         rs.getString("description"),
                         rs.getString("category"),
-                        rs.getString("seller_name")
+                        rs.getString("seller_name"),
+                        rs.getString("image_url")
                 );
 
                 String category = rs.getString("category");

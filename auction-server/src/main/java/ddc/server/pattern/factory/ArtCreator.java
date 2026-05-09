@@ -14,6 +14,7 @@ public class ArtCreator extends ItemCreator {
                 .setDescription(req.description)
                 .setCategory(req.category)
                 .setSellerName(req.sellerName)
+                .setImageUrl(req.imageUrl)
                 .setAuthor(req.author)      // Chỉ nhặt artist
                 .setyearCreated(req.yearCreated); // Chỉ nhặt yearCreated
     }

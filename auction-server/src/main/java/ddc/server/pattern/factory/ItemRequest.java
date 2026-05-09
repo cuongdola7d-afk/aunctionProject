@@ -8,6 +8,7 @@ public class ItemRequest {
     public String itemName;
     public String description;
     public String sellerName;
+    public String imageUrl;
 
     // Thông tin riêng cho Electronics
     public String brand;
@@ -26,31 +27,31 @@ public class ItemRequest {
 
 
     // 2. Constructor đầy đủ (Dùng khi bạn muốn tạo request thủ công trong code test)
-    public ItemRequest(String itemName, String description, String category, String sellerName) {
+    public ItemRequest(String itemName, String description, String category, String sellerName,String imageUrl) {
         this.itemName = itemName;
         this.description = description;
         this.category = category;
         this.sellerName = sellerName;
-        
+        this.imageUrl  = imageUrl;
     }
 
     // Gợi ý: Nếu bạn muốn tạo ArtRequest nhanh
-    public static ItemRequest createArtRequest(String itemName, String description, String category, String sellerName, String author, int year) {
-        ItemRequest req = new ItemRequest(itemName,description,category,sellerName);
+    public static ItemRequest createArtRequest(String itemName, String description, String category, String sellerName,String imageUrl, String author, int year) {
+        ItemRequest req = new ItemRequest(itemName,description,category,sellerName, imageUrl);
         req.author = author;
         req.yearCreated = year;
         return req;
     }
     
-    public static ItemRequest createElectronicsRequest(String itemName, String description, String category, String sellerName, String brand, int warrentyMonths) {
-        ItemRequest req = new ItemRequest(itemName,description,category,sellerName);
+    public static ItemRequest createElectronicsRequest(String itemName, String description, String category, String sellerName,String imageUrl, String brand, int warrentyMonths) {
+        ItemRequest req = new ItemRequest(itemName,description,category,sellerName,imageUrl);
         req.brand = brand;
         req.warrantyMonths = warrentyMonths;
         return req;
     }
 
-    public static ItemRequest createVehicleRequest(String itemName, String description, String category, String sellerName, String manufacturer, int year) {
-        ItemRequest req = new ItemRequest(itemName,description,category,sellerName);
+    public static ItemRequest createVehicleRequest(String itemName, String description, String category, String sellerName,String imageUrl, String manufacturer, int year) {
+        ItemRequest req = new ItemRequest(itemName,description,category,sellerName,imageUrl);
         req.manufacturer = manufacturer;
         req.year = year;
         return req;
@@ -74,6 +75,11 @@ public class ItemRequest {
 
     public ItemRequest setSellerName(String sellerName) {
         this.sellerName = sellerName;
+        return this;
+    }
+
+    public ItemRequest setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
         return this;
     }
 
@@ -115,6 +121,7 @@ public class ItemRequest {
     public String getItemName() { return itemName; }
     public String getDescription() { return description; }
     public String getSellerName() { return sellerName; }
+    public String getImageUrl() { return imageUrl; }
 
     public String getBrand() { return brand; }
     public int getWarrantyMonths() { return warrantyMonths; }

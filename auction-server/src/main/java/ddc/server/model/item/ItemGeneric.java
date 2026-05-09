@@ -16,6 +16,7 @@ public abstract class ItemGeneric<T extends ItemGeneric<T>> extends Entity<T> {
     private String category;
     private String description;
     private String sellerName;
+    private String imageUrl;
 
     public ItemGeneric () {}
 
@@ -23,7 +24,8 @@ public abstract class ItemGeneric<T extends ItemGeneric<T>> extends Entity<T> {
     public String getCategory() { return category; }
     public String getDescription() { return description; }
     public String getSellerName() { return sellerName; }
-
+    public String getImageUrl() { return imageUrl; }
+    
     public T setItemName (String itemName) {
         this.itemName = itemName;
         return self();
@@ -43,6 +45,12 @@ public abstract class ItemGeneric<T extends ItemGeneric<T>> extends Entity<T> {
         this.sellerName = sellerName;
         return self();
     }
+
+    public T setImageUrl (String imageUrl) {
+        this.imageUrl = imageUrl;
+        return self();
+    }
+
 
     public abstract String save(Connection con) throws SQLException;
     public abstract void load(Connection con) throws SQLException;

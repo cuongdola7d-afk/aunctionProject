@@ -42,7 +42,7 @@ public class Vehicle extends ItemGeneric<Vehicle> {
 
     @Override
     public String save(Connection con) throws SQLException {
-        String sqlInsert = "CALL insert_vehicle (?, ?, ?, ?, ?, ?)";
+        String sqlInsert = "CALL insert_vehicle (?, ?, ?, ?, ?, ?, ?)";
         
         try (PreparedStatement pst1 = con.prepareStatement(sqlInsert)) {
             pst1.setString(1, getItemName());
@@ -51,6 +51,7 @@ public class Vehicle extends ItemGeneric<Vehicle> {
             pst1.setString(4, getSellerName());
             pst1.setString(5, manufacturer);
             pst1.setInt(6, year);
+            pst1.setString(7, getImageUrl());
             
             pst1.executeUpdate();
 

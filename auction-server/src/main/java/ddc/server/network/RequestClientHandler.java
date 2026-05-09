@@ -1,6 +1,9 @@
 package ddc.server.network;
 
 import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -33,34 +36,48 @@ public class RequestClientHandler implements Runnable {
     @Override
     public void run() {
         try (BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-             PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true)) {
-
+            PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true)) {
+            
             clientSocket.setSoTimeout(SOCKET_TIMEOUT_MS);
-            out.println(handleRawRequest(in.readLine()));
-        } catch (SocketTimeoutException e) {
-            LOGGER.log(Level.WARNING, "Request timeout tu client: " + clientSocket.getRemoteSocketAddress(), e);
+
+            // TẤT CẢ request (Login hay Ảnh) đều bắt đầu bằng 1 dòng JSON
+            String rawRequest = in.readLine(); 
+            if (rawRequest == null) return;
+
+            RequestMessage request = gson.fromJson(rawRequest, RequestMessage.class);
+
+            // Chỉ khi là ADD_ITEM mới đọc tiếp phần Byte ảnh
+            if (request != null && "ADD_ITEM".equals(request.getAction())) {
+                DataInputStream dis = new DataInputStream(clientSocket.getInputStream());
+                int imageLength = dis.readInt(); // Đọc độ dài ảnh
+                if (imageLength > 0) {
+                    byte[] imageData = new byte[imageLength];
+                    dis.readFully(imageData); // Đọc đủ số byte ảnh
+                    request.setImageData(imageData);
+                }
+            }
+
+            // Xử lý và trả về
+            String responseJson = handleRawRequest(request, rawRequest);
+            out.println(responseJson); // Trả về 1 dòng JSON cho Client
+
         } catch (Exception e) {
-            LOGGER.log(Level.WARNING, "Loi xu ly request client.", e);
-        } finally {
-            // try {
-            //     clientSocket.close();
-            // } catch (Exception e) {
-            //     LOGGER.log(Level.FINE, "Khong the dong socket client.", e);
-            // }
+            LOGGER.log(Level.WARNING, "Loi request: " + e.getMessage());
         }
     }
 
-    private String handleRawRequest(String rawRequest) {
+    // Giữ nguyên tên hàm handleRawRequest như bạn yêu cầu
+    private String handleRawRequest(RequestMessage request, String rawRequest) {
         try {
             if (rawRequest == null || rawRequest.isBlank()) {
                 return fail("EMPTY_REQUEST", "Request rong.");
             }
 
+            // Kiểm tra độ dài chuỗi JSON (MAX_REQUEST_LENGTH)
             if (rawRequest.length() > MAX_REQUEST_LENGTH) {
                 return fail("REQUEST_TOO_LARGE", "Request vuot gioi han.");
             }
 
-            RequestMessage request = gson.fromJson(rawRequest, RequestMessage.class);
             if (request == null || isBlank(request.getAction())) {
                 return fail("INVALID_REQUEST", "Thieu action.");
             }
@@ -70,7 +87,9 @@ public class RequestClientHandler implements Runnable {
                 return fail("UNKNOWN_ACTION", "Action khong duoc ho tro.");
             }
 
+            // Thực hiện xử lý (Handler sẽ lấy imageData từ trong request ra)
             return gson.toJson(handler.handle(request));
+
         } catch (JsonSyntaxException e) {
             LOGGER.log(Level.WARNING, "Request JSON khong hop le.", e);
             return fail("INVALID_JSON", "JSON khong hop le.");
@@ -79,7 +98,7 @@ public class RequestClientHandler implements Runnable {
             return fail("SERVER_ERROR", "Loi server.");
         }
     }
-
+    
     private String fail(String status, String message) {
         Response<?> response = new BaseResponse().setStatus(status).setMessage(message);
         return gson.toJson(response);
