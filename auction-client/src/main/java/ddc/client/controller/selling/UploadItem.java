@@ -137,6 +137,7 @@ public class UploadItem implements Initializable {
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void handleNextStep() {
         boolean hasError = false;
         // Kiểm tra Danh mục (ComboBox)
@@ -244,6 +245,7 @@ public class UploadItem implements Initializable {
     }
 
     @FXML
+    @SuppressWarnings({"CallToPrintStackTrace", "unused"})
     private void handleInitialize() {
         try {
             if (selectedFile == null) {
@@ -287,16 +289,8 @@ public class UploadItem implements Initializable {
                     byte[] imageBytes = null;
                     String uniqueFileName = "";
 
-                    if (selectedFile != null) {
-                        // Đọc ảnh thành mảng byte
-                        imageBytes = java.nio.file.Files.readAllBytes(selectedFile.toPath());
-                        
-                        // Tạo tên file duy nhất để gửi cho Server lưu vào DB
-                        String extension = selectedFile.getName().substring(selectedFile.getName().lastIndexOf("."));
-                        uniqueFileName = java.util.UUID.randomUUID().toString() + extension;
-                    }
-
-                    // 1. Tạo đối tượng Item và gán tên file cho nó
+                    // 1. ADD_ITEM
+                    @SuppressWarnings("rawtypes")
                     ItemGeneric item = currentCat.getItemData(itemName, description, sellerName);
                     item.setImageUrl(uniqueFileName); // Gán cái tên file "abc.jpg" vào đây
 
@@ -318,6 +312,7 @@ public class UploadItem implements Initializable {
 
                     // Parse item vừa lấy về
                     ItemRequest gottenItemReq = gson.fromJson(gottenRes.getItemJson(), ItemRequest.class);
+                    @SuppressWarnings("rawtypes")
                     ItemGeneric gottenItem = CreatorRegistry.getCreator(gottenItemReq.getCategory()).createItem(gottenItemReq);
 
                     // 3. CREATE_AUCTION

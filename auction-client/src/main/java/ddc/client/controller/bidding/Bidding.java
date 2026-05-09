@@ -1,6 +1,7 @@
 package ddc.client.controller.bidding;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -131,10 +132,10 @@ public class Bidding {
                     itemList.add(new AuctionItemViewModel(
                         auction.getAuctionId(),
                         auction.getItem().getItemName(),
-                        auction.getCurrentPrice() + "đ",
+                        new DecimalFormat("#,###").format(auction.getCurrentPrice()) + " đ",
                         TimeCalculate(LocalDateTime.now(), auction.getEndTime()),
                         "/ddc/client/views/bidding/image/watch.jpg",
-                        auction.getItem().getCategory()
+                        CategoryTranslating(auction.getItem().getCategory())
                     ));
                 }
             }
@@ -227,6 +228,7 @@ public class Bidding {
         );
     }
 
+    @SuppressWarnings("CallToPrintStackTrace")
     private void renderItems(List<AuctionItemViewModel> items) {
         auctionContainer.getChildren().clear();
 
@@ -269,7 +271,26 @@ public class Bidding {
         return timeRemaining;
     }
 
+    private static String CategoryTranslating (String category) {
+        switch (category) {
+            case "GENERAL" -> {
+                return "Chung";
+            }
+            case "ART" -> {
+                return "Nghệ thuật";
+            }
+            case "VEHICLE" -> {
+                return "Phương tiện";
+            }
+            case "ELECTRONICS" -> {
+                return "Đồ điện tử";
+            }
+            default -> throw new AssertionError();
+        }
+    }
+
     @FXML
+    @SuppressWarnings("unused")
     private void handleClearFilters() {
         txtSearch.clear();
         categoryTree.getSelectionModel().clearSelection();
@@ -278,26 +299,31 @@ public class Bidding {
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void handleScrollTop() {
         mainScrollPane.setVvalue(0);
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void switchToHome(MouseEvent event) {
         SceneSwitcher.goTo(event, "/ddc/client/views/home/Home.fxml");
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void switchToSelling(MouseEvent event) {
         SceneSwitcher.goTo(event, "/ddc/client/views/selling/Selling.fxml");
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void switchToProfile(MouseEvent event) {
         SceneSwitcher.goTo(event, "/ddc/client/views/profile/Profile.fxml");
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void switchToNotify(MouseEvent event) {
         SceneSwitcher.goTo(event, "/ddc/client/views/notify/Notify.fxml");
     }

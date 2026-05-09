@@ -24,6 +24,7 @@ import ddc.client.model.ItemDTO.VehicleDTO;
 public class GsonConfig {
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
+    @SuppressWarnings({ "Convert2Lambda", "rawtypes" })
     public static Gson newGson() {
         return new GsonBuilder()
                 // Dạy Gson cách ĐÓNG GÓI (Java -> JSON)
@@ -52,16 +53,19 @@ public class GsonConfig {
                         String category = jsonObject.get("category").getAsString();
 
                         switch (category) {
-                            case "GENERAL":
+                            case "GENERAL" -> {
                                 return context.deserialize(json, GeneralDTO.class);
-                            case "ELECTRONICS":
+                            }
+                            case "ELECTRONICS" -> {
                                 return context.deserialize(json, ElectronicsDTO.class);
-                            case "VEHICLE":
+                            }
+                            case "VEHICLE" -> {
                                 return context.deserialize(json, VehicleDTO.class);
-                            case "ART":
+                            }
+                            case "ART" -> {
                                 return context.deserialize(json, ArtDTO.class);
-                            default:
-                                throw new JsonParseException("Không hỗ trợ loại sản phẩm này: " + category);
+                            }
+                            default -> throw new JsonParseException("Không hỗ trợ loại sản phẩm này: " + category);
                         }
                     }
                 })

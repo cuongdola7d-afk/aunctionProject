@@ -19,7 +19,6 @@ public class GetItemHandler implements ActionHandler {
             if (isBlank(itemId)) {
                 return new BaseResponse().setStatus("INVALID_INPUT").setMessage("Thieu ID san pham.");
             }
-            System.out.println("GONNA GET ITEM RIGHT NOW");
             ItemGeneric item = itemService.getItemDetails(itemId);
 
             return new GetItemResponse()

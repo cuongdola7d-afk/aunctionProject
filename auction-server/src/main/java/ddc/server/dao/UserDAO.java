@@ -61,6 +61,31 @@ public class UserDAO {
         return null;
     }
 
+    // Lấy user theo id (primary key)
+    public User getUserById(String id) {
+        String sql = "SELECT * FROM ddc_users WHERE id = ?";
+
+        try (Connection con = DatabaseConnection.getConnection();
+            PreparedStatement pst = con.prepareStatement(sql)) {
+
+            pst.setString(1, id);
+
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    return new User()
+                        .setId(rs.getString("id"))
+                        .setUsername(rs.getString("username"))
+                        .setName(rs.getString("name"))
+                        .setEmail(rs.getString("email"))
+                        .setPassword(rs.getString("password"));
+                }
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.WARNING, "Không tìm được user theo id.", e);
+        }
+        return null;
+    }
+
 
     private boolean isBlank(String value) {
         return value == null || value.trim().isEmpty();

@@ -1,5 +1,6 @@
 package ddc.server.controller.handler;
 
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -7,6 +8,7 @@ import java.io.IOException;
 import com.google.gson.Gson;
 
 import ddc.server.config.GsonConfig;
+
 import ddc.server.controller.RequestMessage;
 import ddc.server.exception.ItemValidationException;
 import ddc.server.network.response.AddItemResponse;
@@ -15,9 +17,9 @@ import ddc.server.network.response.Response;
 import ddc.server.pattern.factory.ItemRequest;
 
 public class AddItemHandler implements ActionHandler {
-    private final Gson gson = GsonConfig.newGson();
 
     @Override
+    @SuppressWarnings("UseSpecificCatch")
     public Response handle(RequestMessage request) {
         try {
             if (request.getData() == null || request.getData().isBlank()) {
