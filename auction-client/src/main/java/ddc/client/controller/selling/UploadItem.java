@@ -68,8 +68,7 @@ public class UploadItem implements Initializable {
     private DatePicker auctionDatePicker;
     @FXML
     private Label nameErrorLabel, desErrorLabel;
-    @FXML
-    private Label imageInfoLabel, imageErrorLabel;
+
 
     @FXML
     private ImageView imgProduct;
@@ -222,8 +221,6 @@ public class UploadItem implements Initializable {
             // 1. Hiển thị ảnh lên giao diện cho người dùng xem
             Image image = new Image(selectedFile.toURI().toString(), 450, 200, true, true);
             imgProduct.setImage(image);
-            imageInfoLabel.setText(selectedFile.getName());
-            imageErrorLabel.setText("");
             setImageSelectedState(true);
             updateRegisterButtonState();
 
@@ -239,7 +236,6 @@ public class UploadItem implements Initializable {
 
         selectedFile = null;
         imgProduct.setImage(null);
-        imageInfoLabel.setText("Chua chon anh san pham");
         setImageSelectedState(false);
         updateRegisterButtonState();
     }
@@ -247,11 +243,6 @@ public class UploadItem implements Initializable {
     @FXML
     private void handleInitialize() {
         try {
-            if (selectedFile == null) {
-                imageErrorLabel.setText("Vui long chon anh san pham.");
-                throw new ItemValidationException("Vui long chon anh san pham.");
-            }
-
             double startingPrice = Double.parseDouble(priceField.getText());
 
             // Kiểm tra giá hợp lệ
@@ -301,8 +292,7 @@ public class UploadItem implements Initializable {
                     ItemGeneric item = currentCat.getItemData(itemName, description, sellerName);
                     item.setImageUrl(uniqueFileName); // Gán cái tên file "abc.jpg" vào đây
 
-                    // 2. GỬI DỮ LIỆU TÁCH BIỆT (Đây là phần quan trọng nhất)
-                    // Thay vì gọi RequestToServer.sendRequest(json), ta gọi hàm mới:
+                    // 2. GỬI DỮ LIỆU TÁCH BIỆT
                     String addedItemJson = RequestToServer.sendRequestWithImage(
                         new Request().setAction("ADD_ITEM").setData(item), 
                         imageBytes
@@ -447,10 +437,6 @@ public class UploadItem implements Initializable {
         if (removeImageBtn != null) {
             removeImageBtn.setVisible(selected);
             removeImageBtn.setManaged(selected);
-        }
-
-        if (uploadBtn != null) {
-            uploadBtn.setText(selected ? "Doi anh" : "Chon anh");
         }
     }
 
