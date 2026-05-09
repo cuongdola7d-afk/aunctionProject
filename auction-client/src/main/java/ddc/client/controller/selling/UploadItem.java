@@ -223,6 +223,11 @@ public class UploadItem implements Initializable {
             imgProduct.setImage(image);
             setImageSelectedState(true);
             updateRegisterButtonState();
+            imgProduct.setPreserveRatio(true); 
+    
+            // Ép ảnh không được vượt quá chiều rộng/cao của khung nét đứt
+            imgProduct.setFitWidth(450);  
+            imgProduct.setFitHeight(180);
 
             System.out.println("Da chon file: " + selectedFile.getAbsolutePath());
         }

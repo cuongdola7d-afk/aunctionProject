@@ -95,16 +95,6 @@
                                  </font>
                               </Label>
                               <ImageView fx:id="imgProduct" fitHeight="200.0" fitWidth="450.0" pickOnBounds="true" preserveRatio="true" />
-                              <VBox alignment="BOTTOM_CENTER" mouseTransparent="true" spacing="4.0" StackPane.alignment="BOTTOM_CENTER">
-                                 <children>
-                                    <Label fx:id="imageInfoLabel" text="Chưa chọn ảnh sản phẩm" textFill="#002347" />
-                                    <Label fx:id="imageErrorLabel" textFill="RED">
-                                       <font>
-                                          <Font size="10.0" />
-                                       </font>
-                                    </Label>
-                                 </children>
-                              </VBox>
                               <Button fx:id="uploadBtn" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onMouseClicked="#handleSelectImage" prefHeight="34.0" prefWidth="90.0" style="-fx-background-color: transparent;" StackPane.alignment="CENTER">
                                  <StackPane.margin>
                                     <Insets left="8.0" top="8.0" />

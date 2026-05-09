@@ -79,7 +79,7 @@ public class RequestClientHandler implements Runnable {
         }
     }
 
-    // Sửa lại hàm này để nhận InputStream hoặc DataInputStream
+    //để nhận InputStream hoặc DataInputStream
     private String readLineCustom(InputStream in) throws IOException {
         StringBuilder sb = new StringBuilder();
         int b;

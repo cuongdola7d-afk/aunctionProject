@@ -41,7 +41,6 @@ public class AddItemHandler implements ActionHandler {
                 System.out.println(">>> CẢNH BÁO: Không có dữ liệu ảnh để lưu!");
             }
             // --- LƯU DATABASE ---
-            // Đảm bảo itemService.createAndSaveItem đã xử lý lưu itemReq.getImageUrl() vào cột tương ứng
             String id = itemService.createAndSaveItem(itemReq);
             
             if (id != null) {
