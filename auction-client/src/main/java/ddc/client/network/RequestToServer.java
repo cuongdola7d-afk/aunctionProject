@@ -71,35 +71,29 @@ public class RequestToServer {
     public static String sendRequestWithImage(Request request, byte[] imageData) {
         try (Socket socket = new Socket()) {
             socket.connect(new InetSocketAddress(HOST, PORT), TIMEOUT_MS);
-            socket.setSoTimeout(TIMEOUT_MS);
-
-            // Dùng PrintWriter cho JSON để giống hàm sendRequest (Login)
-            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            
+            // Dùng DataOutputStream để ghi cả text và byte trên cùng 1 luồng
             DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-            // BƯỚC 1: Gửi JSON bằng println (Đồng bộ với Login)
-            String jsonRequest = gson.toJson(request);
-            out.println(jsonRequest); 
+            // Bước 1: Gửi JSON + dấu xuống dòng (\n) - RẤT QUAN TRỌNG
+            dos.writeBytes(gson.toJson(request) + "\n");
+            dos.flush(); 
 
-            // BƯỚC 2: Gửi dữ liệu ảnh
+            // Bước 2: Gửi dữ liệu ảnh
             if (imageData != null && imageData.length > 0) {
                 dos.writeInt(imageData.length);
                 dos.write(imageData);
-                dos.flush();
             } else {
                 dos.writeInt(0);
-                dos.flush();
             }
+            dos.flush();
 
-            // BƯỚC 3: Đọc phản hồi bằng readLine
-            String response = in.readLine();
-            return (response == null || response.isBlank()) ? 
-                    errorJson("EMPTY_RESPONSE", "Lỗi server") : response;
-
+            // Bước 3: Đọc phản hồi
+            return in.readLine();
         } catch (Exception e) {
             e.printStackTrace();
-            return errorJson("CONNECTION_ERROR", "Lỗi kết nối");
+            return errorJson("ERROR", "Lỗi gửi ảnh");
         }
     }
 }
