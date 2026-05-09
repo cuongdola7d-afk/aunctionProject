@@ -46,7 +46,7 @@ public class AuctionDAO {
             
             while (rs.next()) {
                 Auction a = new Auction();
-                a.setAuctionId(rs.getString("id"));
+                a.setId(rs.getString("id"));
                 a.setItem(itemDAO.getItem(rs.getString("item_id")));
                 a.setStatus(rs.getString("status"));
                 a.setHighestBidder(userDAO.getUser(rs.getString("highest_bidder_name")));
@@ -62,4 +62,59 @@ public class AuctionDAO {
 
         return list;
     }
+
+// Lấy auction theo id từ DB
+public Auction getAuctionById(String auctionId) {
+    String sql = "SELECT * FROM ddc_auctions WHERE id = ?";
+
+    try (Connection con = DatabaseConnection.getConnection();
+         PreparedStatement pst = con.prepareStatement(sql)) {
+
+        pst.setString(1, auctionId);
+
+        try (ResultSet rs = pst.executeQuery()) {
+            if (rs.next()) {
+                Auction auction = new Auction();
+                auction.setId(rs.getString("id"));
+                auction.setItem(itemDAO.getItem(rs.getString("item_id")));
+                auction.setStatus(rs.getString("status"));
+                auction.setHighestBidder(userDAO.getUser(rs.getString("highest_bidder_name")));
+                auction.setCurrentPrice(rs.getDouble("current_price"));
+                auction.setStartTime(rs.getObject("start_time", LocalDateTime.class));
+                auction.setEndTime(rs.getObject("end_time", LocalDateTime.class));
+                return auction;
+            }
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return null;
+}
+
+// Cập nhật giá, bidder, status của auction về DB
+public boolean updateAuction(Auction auction) {
+    String sql = "UPDATE ddc_auctions SET current_price = ?, highest_bidder_name = ?, status = ? WHERE id = ?";
+
+    try (Connection con = DatabaseConnection.getConnection();
+         PreparedStatement pst = con.prepareStatement(sql)) {
+
+        pst.setDouble(1, auction.getCurrentPrice());
+        String bidderName = auction.getHighestBidder() != null
+                ? auction.getHighestBidder().getUsername() : null;
+        pst.setString(2, bidderName);
+        pst.setString(3, auction.getStatus().name());
+        pst.setString(4, auction.getId());
+
+        return pst.executeUpdate() > 0;
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return false;
+}
+
+
+
+
 }
