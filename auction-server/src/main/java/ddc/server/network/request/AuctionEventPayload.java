@@ -1,4 +1,4 @@
-package ddc.server.network.response;
+package ddc.server.network.request;
 
 // Payload gửi cho client khi có event auction (snapshot hoặc new bid)
 public class AuctionEventPayload {

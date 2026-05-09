@@ -21,9 +21,9 @@ import ddc.server.model.user.Bidder;
 import ddc.server.model.user.User;
 import ddc.server.network.message.MessageType;
 import ddc.server.network.message.SocketMessage;
+import ddc.server.network.request.AuctionEventPayload;
 import ddc.server.network.request.PlaceBidRequest;
 import ddc.server.network.request.SubscribeAuctionRequest;
-import ddc.server.network.response.AuctionEventPayload;
 import ddc.server.network.response.ErrorPayload;
 import ddc.server.pattern.Singleton.AuctionManager;
 
