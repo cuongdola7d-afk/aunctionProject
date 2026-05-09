@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.gson.Gson;
+import ddc.server.config.GsonConfig;
 
 import ddc.server.controller.service.AuctionService;
 import ddc.server.dao.AuctionDAO;
@@ -36,7 +37,7 @@ public class RealtimeClientHandler implements Runnable {
     private final AuctionManager auctionManager = AuctionManager.getInstance();
     private final AuctionDAO auctionDAO = new AuctionDAO();
     private final UserDAO userDAO = new UserDAO();
-    private final Gson gson = new Gson();
+    private final Gson gson = GsonConfig.newGson();
 
     public RealtimeClientHandler(Socket socket, AuctionService auctionService) {
         this.socket = socket;
