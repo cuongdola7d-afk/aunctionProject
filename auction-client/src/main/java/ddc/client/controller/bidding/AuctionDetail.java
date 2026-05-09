@@ -1,18 +1,20 @@
 package ddc.client.controller.bidding;
 
+import ddc.client.config.ClientContext;
 import ddc.client.controller.SceneSwitcher;
 import ddc.client.network.client.AuctionSocketClient;
 import ddc.client.network.listener.ServerMessageListener;
 import ddc.client.network.response.AuctionEventResponse;
-import ddc.client.config.ClientContext;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
+import javafx.stage.Stage;
 
 public class AuctionDetail implements ServerMessageListener {
 
@@ -201,11 +203,11 @@ public class AuctionDetail implements ServerMessageListener {
 
     @FXML
     private void handleBackToBidding(MouseEvent event) {
-        if (socketClient != null) {
-            socketClient.disconnect();
-        }
+        Node source = (Node) event.getSource();
 
-        SceneSwitcher.goTo(event, "/ddc/client/views/bidding/bidding.fxml");
+        Stage stage = (Stage) source.getScene().getWindow();
+
+        stage.close();
     }
 
     @FXML

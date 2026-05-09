@@ -16,17 +16,10 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="720.0" prefWidth="1280.0"
-            style="-fx-background-color: #f3f4f6;"
-            xmlns="http://javafx.com/javafx/21"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="ddc.client.controller.bidding.Bidding">
+<AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #f3f4f6;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ddc.client.controller.bidding.Bidding">
 
     <children>
-        <BorderPane AnchorPane.bottomAnchor="0.0"
-                    AnchorPane.leftAnchor="0.0"
-                    AnchorPane.rightAnchor="0.0"
-                    AnchorPane.topAnchor="0.0">
+        <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 
             <!-- HEADER -->
             <top>
@@ -34,19 +27,14 @@
                     <children>
                         <HBox alignment="CENTER_LEFT" prefHeight="90.0" spacing="16.0">
                             <children>
-                                <Label text="ĐẤU GIÁ"
-                                       style="-fx-font-size: 34px; -fx-font-weight: bold; -fx-text-fill: #001a8d;" />
+                                <Label style="-fx-font-size: 34px; -fx-font-weight: bold; -fx-text-fill: #001a8d;" text="ĐẤU GIÁ" />
 
                                 <Region HBox.hgrow="ALWAYS" />
 
-                                <TextField fx:id="txtSearch"
-                                           prefHeight="42.0"
-                                           prefWidth="320.0"
-                                           promptText="Tìm sản phẩm..."
-                                           style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: #38bdf8; -fx-border-radius: 10; -fx-border-width: 2;" />
+                                <TextField fx:id="txtSearch" prefHeight="42.0" prefWidth="320.0" promptText="Tìm sản phẩm..." style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: #38bdf8; -fx-border-radius: 10; -fx-border-width: 2;" />
                             </children>
                             <padding>
-                                <Insets top="18.0" right="18.0" bottom="0.0" left="18.0" />
+                                <Insets bottom="0.0" left="18.0" right="18.0" top="18.0" />
                             </padding>
                         </HBox>
 
@@ -54,23 +42,16 @@
 
                         <HBox alignment="CENTER_LEFT" prefHeight="42.0" spacing="12.0">
                             <children>
-                                <Label fx:id="lblResultCount"
-                                       text="Kết quả: 0"
-                                       style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #12308a;" />
+                                <Label fx:id="lblResultCount" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #12308a;" text="Kết quả: 0" />
 
-                                <Label fx:id="lblSelectedCategory"
-                                       text="Danh mục: Tất cả"
-                                       style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #12308a;" />
+                                <Label fx:id="lblSelectedCategory" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #12308a;" text="Danh mục: Tất cả" />
 
                                 <Region HBox.hgrow="ALWAYS" />
 
-                                <Button mnemonicParsing="false"
-                                        onAction="#handleClearFilters"
-                                        text="Xóa bộ lọc"
-                                        style="-fx-background-color: #dbe2ef; -fx-background-radius: 10; -fx-font-weight: bold; -fx-text-fill: #23395d;" />
+                                <Button mnemonicParsing="false" onAction="#handleClearFilters" style="-fx-background-color: #dbe2ef; -fx-background-radius: 10; -fx-font-weight: bold; -fx-text-fill: #23395d;" text="Xóa bộ lọc" />
                             </children>
                             <padding>
-                                <Insets left="18.0" right="18.0" bottom="8.0" />
+                                <Insets bottom="8.0" left="18.0" right="18.0" />
                             </padding>
                         </HBox>
                     </children>
@@ -82,58 +63,35 @@
                 <AnchorPane style="-fx-background-color: #f3f4f6;">
                     <children>
                         <!-- DANH MỤC -->
-                        <VBox prefWidth="250.0"
-                              spacing="12.0"
-                              style="-fx-background-color: #f3f4f6; -fx-border-color: #d1d5db;"
-                              AnchorPane.bottomAnchor="0.0"
-                              AnchorPane.leftAnchor="0.0"
-                              AnchorPane.topAnchor="0.0">
+                        <VBox prefWidth="250.0" spacing="12.0" style="-fx-background-color: #f3f4f6; -fx-border-color: #d1d5db;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <children>
-                                <Label text="Danh mục"
-                                       style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #0f172a;" />
+                                <Label style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #0f172a;" text="Danh mục" />
                                 <TreeView fx:id="categoryTree" VBox.vgrow="ALWAYS" />
                             </children>
                             <padding>
-                                <Insets top="16.0" right="14.0" bottom="16.0" left="14.0" />
+                                <Insets bottom="16.0" left="14.0" right="14.0" top="16.0" />
                             </padding>
                         </VBox>
 
                         <!-- DANH SÁCH SẢN PHẨM -->
-                        <StackPane AnchorPane.bottomAnchor="0.0"
-                                   AnchorPane.leftAnchor="250.0"
-                                   AnchorPane.rightAnchor="0.0"
-                                   AnchorPane.topAnchor="0.0">
+                        <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="250.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 
                             <children>
-                                <ScrollPane fx:id="mainScrollPane"
-                                            fitToWidth="true"
-                                            hbarPolicy="NEVER"
-                                            pannable="true"
-                                            style="-fx-background: transparent; -fx-background-color: transparent;">
+                                <ScrollPane fx:id="mainScrollPane" fitToWidth="true" hbarPolicy="NEVER" pannable="true" style="-fx-background: transparent; -fx-background-color: transparent;">
                                     <content>
-                                        <FlowPane fx:id="auctionContainer"
-                                                  hgap="18.0"
-                                                  vgap="18.0"
-                                                  prefWrapLength="980.0">
+                                        <FlowPane fx:id="auctionContainer" hgap="18.0" prefWrapLength="980.0" vgap="18.0">
                                             <padding>
-                                                <Insets top="18.0" right="18.0" bottom="90.0" left="18.0" />
+                                                <Insets bottom="90.0" left="18.0" right="18.0" top="18.0" />
                                             </padding>
                                         </FlowPane>
                                     </content>
                                 </ScrollPane>
 
-                                <Label fx:id="lblEmptyState"
-                                       managed="false"
-                                       visible="false"
-                                       text="Không tìm thấy sản phẩm phù hợp"
-                                       style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #12308a;" />
+                                <Label fx:id="lblEmptyState" managed="false" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #12308a;" text="Không tìm thấy sản phẩm phù hợp" visible="false" />
 
-                                <Button text="↑"
-                                        onAction="#handleScrollTop"
-                                        style="-fx-background-color: #0b1a44; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 999;"
-                                        StackPane.alignment="BOTTOM_RIGHT">
+                                <Button onAction="#handleScrollTop" style="-fx-background-color: #0b1a44; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 999;" text="↑" StackPane.alignment="BOTTOM_RIGHT">
                                     <StackPane.margin>
-                                        <Insets right="20.0" bottom="20.0" />
+                                        <Insets bottom="20.0" right="20.0" />
                                     </StackPane.margin>
                                 </Button>
                             </children>
@@ -144,22 +102,10 @@
 
             <!-- TASKBAR DƯỚI -->
             <bottom>
-                <HBox alignment="CENTER"
-                      minHeight="0.0"
-                      prefHeight="60.0"
-                      prefWidth="550.0"
-                      spacing="15.0"
-                      style="-fx-background-color: cyan; -fx-min-height: 70; -fx-padding: 10;"
-                      BorderPane.alignment="CENTER">
+                <HBox alignment="CENTER" minHeight="0.0" prefHeight="60.0" prefWidth="550.0" spacing="15.0" style="-fx-background-color: cyan; -fx-min-height: 70; -fx-padding: 10;" BorderPane.alignment="CENTER">
                     <children>
 
-                        <VBox alignment="CENTER"
-                              maxHeight="-Infinity" maxWidth="-Infinity"
-                              minHeight="-Infinity" minWidth="-Infinity"
-                              onMouseClicked="#switchToNotify"
-                              prefHeight="60.0" prefWidth="120.0"
-                              HBox.hgrow="ALWAYS"
-                              style="-fx-cursor: hand;">
+                        <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#switchToNotify" prefHeight="60.0" prefWidth="120.0" style="-fx-cursor: hand;" HBox.hgrow="ALWAYS">
                             <children>
                                 <Label text="🔔" textFill="DARKBLUE">
                                     <font>
@@ -169,11 +115,7 @@
                                         <Insets top="10.0" />
                                     </VBox.margin>
                                 </Label>
-                                <Label alignment="CENTER"
-                                       prefHeight="45.0"
-                                       text="THÔNG BÁO"
-                                       textAlignment="CENTER"
-                                       textFill="DARKBLUE">
+                                <Label alignment="CENTER" prefHeight="45.0" text="THÔNG BÁO" textAlignment="CENTER" textFill="DARKBLUE">
                                     <font>
                                         <Font name="Roboto" size="13.0" />
                                     </font>
@@ -186,24 +128,14 @@
 
                         <Separator orientation="VERTICAL" prefHeight="200.0" />
 
-                        <VBox alignment="CENTER"
-                              maxHeight="-Infinity" maxWidth="-Infinity"
-                              minHeight="-Infinity" minWidth="-Infinity"
-                              prefHeight="60.0" prefWidth="120.0"
-                              HBox.hgrow="ALWAYS"
-                              style="-fx-background-color: #001F3F; -fx-background-radius: 15; -fx-padding: 10 20 10 20;">
+                        <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="60.0" prefWidth="120.0" style="-fx-background-color: #001F3F; -fx-background-radius: 15; -fx-padding: 10 20 10 20;" HBox.hgrow="ALWAYS">
                             <children>
                                 <Label text="⚖" textFill="AQUA">
                                     <font>
                                         <Font size="14.0" />
                                     </font>
                                 </Label>
-                                <Label alignment="CENTER"
-                                       prefHeight="45.0"
-                                       prefWidth="89.0"
-                                       text="ĐẤU GIÁ"
-                                       textAlignment="CENTER"
-                                       textFill="AQUA">
+                                <Label alignment="CENTER" prefHeight="45.0" prefWidth="89.0" text="ĐẤU GIÁ" textAlignment="CENTER" textFill="AQUA">
                                     <font>
                                         <Font name="Roboto" size="13.0" />
                                     </font>
@@ -215,47 +147,30 @@
                         </VBox>
 
                         <Separator orientation="VERTICAL" prefHeight="200.0" />
-
-                        <VBox alignment="CENTER"
-                              maxHeight="-Infinity" maxWidth="-Infinity"
-                              minHeight="-Infinity" minWidth="-Infinity"
-                              onMouseClicked="#switchToHome"
-                              prefHeight="60.0" prefWidth="120.0"
-                              HBox.hgrow="ALWAYS"
-                              style="-fx-cursor: hand;">
-                            <children>
-                                <Label text="⌂" textFill="DARKBLUE">
-                                    <font>
-                                        <Font size="14.0" />
-                                    </font>
-                                    <VBox.margin>
-                                        <Insets top="10.0" />
-                                    </VBox.margin>
-                                </Label>
-                                <Label alignment="CENTER"
-                                       prefHeight="45.0"
-                                       text="TRANG CHỦ"
-                                       textAlignment="CENTER"
-                                       textFill="DARKBLUE">
-                                    <font>
-                                        <Font name="Roboto" size="13.0" />
-                                    </font>
-                                </Label>
-                            </children>
-                            <padding>
-                                <Insets bottom="5.0" />
-                            </padding>
-                        </VBox>
+                  <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#switchToHome" prefHeight="60.0" prefWidth="120.0">
+                     <children>
+                        <Label maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" text="🏠" textFill="DARKBLUE" VBox.vgrow="NEVER">
+                           <VBox.margin>
+                              <Insets top="10.0" />
+                           </VBox.margin>
+                        </Label>
+                        <Label alignment="CENTER" ellipsisString="" prefHeight="45.0" text="TRANG CHỦ" textAlignment="CENTER" textFill="DARKBLUE" textOverrun="CLIP" VBox.vgrow="NEVER">
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
+                           <font>
+                              <Font name="Roboto" size="13.0" />
+                           </font>
+                        </Label>
+                     </children>
+                     <padding>
+                        <Insets bottom="5.0" />
+                     </padding>
+                  </VBox>
 
                         <Separator orientation="VERTICAL" prefHeight="200.0" />
 
-                        <VBox alignment="CENTER"
-                              maxHeight="-Infinity" maxWidth="-Infinity"
-                              minHeight="-Infinity" minWidth="-Infinity"
-                              onMouseClicked="#switchToSelling"
-                              prefHeight="60.0" prefWidth="120.0"
-                              HBox.hgrow="ALWAYS"
-                              style="-fx-cursor: hand;">
+                        <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#switchToSelling" prefHeight="60.0" prefWidth="120.0" style="-fx-cursor: hand;" HBox.hgrow="ALWAYS">
                             <children>
                                 <Label text="💵" textFill="DARKBLUE">
                                     <font>
@@ -265,11 +180,7 @@
                                         <Insets top="10.0" />
                                     </VBox.margin>
                                 </Label>
-                                <Label alignment="CENTER"
-                                       prefHeight="45.0"
-                                       text="ĐĂNG BÁN"
-                                       textAlignment="CENTER"
-                                       textFill="DARKBLUE">
+                                <Label alignment="CENTER" prefHeight="45.0" text="ĐĂNG BÁN" textAlignment="CENTER" textFill="DARKBLUE">
                                     <font>
                                         <Font name="Roboto" size="13.0" />
                                     </font>
@@ -282,13 +193,7 @@
 
                         <Separator orientation="VERTICAL" prefHeight="200.0" />
 
-                        <VBox alignment="CENTER"
-                              maxHeight="-Infinity" maxWidth="-Infinity"
-                              minHeight="-Infinity" minWidth="-Infinity"
-                              onMouseClicked="#switchToProfile"
-                              prefHeight="60.0" prefWidth="120.0"
-                              HBox.hgrow="ALWAYS"
-                              style="-fx-cursor: hand;">
+                        <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#switchToProfile" prefHeight="60.0" prefWidth="120.0" style="-fx-cursor: hand;" HBox.hgrow="ALWAYS">
                             <children>
                                 <Label text="👤" textFill="DARKBLUE">
                                     <font>
@@ -298,11 +203,7 @@
                                         <Insets top="10.0" />
                                     </VBox.margin>
                                 </Label>
-                                <Label alignment="CENTER"
-                                       prefHeight="45.0"
-                                       text="THÔNG TIN"
-                                       textAlignment="CENTER"
-                                       textFill="DARKBLUE">
+                                <Label alignment="CENTER" prefHeight="45.0" text="THÔNG TIN" textAlignment="CENTER" textFill="DARKBLUE">
                                     <font>
                                         <Font name="Roboto" size="13.0" />
                                     </font>

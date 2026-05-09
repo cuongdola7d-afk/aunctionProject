@@ -135,7 +135,7 @@ public class Bidding {
                         new DecimalFormat("#,###").format(auction.getCurrentPrice()) + " đ",
                         TimeCalculate(LocalDateTime.now(), auction.getEndTime()),
                         "/ddc/client/views/bidding/image/watch.jpg",
-                        auction.getItem().getCategory()
+                        CategoryTranslating(auction.getItem().getCategory())
                     ));
                 }
             }
@@ -269,6 +269,24 @@ public class Bidding {
 
         String timeRemaining = String.format("%02d:%02d:%02d", hours, minutes, seconds);
         return timeRemaining;
+    }
+
+    private static String CategoryTranslating (String category) {
+        switch (category) {
+            case "GENERAL" -> {
+                return "Chung";
+            }
+            case "ART" -> {
+                return "Nghệ thuật";
+            }
+            case "VEHICLE" -> {
+                return "Phương tiện";
+            }
+            case "ELECTRONICS" -> {
+                return "Đồ điện tử";
+            }
+            default -> throw new AssertionError();
+        }
     }
 
     @FXML
