@@ -9,7 +9,6 @@ import ddc.server.model.item.ItemGeneric;
 import ddc.server.model.user.User;
 
 public class Auction extends Entity<Auction> {
-    private String auctionId;
     private ItemGeneric item;
     private List<Bid> bidHistory = new ArrayList<>();
 
@@ -24,7 +23,6 @@ public class Auction extends Entity<Auction> {
     }
 
     //Getters
-    public String getAuctionId () { return auctionId; }
     public ItemGeneric getItem () { return item; }
     public List<Bid> getBidHistory () { return bidHistory; }
     public AuctionStatus getStatus () { return status; }
@@ -34,11 +32,6 @@ public class Auction extends Entity<Auction> {
     public LocalDateTime getEndTime() { return endTime; }
 
     //Setters
-    public Auction setAuctionId (String auctionId) {
-        this.auctionId = auctionId;
-        return this;
-    }
-
     public Auction setItem (ItemGeneric item) {
         this.item = item;
         return this;

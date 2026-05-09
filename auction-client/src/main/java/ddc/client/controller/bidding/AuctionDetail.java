@@ -51,7 +51,8 @@ public class AuctionDetail implements ServerMessageListener {
 
     @FXML
     public void initialize() {
-        socketClient = new AuctionSocketClient("localhost", 5555);
+        socketClient = new AuctionSocketClient(ClientContext.SERVER_HOST, ClientContext.REALTIME_PORT);
+
         socketClient.setListener(this);
 
         if (lblMessage != null) {
