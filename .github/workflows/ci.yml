@@ -1,0 +1,36 @@
+# Tên workflow hiển thị trên GitHub
+name: CI Build & Test
+
+# Khi nào chạy?
+on:
+  push:
+    branches: [master]     # Push vào main hoặc develop
+  pull_request:
+    branches: [master]              # Tạo PR vào main
+
+jobs:
+  build:
+    # Chạy trên máy ảo Windows
+    runs-on: windows-latest
+
+    steps:
+      # Bước 1: Clone code về runner
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Bước 2: Cài đặt JDK 25
+      - name: Setup JDK 25
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25-ea'
+          distribution: 'oracle'
+          cache: 'maven'              # Cache .m2 để lần sau nhanh hơn
+
+      # Bước 3: Build toàn bộ project (cả client + server)
+      - name: Build with Maven
+        run: mvn compile -B
+
+      # Bước 4: Chạy test cho server (skip test client vì headless)
+      - name: Run Server Tests
+        run: mvn test -B -pl auction-server
+
