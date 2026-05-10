@@ -82,9 +82,13 @@ public class AuctionDetail implements ServerMessageListener {
         }
 
         try {
-            var imageUrl = getClass().getResource(imagePath);
+            var imageUrl = imagePath.startsWith("http://") || imagePath.startsWith("https://")
+                    ? null
+                    : getClass().getResource(imagePath);
             if (imageUrl != null) {
                 mainImage.setImage(new Image(imageUrl.toExternalForm(), true));
+            } else if (imagePath.startsWith("http://") || imagePath.startsWith("https://")) {
+                mainImage.setImage(new Image(imagePath, true));
             }
         } catch (Exception e) {
             System.out.println("Lỗi load ảnh chi tiết");

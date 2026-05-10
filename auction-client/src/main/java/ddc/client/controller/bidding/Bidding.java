@@ -10,6 +10,7 @@ import java.util.List;
 
 import com.google.gson.Gson;
 
+import ddc.client.config.ClientContext;
 import ddc.client.config.GsonConfig;
 import ddc.client.controller.SceneSwitcher;
 import ddc.client.model.AuctionDTO;
@@ -17,6 +18,7 @@ import ddc.client.model.AuctionItemViewModel;
 import ddc.client.model.Request;
 import ddc.client.network.RealtimeToServer;
 import ddc.client.network.response.GetAllAuctionsResponse;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -121,36 +123,49 @@ public class Bidding {
 
     private void loadSampleData() {
         itemList.clear();
+        
+        // IP này là IP của máy đang chạy Server và Undertow
+        String imageBaseUrl = "http://" + ClientContext.SERVER_HOST + ":" + ClientContext.IMAGE_PORT + "/";
 
         new Thread(() -> {
-            String JsonResponse = RealtimeToServer.sendRequest(new Request().setAction("GET_ALL"));
+            try {
+                String JsonResponse = RealtimeToServer.sendRequest(new Request().setAction("GET_ALL"));
+                GetAllAuctionsResponse response = gson.fromJson(JsonResponse, GetAllAuctionsResponse.class);
 
-            GetAllAuctionsResponse response = gson.fromJson(JsonResponse, GetAllAuctionsResponse.class);
-            if ("SUCCESS".equals(response.getStatus())) {
-                List<AuctionDTO> auctions = Arrays.asList(response.getData());
-                for (AuctionDTO auction : auctions) {
-                    itemList.add(new AuctionItemViewModel(
-                        auction.getAuctionId(),
-                        auction.getItem().getItemName(),
-                        new DecimalFormat("#,###").format(auction.getCurrentPrice()) + " đ",
-                        TimeCalculate(LocalDateTime.now(), auction.getEndTime()),
-                        "/ddc/client/views/bidding/image/watch.jpg",
-                        CategoryTranslating(auction.getItem().getCategory())
-                    ));
+                if (response != null && "SUCCESS".equals(response.getStatus())) {
+                    List<AuctionDTO> auctions = Arrays.asList(response.getData());
+
+                    // Sử dụng Platform.runLater để cập nhật UI từ luồng phụ
+                    Platform.runLater(() -> {
+                        for (AuctionDTO auction : auctions) {
+                            // Lấy tên file ảnh từ DB (ví dụ: "61a628cc...jpg")
+                            String fileName = auction.getItem().getImageUrl();
+                            
+                            // Tạo đường dẫn URL thay vì file nội bộ
+                            String fullImageUrl = (fileName != null && !fileName.isEmpty()) 
+                                                ? imageBaseUrl + fileName 
+                                                : "/ddc/client/views/bidding/image/watch.jpg"; // Ảnh mặc định nếu lỗi
+
+                            itemList.add(new AuctionItemViewModel(
+                                auction.getAuctionId(),
+                                auction.getItem().getItemName(),
+                                new DecimalFormat("#,###").format(auction.getCurrentPrice()) + " đ",
+                                TimeCalculate(LocalDateTime.now(), auction.getEndTime()),
+                                fullImageUrl, 
+                                CategoryTranslating(auction.getItem().getCategory())
+                            ));
+                        }
+                    });
                 }
-            }
-        }).start();
 
-        
-
-        itemList.add(new AuctionItemViewModel(
+                itemList.add(new AuctionItemViewModel(
                 "AUCT-001",
                 "Đồng hồ thông minh",
                 "1,250,000 đ",
                 "02:15:30",
                 "/ddc/client/views/bidding/image/watch.jpg",
                 "Đồ điện tử"
-        ));
+            ));
 
         itemList.add(new AuctionItemViewModel(
                 "AUCT-002",
@@ -178,6 +193,10 @@ public class Bidding {
                 "/ddc/client/views/bidding/image/mechanicalKeyboard.jpg",
                 "Đồ điện tử"
         ));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 
     private void applyFilters() {

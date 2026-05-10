@@ -50,9 +50,13 @@ public class AuctionCard {
         lblCategory.setText(item.getCategory());
 
         try {
-            var imageUrl = getClass().getResource(item.getImagePath());
+            var imageUrl = item.getImagePath().startsWith("http://") || item.getImagePath().startsWith("https://")
+                    ? null
+                    : getClass().getResource(item.getImagePath());
             if (imageUrl != null) {
                 imgItem.setImage(new Image(imageUrl.toExternalForm()));
+            } else if (item.getImagePath().startsWith("http://") || item.getImagePath().startsWith("https://")) {
+                imgItem.setImage(new Image(item.getImagePath(), true));
             } else {
                 System.err.println("LỖI: Không tìm thấy ảnh tại: " + item.getImagePath());
             }
