@@ -85,7 +85,10 @@
                         <Insets />
                      </VBox.margin>
                   </Label>
-                  <HBox alignment="CENTER" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="200.0" spacing="15.0" style="-fx-border-color: #001F3F; -fx-border-style: dashed; -fx-border-width: 2; -fx-background-color: #f8f9fa; -fx-background-radius: 10; -fx-border-radius: 10;">
+                  <HBox alignment="CENTER" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#handleSelectImage" prefHeight="200.0" spacing="15.0" style="-fx-border-color: #001F3F; -fx-border-style: dashed; -fx-border-width: 2; -fx-background-color: #f8f9fa; -fx-background-radius: 10; -fx-border-radius: 10;">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                      <children>
                         <StackPane prefHeight="150.0" prefWidth="200.0">
                            <children>
@@ -94,8 +97,8 @@
                                     <Font size="48.0" />
                                  </font>
                               </Label>
-                              <ImageView fx:id="mainImageView" fitHeight="200.0" fitWidth="450.0" pickOnBounds="true" preserveRatio="true" />
-                              <Button alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" opacity="0.0" prefHeight="50.0" prefWidth="40.0" text="Button" StackPane.alignment="CENTER">
+                              <ImageView fx:id="imgProduct" fitHeight="200.0" fitWidth="450.0" pickOnBounds="true" preserveRatio="true" />
+                              <Button fx:id="uploadBtn" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onMouseClicked="#handleSelectImage" opacity="0.0" prefHeight="200.0" prefWidth="450.0" text="Button" StackPane.alignment="CENTER">
                                  <StackPane.margin>
                                     <Insets />
                                  </StackPane.margin>
