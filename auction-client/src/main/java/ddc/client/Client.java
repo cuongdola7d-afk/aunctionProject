@@ -9,16 +9,12 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
-public class Client extends Application{
+public class Client extends Application {
     @Override
-    public void start (Stage stage) throws IOException{
+    public void start(Stage stage) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/ddc/client/views/loginregister/login.fxml"));
 
         Parent root = loader.load();
-
-        /*Bidding controller = loader.getController();
-        String currentUserBidderId = "BIDDER-BOB";
-        controller.setupBidderContext(currentUserBidderId);*/
 
         Image icon = new Image(getClass().getResourceAsStream("views/DDCAuction.png"));
 
