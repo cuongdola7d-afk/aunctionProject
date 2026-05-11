@@ -7,6 +7,7 @@ import java.util.List;
 import ddc.client.model.ItemDTO.ItemGeneric;
 
 public class AuctionDTO {
+    private String id;
     private String auctionId;
     private ItemGeneric item;
     private List<BidDTO> bidHistory = new ArrayList<>();
@@ -22,7 +23,9 @@ public class AuctionDTO {
     }
 
     //Getters
-    public String getAuctionId () { return auctionId; }
+    public String getId () { return id; }
+    public String getAuctionId () {
+         return isBlank(auctionId) ? id : auctionId; }
     public ItemGeneric getItem () { return item; }
     public List<BidDTO> getBidHistory () { return bidHistory; }
     public AuctionStatus getStatus () { return status; }
@@ -34,6 +37,9 @@ public class AuctionDTO {
     //Setters
     public AuctionDTO setAuctionId (String auctionId) {
         this.auctionId = auctionId;
+        if (isBlank(this.id)){
+               this.id = auctionId;
+        } 
         return this;
     }
 
@@ -67,6 +73,15 @@ public class AuctionDTO {
         return this;
     }
 
+    public AuctionDTO setId (String id){
+        this.id = id;
+        if (isBlank(this.auctionId)) {
+             this.auctionId = id;
+        }
+
+        return this;
+    }
+
     public void startAuction() {
         this.status = AuctionStatus.RUNNING;
     }
@@ -87,5 +102,9 @@ public class AuctionDTO {
         bidHistory.add(bid);
         currentPrice = bid.getBidAmount();
         highestBidder = bid.getBidder();
+    }
+
+    private boolean isBlank(String value){
+          return value == null || value.trim().isEmpty();
     }
 }
