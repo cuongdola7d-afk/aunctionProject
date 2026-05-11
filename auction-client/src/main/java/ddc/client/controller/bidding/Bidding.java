@@ -16,6 +16,7 @@ import ddc.client.model.AuctionDTO;
 import ddc.client.model.AuctionItemViewModel;
 import ddc.client.model.Request;
 import ddc.client.network.RealtimeToServer;
+import ddc.client.network.UserSession;
 import ddc.client.network.response.GetAllAuctionsResponse;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -55,15 +56,14 @@ public class Bidding {
     private final Gson gson = GsonConfig.newGson();
 
     // bidder hiện tại sẽ được scene trước truyền vào
-    //private String currentBidderId;
-    private String currentBidderId = "BIDDER-001";
+    private String currentBidderId;
 
     private String selectedCategory;
 
     @FXML
     public void initialize() {
-        currentBidderId = "BIDDER-001";
 
+        currentBidderId = UserSession.getInstance().getId();
         loadSampleData();
         setupCategoryTree();
 
@@ -88,21 +88,18 @@ public class Bidding {
         TreeItem<String> art = new TreeItem<>("Nghệ thuật");
         art.getChildren().addAll(
                 new TreeItem<>("Hội họa"),
-                new TreeItem<>("Điêu khắc")
-        );
+                new TreeItem<>("Điêu khắc"));
 
         TreeItem<String> elec = new TreeItem<>("Đồ điện tử");
         elec.getChildren().addAll(
                 new TreeItem<>("Điện thoại"),
                 new TreeItem<>("Máy tính xách tay"),
-                new TreeItem<>("Phụ kiện")
-        );
+                new TreeItem<>("Phụ kiện"));
 
         TreeItem<String> veh = new TreeItem<>("Phương tiện");
         veh.getChildren().addAll(
                 new TreeItem<>("Ô tô"),
-                new TreeItem<>("Xe máy")
-        );
+                new TreeItem<>("Xe máy"));
 
         root.getChildren().addAll(art, elec, veh);
 
@@ -130,18 +127,15 @@ public class Bidding {
                 List<AuctionDTO> auctions = Arrays.asList(response.getData());
                 for (AuctionDTO auction : auctions) {
                     itemList.add(new AuctionItemViewModel(
-                        auction.getAuctionId(),
-                        auction.getItem().getItemName(),
-                        new DecimalFormat("#,###").format(auction.getCurrentPrice()) + " đ",
-                        TimeCalculate(LocalDateTime.now(), auction.getEndTime()),
-                        "/ddc/client/views/bidding/image/watch.jpg",
-                        CategoryTranslating(auction.getItem().getCategory())
-                    ));
+                            auction.getAuctionId(),
+                            auction.getItem().getItemName(),
+                            new DecimalFormat("#,###").format(auction.getCurrentPrice()) + " đ",
+                            TimeCalculate(LocalDateTime.now(), auction.getEndTime()),
+                            "/ddc/client/views/bidding/image/watch.jpg",
+                            CategoryTranslating(auction.getItem().getCategory())));
                 }
             }
         }).start();
-
-        
 
         itemList.add(new AuctionItemViewModel(
                 "AUCT-001",
@@ -149,8 +143,7 @@ public class Bidding {
                 "1,250,000 đ",
                 "02:15:30",
                 "/ddc/client/views/bidding/image/watch.jpg",
-                "Đồ điện tử"
-        ));
+                "Đồ điện tử"));
 
         itemList.add(new AuctionItemViewModel(
                 "AUCT-002",
@@ -158,8 +151,7 @@ public class Bidding {
                 "3,400,000 đ",
                 "00:45:12",
                 "/ddc/client/views/bidding/image/vintageWatch.jpg",
-                "Nghệ thuật"
-        ));
+                "Nghệ thuật"));
 
         itemList.add(new AuctionItemViewModel(
                 "AUCT-003",
@@ -167,8 +159,7 @@ public class Bidding {
                 "850,000 đ",
                 "05:10:00",
                 "/ddc/client/views/bidding/image/headphone.jpg",
-                "Đồ điện tử"
-        ));
+                "Đồ điện tử"));
 
         itemList.add(new AuctionItemViewModel(
                 "AUCT-004",
@@ -176,8 +167,7 @@ public class Bidding {
                 "2,100,000 đ",
                 "01:20:45",
                 "/ddc/client/views/bidding/image/mechanicalKeyboard.jpg",
-                "Đồ điện tử"
-        ));
+                "Đồ điện tử"));
     }
 
     private void applyFilters() {
@@ -224,8 +214,7 @@ public class Bidding {
         lblSelectedCategory.setText(
                 selectedCategory == null || selectedCategory.isBlank()
                         ? "Danh mục: Tất cả"
-                        : "Danh mục: " + selectedCategory
-        );
+                        : "Danh mục: " + selectedCategory);
     }
 
     @SuppressWarnings("CallToPrintStackTrace")
@@ -239,8 +228,7 @@ public class Bidding {
         for (AuctionItemViewModel item : items) {
             try {
                 FXMLLoader loader = new FXMLLoader(
-                        getClass().getResource("/ddc/client/views/bidding/auction-card.fxml")
-                );
+                        getClass().getResource("/ddc/client/views/bidding/auction-card.fxml"));
 
                 Parent card = loader.load();
 
@@ -256,14 +244,14 @@ public class Bidding {
         }
     }
 
-    private static String TimeCalculate (LocalDateTime start, LocalDateTime end) {
+    private static String TimeCalculate(LocalDateTime start, LocalDateTime end) {
         Duration duration = Duration.between(start, end);
 
         if (duration.isNegative() || duration.isZero()) {
             return "Đã kết thúc.";
         }
 
-        long hours = duration.toHours(); 
+        long hours = duration.toHours();
         long minutes = duration.toMinutesPart();
         long seconds = duration.toSecondsPart();
 
@@ -271,7 +259,7 @@ public class Bidding {
         return timeRemaining;
     }
 
-    private static String CategoryTranslating (String category) {
+    private static String CategoryTranslating(String category) {
         switch (category) {
             case "GENERAL" -> {
                 return "Chung";
