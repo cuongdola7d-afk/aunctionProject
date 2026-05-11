@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import ddc.client.model.AuctionItemViewModel;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -46,7 +47,7 @@ public class AuctionCard {
 
         lblName.setText(item.getName());
         lblPrice.setText(item.getPrice());
-        lblTimeLeft.setText("◷ " + item.getTimeLeft());
+        lblTimeLeft.textProperty().bind(Bindings.concat("◷ ", item.timeLeftProperty()));
         lblCategory.setText(item.getCategory());
 
         try {

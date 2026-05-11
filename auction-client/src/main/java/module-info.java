@@ -3,6 +3,7 @@ module ddc.client {
     requires javafx.fxml;
     requires javafx.graphics;
     requires com.google.gson;
+    requires javafx.base;
 
     exports ddc.client;
 

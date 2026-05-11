@@ -17,6 +17,9 @@ import ddc.client.model.AuctionItemViewModel;
 import ddc.client.model.Request;
 import ddc.client.network.RealtimeToServer;
 import ddc.client.network.response.GetAllAuctionsResponse;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -54,6 +57,9 @@ public class Bidding {
     private final List<AuctionItemViewModel> itemList = new ArrayList<>();
     private final Gson gson = GsonConfig.newGson();
 
+    private Timeline serverRefreshTimeline;
+    private Timeline clockTimeline;
+
     // bidder hiện tại sẽ được scene trước truyền vào
     //private String currentBidderId;
     private String currentBidderId = "BIDDER-001";
@@ -63,13 +69,24 @@ public class Bidding {
     @FXML
     public void initialize() {
         currentBidderId = "BIDDER-001";
-
-        loadSampleData();
         setupCategoryTree();
-
         txtSearch.textProperty().addListener((observable, oldValue, newValue) -> applyFilters());
+        
+        refreshDataFromServer();
 
-        applyFilters();
+        serverRefreshTimeline = new Timeline(new KeyFrame(javafx.util.Duration.seconds(5),
+            event -> {
+                refreshDataFromServer();
+            }));
+        serverRefreshTimeline.setCycleCount(Timeline.INDEFINITE);
+        serverRefreshTimeline.play();
+
+        clockTimeline = new Timeline(new KeyFrame(javafx.util.Duration.seconds(1),
+            event -> {
+                updateAllCountdowns();
+            }));
+        clockTimeline.setCycleCount(Timeline.INDEFINITE);
+        clockTimeline.play();
     }
 
     /**
@@ -119,65 +136,51 @@ public class Bidding {
         });
     }
 
-    private void loadSampleData() {
-        itemList.clear();
-
+    private void refreshDataFromServer() {
         new Thread(() -> {
-            String JsonResponse = RealtimeToServer.sendRequest(new Request().setAction("GET_ALL"));
+            try {
+                String JsonResponse = RealtimeToServer.sendRequest(new Request().setAction("GET_ALL"));
+                GetAllAuctionsResponse response = gson.fromJson(JsonResponse, GetAllAuctionsResponse.class);
+                
+                if ("SUCCESS".equals(response.getStatus())) {
+                    List<AuctionDTO> auctions = Arrays.asList(response.getData());
+                    List<AuctionItemViewModel> newList = new ArrayList<>();
+                    
+                    for (AuctionDTO auction : auctions) {
+                        String initialTimeLeft = TimeCalculate(LocalDateTime.now(), auction.getEndTime());
 
-            GetAllAuctionsResponse response = gson.fromJson(JsonResponse, GetAllAuctionsResponse.class);
-            if ("SUCCESS".equals(response.getStatus())) {
-                List<AuctionDTO> auctions = Arrays.asList(response.getData());
-                for (AuctionDTO auction : auctions) {
-                    itemList.add(new AuctionItemViewModel(
-                        auction.getAuctionId(),
-                        auction.getItem().getItemName(),
-                        new DecimalFormat("#,###").format(auction.getCurrentPrice()) + " đ",
-                        TimeCalculate(LocalDateTime.now(), auction.getEndTime()),
-                        "/ddc/client/views/bidding/image/watch.jpg",
-                        CategoryTranslating(auction.getItem().getCategory())
-                    ));
+                        newList.add(new AuctionItemViewModel(
+                            auction.getAuctionId(),
+                            auction.getItem().getItemName(),
+                            new DecimalFormat("#,###").format(auction.getCurrentPrice()) + " đ",
+                            auction.getEndTime(),
+                            initialTimeLeft,
+                            "/ddc/client/views/bidding/image/watch.jpg",
+                            CategoryTranslating(auction.getItem().getCategory())
+                        ));
+                    }
+                    Platform.runLater(() ->{
+                        itemList.clear();
+                        itemList.addAll(newList);
+                        applyFilters();
+                    });
                 }
+                
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                e.printStackTrace();
             }
         }).start();
+    }
 
-        
+    private void updateAllCountdowns() {
+        for (AuctionItemViewModel item : itemList) {
+            String newTime = TimeCalculate(LocalDateTime.now(), item.getEndTime());
 
-        itemList.add(new AuctionItemViewModel(
-                "AUCT-001",
-                "Đồng hồ thông minh",
-                "1,250,000 đ",
-                "02:15:30",
-                "/ddc/client/views/bidding/image/watch.jpg",
-                "Đồ điện tử"
-        ));
-
-        itemList.add(new AuctionItemViewModel(
-                "AUCT-002",
-                "Đồng hồ Vintage",
-                "3,400,000 đ",
-                "00:45:12",
-                "/ddc/client/views/bidding/image/vintageWatch.jpg",
-                "Nghệ thuật"
-        ));
-
-        itemList.add(new AuctionItemViewModel(
-                "AUCT-003",
-                "Tai nghe chống ồn",
-                "850,000 đ",
-                "05:10:00",
-                "/ddc/client/views/bidding/image/headphone.jpg",
-                "Đồ điện tử"
-        ));
-
-        itemList.add(new AuctionItemViewModel(
-                "AUCT-004",
-                "Bàn phím cơ RGB",
-                "2,100,000 đ",
-                "01:20:45",
-                "/ddc/client/views/bidding/image/mechanicalKeyboard.jpg",
-                "Đồ điện tử"
-        ));
+            if (!newTime.equals(item.getTimeLeft())) {
+                item.setTimeLeft(newTime);
+            }
+        }
     }
 
     private void applyFilters() {
@@ -304,27 +307,37 @@ public class Bidding {
         mainScrollPane.setVvalue(0);
     }
 
+    private void stopAutoRefresh() {
+        if (serverRefreshTimeline != null) {
+            serverRefreshTimeline.stop();
+        }
+    }
+
     @FXML
     @SuppressWarnings("unused")
     private void switchToHome(MouseEvent event) {
+        stopAutoRefresh();
         SceneSwitcher.goTo(event, "/ddc/client/views/home/Home.fxml");
     }
 
     @FXML
     @SuppressWarnings("unused")
     private void switchToSelling(MouseEvent event) {
+        stopAutoRefresh();
         SceneSwitcher.goTo(event, "/ddc/client/views/selling/Selling.fxml");
     }
 
     @FXML
     @SuppressWarnings("unused")
     private void switchToProfile(MouseEvent event) {
+        stopAutoRefresh();
         SceneSwitcher.goTo(event, "/ddc/client/views/profile/Profile.fxml");
     }
 
     @FXML
     @SuppressWarnings("unused")
     private void switchToNotify(MouseEvent event) {
+        stopAutoRefresh();
         SceneSwitcher.goTo(event, "/ddc/client/views/notify/Notify.fxml");
     }
 }

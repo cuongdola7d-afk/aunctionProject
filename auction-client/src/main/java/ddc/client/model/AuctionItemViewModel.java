@@ -1,18 +1,25 @@
 package ddc.client.model;
 
+import java.time.LocalDateTime;
+
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 public class AuctionItemViewModel {
     private final String auctionId;
     private final String name;
     private String price;
-    private final String timeLeft;
+    private StringProperty timeLeft = new SimpleStringProperty();
+    private final LocalDateTime endTime;
     private final String imagePath;
     private final String category;
 
-    public AuctionItemViewModel(String auctionId, String name, String price, String timeLeft, String imagePath, String category) {
+    public AuctionItemViewModel(String auctionId, String name, String price, LocalDateTime endTime, String timeLeft, String imagePath, String category) {
         this.auctionId = auctionId;
         this.name = name;
         this.price = price;
-        this.timeLeft = timeLeft;
+        this.endTime = endTime;
+        this.timeLeft.set(timeLeft);
         this.imagePath = imagePath;
         this.category = category;
     }
@@ -33,8 +40,20 @@ public class AuctionItemViewModel {
         this.price = price;
     }
 
-    public String getTimeLeft() {
+    public StringProperty timeLeftProperty() {
         return timeLeft;
+    }
+
+    public String getTimeLeft() {
+        return timeLeft.get();
+    }
+
+    public void setTimeLeft(String timeLeft) {
+        this.timeLeft.set(timeLeft);
+    }
+
+    public LocalDateTime getEndTime() {
+        return endTime;
     }
 
     public String getImagePath() {
@@ -44,4 +63,6 @@ public class AuctionItemViewModel {
     public String getCategory() {
         return category;
     }
+
+
 }
