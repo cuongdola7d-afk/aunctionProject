@@ -32,6 +32,8 @@ public class Server {
      */
     private static final int REALTIME_PORT = 5555;
 
+    private static final int IMAGE_PORT = 8081;
+
 
     private static final ExecutorService requestPool = Executors.newFixedThreadPool(100);
     private static final ExecutorService realtimePool = Executors.newVirtualThreadPerTaskExecutor();

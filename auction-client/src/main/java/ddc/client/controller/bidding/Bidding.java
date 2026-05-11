@@ -18,6 +18,7 @@ import ddc.client.model.Request;
 import ddc.client.network.RealtimeToServer;
 import ddc.client.network.UserSession;
 import ddc.client.network.response.GetAllAuctionsResponse;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -118,24 +119,44 @@ public class Bidding {
 
     private void loadSampleData() {
         itemList.clear();
+        
+        // BƯỚC 1: Xóa bỏ việc ghép imageBaseUrl với IP Server vì link giờ nằm trên Cloud
+        // Bạn có thể giữ lại ảnh mặc định để dự phòng
+        String defaultImage = "/ddc/client/views/bidding/image/watch.jpg";
 
         new Thread(() -> {
-            String JsonResponse = RealtimeToServer.sendRequest(new Request().setAction("GET_ALL"));
+            try {
+                String JsonResponse = RealtimeToServer.sendRequest(new Request().setAction("GET_ALL"));
+                GetAllAuctionsResponse response = gson.fromJson(JsonResponse, GetAllAuctionsResponse.class);
 
-            GetAllAuctionsResponse response = gson.fromJson(JsonResponse, GetAllAuctionsResponse.class);
-            if ("SUCCESS".equals(response.getStatus())) {
-                List<AuctionDTO> auctions = Arrays.asList(response.getData());
-                for (AuctionDTO auction : auctions) {
-                    itemList.add(new AuctionItemViewModel(
-                            auction.getAuctionId(),
-                            auction.getItem().getItemName(),
-                            new DecimalFormat("#,###").format(auction.getCurrentPrice()) + " đ",
-                            TimeCalculate(LocalDateTime.now(), auction.getEndTime()),
-                            "/ddc/client/views/bidding/image/watch.jpg",
-                            CategoryTranslating(auction.getItem().getCategory())));
-                }
-            }
-        }).start();
+                if (response != null && "SUCCESS".equals(response.getStatus())) {
+                    List<AuctionDTO> auctions = Arrays.asList(response.getData());
+
+                    Platform.runLater(() -> {
+                        for (AuctionDTO auction : auctions) {
+                            // Lấy URL từ DB (Bây giờ nó là: https://res.cloudinary.com/...)
+                            String imageUrlFromDB = auction.getItem().getImageUrl();
+                            System.out.println(">>> Debug URL: " + imageUrlFromDB); // Kiểm tra xem nó là "abc.jpg" hay "https://..."
+                            
+                            // BƯỚC 2: Kiểm tra logic URL
+                            String fullImageUrl;
+                            if (imageUrlFromDB != null && imageUrlFromDB.startsWith("http")) {
+                                // Nếu đã là link (Cloudinary), dùng luôn
+                                fullImageUrl = imageUrlFromDB;
+                            } else {
+                                // Nếu null hoặc không phải link, dùng ảnh mặc định
+                                fullImageUrl = defaultImage;
+                            }
+
+                            itemList.add(new AuctionItemViewModel(
+                                auction.getAuctionId(),
+                                auction.getItem().getItemName(),
+                                new DecimalFormat("#,###").format(auction.getCurrentPrice()) + " đ",
+                                TimeCalculate(LocalDateTime.now(), auction.getEndTime()),
+                                fullImageUrl, // Truyền link trực tiếp vào ViewModel
+                                CategoryTranslating(auction.getItem().getCategory())
+                            ));
+                        }
 
         itemList.add(new AuctionItemViewModel(
                 "AUCT-001",
@@ -143,7 +164,8 @@ public class Bidding {
                 "1,250,000 đ",
                 "02:15:30",
                 "/ddc/client/views/bidding/image/watch.jpg",
-                "Đồ điện tử"));
+                "Đồ điện tử"
+            ));
 
         itemList.add(new AuctionItemViewModel(
                 "AUCT-002",
@@ -167,7 +189,14 @@ public class Bidding {
                 "2,100,000 đ",
                 "01:20:45",
                 "/ddc/client/views/bidding/image/mechanicalKeyboard.jpg",
-                "Đồ điện tử"));
+                "Đồ điện tử"
+        ));
+                    });
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 
     private void applyFilters() {

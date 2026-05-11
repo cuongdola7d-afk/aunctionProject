@@ -11,21 +11,20 @@ import java.net.Socket;
 
 import com.google.gson.Gson;
 
+import ddc.client.config.ClientContext;
 import ddc.client.config.GsonConfig;
 import ddc.client.model.Request;
 import ddc.client.network.response.BaseResponse;
 
 public class RequestToServer {
     private static final Gson gson = GsonConfig.newGson();
-    private static final String HOST = readConfig("DDC_SERVER_HOST", "ddc.server.host", "localhost");
-    private static final int PORT = readIntConfig("DDC_SERVER_PORT", "ddc.server.port", 8080);
     private static final int TIMEOUT_MS = 10_000;
 
     private RequestToServer() {}
 
     public static String sendRequest(Request request) {
         try (Socket socket = new Socket()) {
-            socket.connect(new InetSocketAddress(HOST, PORT), TIMEOUT_MS);
+            socket.connect(new InetSocketAddress(ClientContext.SERVER_HOST, ClientContext.REQUEST_PORT), TIMEOUT_MS);
             socket.setSoTimeout(TIMEOUT_MS);
 
             try (PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
@@ -50,28 +49,9 @@ public class RequestToServer {
         return gson.toJson(new BaseResponse().setStatus(status).setMessage(message));
     }
 
-    private static String readConfig(String envName, String propertyName, String defaultValue) {
-        String value = System.getenv(envName);
-        if (value != null && !value.isBlank()) {
-            return value;
-        }
-
-        value = System.getProperty(propertyName);
-        return value == null || value.isBlank() ? defaultValue : value;
-    }
-
-    private static int readIntConfig(String envName, String propertyName, int defaultValue) {
-        String value = readConfig(envName, propertyName, String.valueOf(defaultValue));
-        try {
-            return Integer.parseInt(value);
-        } catch (NumberFormatException e) {
-            return defaultValue;
-        }
-    }
-
     public static String sendRequestWithImage(Request request, byte[] imageData) {
         try (Socket socket = new Socket()) {
-            socket.connect(new InetSocketAddress(HOST, PORT), TIMEOUT_MS);
+            socket.connect(new InetSocketAddress(ClientContext.SERVER_HOST, ClientContext.REQUEST_PORT), TIMEOUT_MS);
             
             DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
             InputStream is = socket.getInputStream();
