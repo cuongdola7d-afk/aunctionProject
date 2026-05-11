@@ -3,7 +3,8 @@ module ddc.server {
     requires java.logging;
     requires com.google.gson;
     requires com.zaxxer.hikari;
-    requires undertow.core;
+    requires cloudinary.http44;
+    requires cloudinary.core;
 
     exports ddc.server;
 
@@ -18,7 +19,7 @@ module ddc.server {
 
     opens ddc.server.network.response to com.google.gson;
 
-    opens ddc.server.network to undertow.core, com.google.gson;
+    opens ddc.server.network to com.google.gson, cloudinary.core;
     opens ddc.server.network.request to com.google.gson;
     opens ddc.server.network.message to com.google.gson;
     opens ddc.server.network.client to com.google.gson;

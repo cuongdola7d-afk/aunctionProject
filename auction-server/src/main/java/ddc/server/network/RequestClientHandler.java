@@ -34,35 +34,29 @@ public class RequestClientHandler implements Runnable {
     public void run() {
         try {
             clientSocket.setSoTimeout(SOCKET_TIMEOUT_MS);
-            // Sử dụng DataInputStream xuyên suốt để đọc cả Text và Byte
             DataInputStream dis = new DataInputStream(clientSocket.getInputStream());
             PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
 
-            // 1. Đọc dòng JSON đầu tiên
             String rawRequest = readLineCustom(dis); 
             if (rawRequest == null) return;
 
             RequestMessage request = gson.fromJson(rawRequest, RequestMessage.class);
 
-            // 2. Kiểm tra và đọc ảnh
+            // Đọc mảng byte ảnh nếu có (Giữ nguyên logic này)
             if (request != null && "ADD_ITEM".equals(request.getAction())) {
                 try {
-                    // Đọc độ dài ảnh (writeInt bên Client tương ứng readInt ở đây)
                     int imageLength = dis.readInt(); 
                     if (imageLength > 0) {
                         byte[] imageData = new byte[imageLength];
-                        dis.readFully(imageData); // Đảm bảo đọc đủ số byte
-                        request.setImageData(imageData);
-                        System.out.println(">>> SERVER DA NHAN ANH: " + imageLength + " bytes");
-                    } else {
-                        System.out.println(">>> SERVER NHAN: imageLength = 0");
+                        dis.readFully(imageData);
+                        request.setImageData(imageData); // Cất vào đây để chuyển đi tiếp
                     }
                 } catch (IOException e) {
-                    System.out.println(">>> LOI DOC ANH: " + e.getMessage());
+                    LOGGER.log(Level.WARNING, "Lỗi đọc stream ảnh: " + e.getMessage());
                 }
             }
 
-            // 3. Xử lý và phản hồi
+            // Chuyển toàn bộ request (đã có imageData) cho Router xử lý
             String responseJson = handleRawRequest(request, rawRequest);
             out.println(responseJson);
 

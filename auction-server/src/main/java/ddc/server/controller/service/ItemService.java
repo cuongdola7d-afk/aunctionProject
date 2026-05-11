@@ -3,6 +3,9 @@ package ddc.server.controller.service;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.google.gson.Gson;
+
+import ddc.server.config.GsonConfig;
 import ddc.server.dao.ItemDAO;
 import ddc.server.exception.ItemValidationException;
 import ddc.server.model.item.ItemGeneric;
@@ -14,9 +17,11 @@ public class ItemService {
     private static final Logger LOGGER = Logger.getLogger(ItemService.class.getName());
 
     private final ItemDAO itemDAO;
+    private final Gson gson;
 
     public ItemService() {
         this.itemDAO = new ItemDAO();
+        this.gson = GsonConfig.newGson();
     }
 
     /**
@@ -64,6 +69,21 @@ public class ItemService {
             LOGGER.log(Level.FINE, "Luu san pham thanh cong!");
             return id;
         }
+
+    public String processUploadAndSave(String itemJson, byte[] imageData) throws ItemValidationException {
+        ItemRequest itemReq = gson.fromJson(itemJson, ItemRequest.class);
+
+        // 2. Nếu có ảnh, gọi Cloudinary để lấy URL thật
+        if (imageData != null && imageData.length > 0) {
+            String cloudUrl = CloudinaryService.uploadBytes(imageData);
+            if (cloudUrl != null) {
+                itemReq.setImageUrl(cloudUrl); 
+            }
+        }
+
+        // 3. Gọi hàm tạo và lưu cũ đã có của bạn
+        return createAndSaveItem(itemReq); 
+    }
 
 
     public ItemGeneric getItemDetails(String id) {

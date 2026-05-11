@@ -10,7 +10,6 @@ import java.util.List;
 
 import com.google.gson.Gson;
 
-import ddc.client.config.ClientContext;
 import ddc.client.config.GsonConfig;
 import ddc.client.controller.SceneSwitcher;
 import ddc.client.model.AuctionDTO;
@@ -124,8 +123,9 @@ public class Bidding {
     private void loadSampleData() {
         itemList.clear();
         
-        // IP này là IP của máy đang chạy Server và Undertow
-        String imageBaseUrl = "http://" + ClientContext.SERVER_HOST + ":" + ClientContext.IMAGE_PORT + "/";
+        // BƯỚC 1: Xóa bỏ việc ghép imageBaseUrl với IP Server vì link giờ nằm trên Cloud
+        // Bạn có thể giữ lại ảnh mặc định để dự phòng
+        String defaultImage = "/ddc/client/views/bidding/image/watch.jpg";
 
         new Thread(() -> {
             try {
@@ -135,30 +135,33 @@ public class Bidding {
                 if (response != null && "SUCCESS".equals(response.getStatus())) {
                     List<AuctionDTO> auctions = Arrays.asList(response.getData());
 
-                    // Sử dụng Platform.runLater để cập nhật UI từ luồng phụ
                     Platform.runLater(() -> {
                         for (AuctionDTO auction : auctions) {
-                            // Lấy tên file ảnh từ DB (ví dụ: "61a628cc...jpg")
-                            String fileName = auction.getItem().getImageUrl();
+                            // Lấy URL từ DB (Bây giờ nó là: https://res.cloudinary.com/...)
+                            String imageUrlFromDB = auction.getItem().getImageUrl();
+                            System.out.println(">>> Debug URL: " + imageUrlFromDB); // Kiểm tra xem nó là "abc.jpg" hay "https://..."
                             
-                            // Tạo đường dẫn URL thay vì file nội bộ
-                            String fullImageUrl = (fileName != null && !fileName.isEmpty()) 
-                                                ? imageBaseUrl + fileName 
-                                                : "/ddc/client/views/bidding/image/watch.jpg"; // Ảnh mặc định nếu lỗi
+                            // BƯỚC 2: Kiểm tra logic URL
+                            String fullImageUrl;
+                            if (imageUrlFromDB != null && imageUrlFromDB.startsWith("http")) {
+                                // Nếu đã là link (Cloudinary), dùng luôn
+                                fullImageUrl = imageUrlFromDB;
+                            } else {
+                                // Nếu null hoặc không phải link, dùng ảnh mặc định
+                                fullImageUrl = defaultImage;
+                            }
 
                             itemList.add(new AuctionItemViewModel(
                                 auction.getAuctionId(),
                                 auction.getItem().getItemName(),
                                 new DecimalFormat("#,###").format(auction.getCurrentPrice()) + " đ",
                                 TimeCalculate(LocalDateTime.now(), auction.getEndTime()),
-                                fullImageUrl, 
+                                fullImageUrl, // Truyền link trực tiếp vào ViewModel
                                 CategoryTranslating(auction.getItem().getCategory())
                             ));
                         }
-                    });
-                }
 
-                itemList.add(new AuctionItemViewModel(
+        itemList.add(new AuctionItemViewModel(
                 "AUCT-001",
                 "Đồng hồ thông minh",
                 "1,250,000 đ",
@@ -193,6 +196,8 @@ public class Bidding {
                 "/ddc/client/views/bidding/image/mechanicalKeyboard.jpg",
                 "Đồ điện tử"
         ));
+                    });
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
