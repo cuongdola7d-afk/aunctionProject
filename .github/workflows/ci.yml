@@ -22,8 +22,8 @@ jobs:
       - name: Setup JDK 25
         uses: actions/setup-java@v4
         with:
-          java-version: '25-ea'
-          distribution: 'oracle'
+          java-version: '25'
+          distribution: 'temurin'
           cache: 'maven'              # Cache .m2 để lần sau nhanh hơn
 
       # Bước 3: Build toàn bộ project (cả client + server)
