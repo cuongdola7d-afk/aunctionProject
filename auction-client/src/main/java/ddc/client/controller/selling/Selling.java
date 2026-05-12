@@ -13,11 +13,14 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Selling {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Selling.class);
 
     @FXML
-    @SuppressWarnings({"unused", "CallToPrintStackTrace"})
+    @SuppressWarnings("unused")
     private void handleOpenUploadDialog(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ddc/client/views/selling/UploadItem.fxml"));
@@ -39,7 +42,7 @@ public class Selling {
             stage.show();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error("Loi mo dialog upload", e);
         }
     }
 
@@ -57,13 +60,13 @@ public class Selling {
 
     @FXML
     @SuppressWarnings("unused")
-    private void switchToProfile (MouseEvent event) {
+    private void switchToProfile(MouseEvent event) {
         SceneSwitcher.goTo(event, "/ddc/client/views/profile/Profile.fxml");
     }
 
     @FXML
     @SuppressWarnings("unused")
-    private void switchToNotify (MouseEvent event) {
+    private void switchToNotify(MouseEvent event) {
         SceneSwitcher.goTo(event, "/ddc/client/views/notify/Notify.fxml");
     }
 }

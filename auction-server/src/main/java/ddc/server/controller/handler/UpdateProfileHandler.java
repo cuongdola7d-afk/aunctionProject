@@ -6,10 +6,13 @@ import ddc.server.network.response.BaseResponse;
 import ddc.server.network.response.Response;
 import ddc.server.model.user.User;
 import ddc.server.controller.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class UpdateProfileHandler implements ActionHandler {
     private final Gson gson = new Gson();
     private final UserService userService = new UserService();
+    private static final Logger LOGGER = LoggerFactory.getLogger(UpdateProfileHandler.class);
 
     @Override
     public Response handle(RequestMessage request) {
@@ -24,8 +27,7 @@ public class UpdateProfileHandler implements ActionHandler {
                 return new BaseResponse().setStatus("FAIL");
             }
         } catch (Exception e) {
-            System.err.println("SERVER CRASHED TAI UPDATE_PROFILE_HANDLER");
-            e.printStackTrace(); 
+            LOGGER.error("UPDATE_PROFILE_HANDLER loi", e);
             return new BaseResponse().setStatus("FAIL");
         }
     }

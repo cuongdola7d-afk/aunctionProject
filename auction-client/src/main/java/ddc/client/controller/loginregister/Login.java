@@ -24,8 +24,13 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Login {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(Login.class);
+
     @FXML
     private TextField usernameTextField;
     @FXML
@@ -59,7 +64,7 @@ public class Login {
             @Override
             protected String call() throws Exception {
                 // In để kiểm tra luồng ảo của Java 25
-                System.out.println("[" + Thread.currentThread().getName() + "] Dang gui request login...");
+                LOGGER.info("Dang gui request login...");
                 return RequestToServer.sendRequest(loginRequest);
             }
         };
@@ -75,12 +80,13 @@ public class Login {
         loginTask.setOnFailed(e -> {
             loginButton.setDisable(false);
             errorLabel.setText("Lỗi kết nối đến máy chủ.");
-            loginTask.getException().printStackTrace();
+            LOGGER.error("Loi ket noi dang nhap", loginTask.getException());
         });
 
         // 5. Giao cho Executor xử lý thay vì tạo Thread mới
         ClientContext.EXECUTOR.execute(loginTask);
     }
+
     private void handleLoginResponse(ActionEvent event, String response) {
         UserResponse userRes = gson.fromJson(response, UserResponse.class);
         if (userRes != null && "SUCCESS".equals(userRes.getStatus()) && userRes.getData() != null) {
@@ -96,11 +102,11 @@ public class Login {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
-                System.out.println("IO Error!" + e.getMessage());
+                LOGGER.warn("IO Error: {}", e.getMessage());
             } catch (Exception e) {
-                System.out.println("Error!" + e.getMessage());
+                LOGGER.error("Login error: {}", e.getMessage());
             }
-            
+
             Platform.runLater(() -> openHome(event));
             return;
         }

@@ -5,7 +5,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class General extends ItemGeneric<General> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(General.class);
     public General () {}
 
     public static General create() {
@@ -35,7 +39,7 @@ public class General extends ItemGeneric<General> {
             }
             return null;
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.error("Loi luu General item", e);
             return null;
         }
     }

@@ -1,7 +1,7 @@
 package ddc.server.controller.service;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 
@@ -14,7 +14,7 @@ import ddc.server.pattern.factory.ItemCreator;
 import ddc.server.pattern.factory.ItemRequest;
 
 public class ItemService {
-    private static final Logger LOGGER = Logger.getLogger(ItemService.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(ItemService.class);
 
     private final ItemDAO itemDAO;
     private final Gson gson;
@@ -25,50 +25,49 @@ public class ItemService {
     }
 
     /**
-     * Quy trình tạo sản phẩm: 
+     * Quy trình tạo sản phẩm:
      * 1. Nhận Request từ Controller
      * 2. Tìm Factory phù hợp
      * 3. Tạo và Validate Object
      * 4. Lưu vào Database thông qua DAO
      */
-    public String createAndSaveItem(ItemRequest req) throws ItemValidationException{
-            if (req.getItemName() == null || req.getItemName().isEmpty()) {
-                throw new ItemValidationException.MissingFieldException("Tên sản phẩm không được để trống!");
-            }
-            // Bước 1: Tìm xưởng sản xuất dựa trên type
-            System.out.println(">>> Dang kiem tra Category: " + req.getCategory());
-            ItemCreator creator = CreatorRegistry.getCreator(req.getCategory());
-            
-            if (creator == null) {
-                System.out.println("Khong tim thay creator cho loai: " + req.getCategory());
-                return null;
-            }
-            
-            // Check Category
-            if (req.getCategory() == null || req.getCategory().isEmpty()) {
-                throw new ItemValidationException.InvalidCategoryException("Category khong duoc de trong!");
-            }
-
-            if (isBlank(req.getItemName())) {
-                throw new ItemValidationException.MissingFieldException("Ten san pham khong duoc de trong.");
-            }
-
-            if (isBlank(req.getCategory())) {
-                throw new ItemValidationException.InvalidCategoryException("Category khong duoc de trong.");
-            }
-
-
-            ItemGeneric newItem = creator.createItem(req);
-            newItem.validate();
-
-            String id = itemDAO.addItem(newItem);
-            if (isBlank(id)) {
-                LOGGER.log(Level.WARNING, "Khong the luu san pham: {0}", newItem.getItemName());
-                return null;
-            }
-            LOGGER.log(Level.FINE, "Luu san pham thanh cong!");
-            return id;
+    public String createAndSaveItem(ItemRequest req) throws ItemValidationException {
+        if (req.getItemName() == null || req.getItemName().isEmpty()) {
+            throw new ItemValidationException.MissingFieldException("Tên sản phẩm không được để trống!");
         }
+        // Bước 1: Tìm xưởng sản xuất dựa trên type
+        LOGGER.info("Dang kiem tra Category: {}", req.getCategory());
+        ItemCreator creator = CreatorRegistry.getCreator(req.getCategory());
+
+        if (creator == null) {
+            LOGGER.warn("Khong tim thay creator cho loai: {}", req.getCategory());
+            return null;
+        }
+
+        // Check Category
+        if (req.getCategory() == null || req.getCategory().isEmpty()) {
+            throw new ItemValidationException.InvalidCategoryException("Category khong duoc de trong!");
+        }
+
+        if (isBlank(req.getItemName())) {
+            throw new ItemValidationException.MissingFieldException("Ten san pham khong duoc de trong.");
+        }
+
+        if (isBlank(req.getCategory())) {
+            throw new ItemValidationException.InvalidCategoryException("Category khong duoc de trong.");
+        }
+
+        ItemGeneric newItem = creator.createItem(req);
+        newItem.validate();
+
+        String id = itemDAO.addItem(newItem);
+        if (isBlank(id)) {
+            LOGGER.warn("Khong the luu san pham: {}", newItem.getItemName());
+            return null;
+        }
+        LOGGER.debug("Luu san pham thanh cong!");
+        return id;
+    }
 
     public String processUploadAndSave(String itemJson, byte[] imageData) throws ItemValidationException {
         ItemRequest itemReq = gson.fromJson(itemJson, ItemRequest.class);
@@ -77,14 +76,13 @@ public class ItemService {
         if (imageData != null && imageData.length > 0) {
             String cloudUrl = CloudinaryService.uploadBytes(imageData);
             if (cloudUrl != null) {
-                itemReq.setImageUrl(cloudUrl); 
+                itemReq.setImageUrl(cloudUrl);
             }
         }
 
         // 3. Gọi hàm tạo và lưu cũ đã có của bạn
-        return createAndSaveItem(itemReq); 
+        return createAndSaveItem(itemReq);
     }
-
 
     public ItemGeneric getItemDetails(String id) {
         if (isBlank(id)) {
@@ -97,4 +95,3 @@ public class ItemService {
         return value == null || value.trim().isEmpty();
     }
 }
-

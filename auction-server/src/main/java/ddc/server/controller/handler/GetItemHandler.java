@@ -8,8 +8,11 @@ import ddc.server.model.item.ItemGeneric;
 import ddc.server.network.response.BaseResponse;
 import ddc.server.network.response.GetItemResponse;
 import ddc.server.network.response.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GetItemHandler implements ActionHandler {
+    private static final Logger LOGGER = LoggerFactory.getLogger(GetItemHandler.class);
     private final Gson gson = GsonConfig.newGson();
 
     @Override
@@ -25,7 +28,7 @@ public class GetItemHandler implements ActionHandler {
                     .setItemJson(gson.toJson(item))
                     .setStatus("SUCCESS");
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("Loi lay san pham", e);
             return new BaseResponse().setStatus("SERVER_ERROR").setMessage("Loi server khi lay san pham.");
         }
     }

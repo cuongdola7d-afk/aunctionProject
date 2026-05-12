@@ -10,6 +10,9 @@ import java.util.List;
 
 import com.google.gson.Gson;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import ddc.client.config.GsonConfig;
 import ddc.client.controller.SceneSwitcher;
 import ddc.client.model.AuctionDTO;
@@ -52,6 +55,8 @@ public class Bidding {
 
     @FXML
     private Label lblEmptyState;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(Bidding.class);
 
     private final List<AuctionItemViewModel> itemList = new ArrayList<>();
     private final Gson gson = GsonConfig.newGson();
@@ -119,8 +124,9 @@ public class Bidding {
 
     private void loadSampleData() {
         itemList.clear();
-        
-        // BƯỚC 1: Xóa bỏ việc ghép imageBaseUrl với IP Server vì link giờ nằm trên Cloud
+
+        // BƯỚC 1: Xóa bỏ việc ghép imageBaseUrl với IP Server vì link giờ nằm trên
+        // Cloud
         // Bạn có thể giữ lại ảnh mặc định để dự phòng
         String defaultImage = "/ddc/client/views/bidding/image/watch.jpg";
 
@@ -136,8 +142,9 @@ public class Bidding {
                         for (AuctionDTO auction : auctions) {
                             // Lấy URL từ DB (Bây giờ nó là: https://res.cloudinary.com/...)
                             String imageUrlFromDB = auction.getItem().getImageUrl();
-                            System.out.println(">>> Debug URL: " + imageUrlFromDB); // Kiểm tra xem nó là "abc.jpg" hay "https://..."
-                            
+                            LOGGER.debug("Debug URL: {}", imageUrlFromDB); // Kiểm tra xem nó là "abc.jpg" hay
+                                                                           // "https://..."
+
                             // BƯỚC 2: Kiểm tra logic URL
                             String fullImageUrl;
                             if (imageUrlFromDB != null && imageUrlFromDB.startsWith("http")) {
@@ -149,52 +156,49 @@ public class Bidding {
                             }
 
                             itemList.add(new AuctionItemViewModel(
-                                auction.getAuctionId(),
-                                auction.getItem().getItemName(),
-                                new DecimalFormat("#,###").format(auction.getCurrentPrice()) + " đ",
-                                TimeCalculate(LocalDateTime.now(), auction.getEndTime()),
-                                fullImageUrl, // Truyền link trực tiếp vào ViewModel
-                                CategoryTranslating(auction.getItem().getCategory())
-                            ));
+                                    auction.getAuctionId(),
+                                    auction.getItem().getItemName(),
+                                    new DecimalFormat("#,###").format(auction.getCurrentPrice()) + " đ",
+                                    TimeCalculate(LocalDateTime.now(), auction.getEndTime()),
+                                    fullImageUrl, // Truyền link trực tiếp vào ViewModel
+                                    CategoryTranslating(auction.getItem().getCategory())));
                         }
 
-        itemList.add(new AuctionItemViewModel(
-                "AUCT-001",
-                "Đồng hồ thông minh",
-                "1,250,000 đ",
-                "02:15:30",
-                "/ddc/client/views/bidding/image/watch.jpg",
-                "Đồ điện tử"
-            ));
+                        itemList.add(new AuctionItemViewModel(
+                                "AUCT-001",
+                                "Đồng hồ thông minh",
+                                "1,250,000 đ",
+                                "02:15:30",
+                                "/ddc/client/views/bidding/image/watch.jpg",
+                                "Đồ điện tử"));
 
-        itemList.add(new AuctionItemViewModel(
-                "AUCT-002",
-                "Đồng hồ Vintage",
-                "3,400,000 đ",
-                "00:45:12",
-                "/ddc/client/views/bidding/image/vintageWatch.jpg",
-                "Nghệ thuật"));
+                        itemList.add(new AuctionItemViewModel(
+                                "AUCT-002",
+                                "Đồng hồ Vintage",
+                                "3,400,000 đ",
+                                "00:45:12",
+                                "/ddc/client/views/bidding/image/vintageWatch.jpg",
+                                "Nghệ thuật"));
 
-        itemList.add(new AuctionItemViewModel(
-                "AUCT-003",
-                "Tai nghe chống ồn",
-                "850,000 đ",
-                "05:10:00",
-                "/ddc/client/views/bidding/image/headphone.jpg",
-                "Đồ điện tử"));
+                        itemList.add(new AuctionItemViewModel(
+                                "AUCT-003",
+                                "Tai nghe chống ồn",
+                                "850,000 đ",
+                                "05:10:00",
+                                "/ddc/client/views/bidding/image/headphone.jpg",
+                                "Đồ điện tử"));
 
-        itemList.add(new AuctionItemViewModel(
-                "AUCT-004",
-                "Bàn phím cơ RGB",
-                "2,100,000 đ",
-                "01:20:45",
-                "/ddc/client/views/bidding/image/mechanicalKeyboard.jpg",
-                "Đồ điện tử"
-        ));
+                        itemList.add(new AuctionItemViewModel(
+                                "AUCT-004",
+                                "Bàn phím cơ RGB",
+                                "2,100,000 đ",
+                                "01:20:45",
+                                "/ddc/client/views/bidding/image/mechanicalKeyboard.jpg",
+                                "Đồ điện tử"));
                     });
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                LOGGER.error("Loi load auction data", e);
             }
         }).start();
     }
@@ -267,8 +271,8 @@ public class Bidding {
                 auctionContainer.getChildren().add(card);
 
             } catch (IOException e) {
-                System.out.println("Không load được card item");
-                e.printStackTrace();
+                LOGGER.error("Không load được card item", e);
+
             }
         }
     }
