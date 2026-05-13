@@ -26,7 +26,7 @@ public class Server {
      * - các request gửi 1 lần và nhận 1 lần
      */
     private static final String BIND_HOST = EnvConfig.get("DDC_SERVER_BIND_HOST", "ddc.server.bindHost", "0.0.0.0");
-    private static final int REQUEST_PORT = readRequestPort();
+    private static final int REQUEST_PORT = EnvConfig.getPort("DDC_REQUEST_PORT", "ddc.request.port", 8080);
 
     /**
      * Cổng realtime cho bidding.
@@ -110,10 +110,5 @@ public class Server {
         ServerSocket serverSocket = new ServerSocket();
         serverSocket.bind(new InetSocketAddress(InetAddress.getByName(BIND_HOST), port));
         return serverSocket;
-    }
-
-    private static int readRequestPort() {
-        int legacyPort = EnvConfig.getPort("DDC_SERVER_PORT", "ddc.server.port", 8080);
-        return EnvConfig.getPort("DDC_REQUEST_PORT", "ddc.request.port", legacyPort);
     }
 }

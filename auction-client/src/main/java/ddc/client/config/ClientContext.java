@@ -14,7 +14,7 @@ public class ClientContext {
     private static final Map<String, String> ENV_VALUES = loadEnv();
 
     public static final String SERVER_HOST = readConfig("DDC_SERVER_HOST", "ddc.server.host", "localhost");
-    public static final int REQUEST_PORT = readRequestPort();
+    public static final int REQUEST_PORT = readIntConfig("DDC_REQUEST_PORT", "ddc.request.port", 8080);
     public static final int REALTIME_PORT = readIntConfig("DDC_REALTIME_PORT", "ddc.realtime.port", 5555);
     public static final int IMAGE_PORT = readIntConfig("DDC_IMAGE_PORT", "ddc.image.port", 8081);
 
@@ -43,11 +43,6 @@ public class ClientContext {
         } catch (NumberFormatException e) {
             return defaultValue;
         }
-    }
-
-    private static int readRequestPort() {
-        int legacyPort = readIntConfig("DDC_SERVER_PORT", "ddc.server.port", 8080);
-        return readIntConfig("DDC_REQUEST_PORT", "ddc.request.port", legacyPort);
     }
 
     private static Map<String, String> loadEnv() {
