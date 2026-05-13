@@ -18,7 +18,12 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class AuctionCard {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuctionCard.class);
 
     @FXML
     private HBox cardRoot;
@@ -51,31 +56,35 @@ public class AuctionCard {
         lblCategory.setText(item.getCategory());
 
         try {
-            var imageUrl = getClass().getResource(item.getImagePath());
+            var imageUrl = item.getImagePath().startsWith("http://") || item.getImagePath().startsWith("https://")
+                    ? null
+                    : getClass().getResource(item.getImagePath());
             if (imageUrl != null) {
                 imgItem.setImage(new Image(imageUrl.toExternalForm()));
+            } else if (item.getImagePath().startsWith("http://") || item.getImagePath().startsWith("https://")) {
+                imgItem.setImage(new Image(item.getImagePath(), true));
             } else {
-                System.err.println("LỖI: Không tìm thấy ảnh tại: " + item.getImagePath());
+                LOGGER.warn("Không tìm thấy ảnh tại: {}", item.getImagePath());
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.warn("Lỗi khi load ảnh: {}", item.getImagePath());
         }
     }
 
     @FXML
     private void handleCardClick(MouseEvent event) {
         if (item == null) {
-            System.out.println("Item chưa được gán.");
+            LOGGER.warn("Item chưa được gán.");
             return;
         }
 
         if (item.getAuctionId() == null || item.getAuctionId().isBlank()) {
-            System.out.println("Thiếu auctionId.");
+            LOGGER.warn("Thiếu auctionId.");
             return;
         }
 
         if (currentBidderId == null || currentBidderId.isBlank()) {
-            System.out.println("Thiếu bidderId hiện tại.");
+            LOGGER.warn("Thiếu bidderId.");
             return;
         }
 
@@ -87,8 +96,7 @@ public class AuctionCard {
             controller.setProductData(
                     item.getName(),
                     item.getPrice(),
-                    item.getImagePath()
-            );
+                    item.getImagePath());
 
             Stage stage = new Stage();
             stage.setTitle(item.getName());
@@ -104,12 +112,11 @@ public class AuctionCard {
             stage.setScene(new Scene(root));
             stage.show();
 
-            Platform.runLater(() ->
-                    controller.setupAuctionContext(item.getAuctionId(), currentBidderId));
+            Platform.runLater(() -> controller.setupAuctionContext(item.getAuctionId(), currentBidderId));
 
         } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("Không mở được trang chi tiết đấu giá.");
+            LOGGER.error("Không mở được trang chi tiết", e);
+
         }
     }
 }

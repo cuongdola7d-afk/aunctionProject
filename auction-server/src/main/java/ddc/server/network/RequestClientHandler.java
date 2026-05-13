@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -18,13 +18,13 @@ import ddc.server.network.response.BaseResponse;
 import ddc.server.network.response.Response;
 
 public class RequestClientHandler implements Runnable {
-    private static final Logger LOGGER = Logger.getLogger(RequestClientHandler.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(RequestClientHandler.class);
     private static final int SOCKET_TIMEOUT_MS = 10_000;
     private static final int MAX_REQUEST_LENGTH = 16_384;
 
     private final Socket clientSocket;
     private final Gson gson;
-    
+
     public RequestClientHandler(Socket socket) {
         this.clientSocket = socket;
         this.gson = GsonConfig.newGson();
@@ -34,62 +34,58 @@ public class RequestClientHandler implements Runnable {
     public void run() {
         try {
             clientSocket.setSoTimeout(SOCKET_TIMEOUT_MS);
-            // Sử dụng DataInputStream xuyên suốt để đọc cả Text và Byte
             DataInputStream dis = new DataInputStream(clientSocket.getInputStream());
             PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
 
-            // 1. Đọc dòng JSON đầu tiên
-            String rawRequest = readLineCustom(dis); 
-            if (rawRequest == null) return;
+            String rawRequest = readLineCustom(dis);
+            if (rawRequest == null)
+                return;
 
             RequestMessage request = gson.fromJson(rawRequest, RequestMessage.class);
 
-            // 2. Kiểm tra và đọc ảnh
+            // Đọc mảng byte ảnh nếu có (Giữ nguyên logic này)
             if (request != null && "ADD_ITEM".equals(request.getAction())) {
                 try {
-                    // Đọc độ dài ảnh (writeInt bên Client tương ứng readInt ở đây)
-                    int imageLength = dis.readInt(); 
+                    int imageLength = dis.readInt();
                     if (imageLength > 0) {
                         byte[] imageData = new byte[imageLength];
-                        dis.readFully(imageData); // Đảm bảo đọc đủ số byte
-                        request.setImageData(imageData);
-                        System.out.println(">>> SERVER DA NHAN ANH: " + imageLength + " bytes");
-                    } else {
-                        System.out.println(">>> SERVER NHAN: imageLength = 0");
+                        dis.readFully(imageData);
+                        request.setImageData(imageData); // Cất vào đây để chuyển đi tiếp
                     }
                 } catch (IOException e) {
-                    System.out.println(">>> LOI DOC ANH: " + e.getMessage());
+                    LOGGER.warn("Lỗi đọc stream ảnh: {}", e.getMessage());
                 }
             }
 
-            // 3. Xử lý và phản hồi
+            // Chuyển toàn bộ request (đã có imageData) cho Router xử lý
             String responseJson = handleRawRequest(request, rawRequest);
             out.println(responseJson);
 
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Loi RequestClientHandler", e);
+            LOGGER.error("Loi RequestClientHandler", e);
         } finally {
             try {
                 if (clientSocket != null && !clientSocket.isClosed()) {
                     clientSocket.close();
                 }
             } catch (IOException e) {
-                LOGGER.log(Level.SEVERE, "Khong the dong socket", e);
+                LOGGER.error("Khong the dong socket", e);
             }
         }
     }
 
-    //để nhận InputStream hoặc DataInputStream
+    // để nhận InputStream hoặc DataInputStream
     private String readLineCustom(InputStream in) throws IOException {
         StringBuilder sb = new StringBuilder();
         int b;
         while ((b = in.read()) != -1) {
-            if (b == '\n') break;
-            if (b != '\r') sb.append((char) b);
+            if (b == '\n')
+                break;
+            if (b != '\r')
+                sb.append((char) b);
         }
         return (sb.length() == 0 && b == -1) ? null : sb.toString();
     }
-
 
     // GIỮ NGUYÊN HÀM NÀY NHƯ YÊU CẦU
     private String handleRawRequest(RequestMessage request, String rawRequest) {
@@ -115,14 +111,14 @@ public class RequestClientHandler implements Runnable {
             return gson.toJson(handler.handle(request));
 
         } catch (JsonSyntaxException e) {
-            LOGGER.log(Level.WARNING, "Request JSON khong hop le.", e);
+            LOGGER.warn("Request JSON khong hop le.", e);
             return fail("INVALID_JSON", "JSON khong hop le.");
         } catch (Exception e) {
-            LOGGER.log(Level.WARNING, "Handler xu ly loi.", e);
+            LOGGER.warn("Handler xu ly loi.", e);
             return fail("SERVER_ERROR", "Loi server.");
         }
     }
-    
+
     private String fail(String status, String message) {
         Response<?> response = new BaseResponse().setStatus(status).setMessage(message);
         return gson.toJson(response);

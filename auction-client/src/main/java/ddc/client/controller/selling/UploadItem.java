@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import com.google.gson.Gson;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ddc.client.config.ClientContext;
 import ddc.client.config.GsonConfig;
@@ -69,7 +71,6 @@ public class UploadItem implements Initializable {
     @FXML
     private Label nameErrorLabel, desErrorLabel;
 
-
     @FXML
     private ImageView imgProduct;
 
@@ -80,6 +81,8 @@ public class UploadItem implements Initializable {
     // Bảng chứa TextField và ErrorLabel thêm vào
     private final List<TextField> dynamicTextFields = new ArrayList<>();
     private final List<Label> dynamicErrorLabels = new ArrayList<>();
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(UploadItem.class);
 
     private Category currentCat;
     private final String currentUserUsername = UserSession.getInstance().getUsername();
@@ -117,15 +120,21 @@ public class UploadItem implements Initializable {
         setUpVisibleFalse(step2Container);
 
         // Theo dõi nút step 2
-        priceField.textProperty().addListener((o, old, newVal) -> { updateRegisterButtonState(); });
-        auctionDatePicker.valueProperty().addListener((o, old, newVal) -> { updateRegisterButtonState(); });
-        timeField.textProperty().addListener((o, old, nemVal) -> { updateRegisterButtonState(); });
+        priceField.textProperty().addListener((o, old, newVal) -> {
+            updateRegisterButtonState();
+        });
+        auctionDatePicker.valueProperty().addListener((o, old, newVal) -> {
+            updateRegisterButtonState();
+        });
+        timeField.textProperty().addListener((o, old, nemVal) -> {
+            updateRegisterButtonState();
+        });
         setImageSelectedState(false);
 
-        //Không cho DatePicker editable
+        // Không cho DatePicker editable
         TextField editor = auctionDatePicker.getEditor();
-    
-        editor.setEditable(false); 
+
+        editor.setEditable(false);
 
         editor.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.BACK_SPACE || event.getCode() == KeyCode.DELETE) {
@@ -145,7 +154,7 @@ public class UploadItem implements Initializable {
             hasError = true;
             categoryComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue != null) {
-                    categoryComboBox.setStyle(""); 
+                    categoryComboBox.setStyle("");
                 }
             });
         } else {
@@ -207,11 +216,10 @@ public class UploadItem implements Initializable {
 
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Chọn ảnh sản phẩm");
-        
+
         // Lọc chỉ hiện các định dạng ảnh
         fileChooser.getExtensionFilters().add(
-            new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg")
-        );
+                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg"));
 
         // Mở cửa sổ chọn file
         Stage stage = (Stage) imgProduct.getScene().getWindow();
@@ -223,13 +231,13 @@ public class UploadItem implements Initializable {
             imgProduct.setImage(image);
             setImageSelectedState(true);
             updateRegisterButtonState();
-            imgProduct.setPreserveRatio(true); 
-    
+            imgProduct.setPreserveRatio(true);
+
             // Ép ảnh không được vượt quá chiều rộng/cao của khung nét đứt
-            imgProduct.setFitWidth(450);  
+            imgProduct.setFitWidth(450);
             imgProduct.setFitHeight(180);
 
-            System.out.println("Da chon file: " + selectedFile.getAbsolutePath());
+            LOGGER.info("Da chon file: {}", selectedFile.getAbsolutePath());
         }
     }
 
@@ -260,7 +268,7 @@ public class UploadItem implements Initializable {
             // Kiểm tra nếu ngày chọn là ngày trong quá khứ
             if (auctionDatePicker.getValue().isBefore(LocalDate.now())) {
                 throw new ItemValidationException.InvalidDurationException("Ngày kết thúc không được ở quá khứ!");
-            }   
+            }
 
             DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
@@ -272,7 +280,7 @@ public class UploadItem implements Initializable {
             String itemName = itemNameField.getText();
             String description = itemDescriptionArea.getText();
             String sellerName = currentUserUsername;
-            
+
             registerButton.setText("Đang xử lý... ");
             registerButton.setDisable(true); // Khóa nút để tránh bấm lung tung
             registerButton.setStyle("-fx-background-color: #555555; -fx-text-fill: white;");
@@ -287,7 +295,7 @@ public class UploadItem implements Initializable {
                     if (selectedFile != null) {
                         // Đọc ảnh thành mảng byte
                         imageBytes = java.nio.file.Files.readAllBytes(selectedFile.toPath());
-                        
+
                         // Tạo tên file duy nhất để gửi cho Server lưu vào DB
                         String extension = selectedFile.getName().substring(selectedFile.getName().lastIndexOf("."));
                         uniqueFileName = java.util.UUID.randomUUID().toString() + extension;
@@ -299,23 +307,26 @@ public class UploadItem implements Initializable {
 
                     // 2. GỬI DỮ LIỆU TÁCH BIỆT
                     String addedItemJson = RequestToServer.sendRequestWithImage(
-                        new Request().setAction("ADD_ITEM").setData(item), 
-                        imageBytes
-                    );
+                            new Request().setAction("ADD_ITEM").setData(item),
+                            imageBytes);
                     AddItemResponse addedRes = gson.fromJson(addedItemJson, AddItemResponse.class);
 
-                    if (addedRes == null || !addedRes.getStatus().contains("SUCCESS")) return false;
+                    if (addedRes == null || !addedRes.getStatus().contains("SUCCESS"))
+                        return false;
 
                     // 2. GET_ITEM (để lấy đầy đủ thông tin/ID)
-                    String getItemJson = RequestToServer.sendRequest(new Request().setAction("GET_ITEM").setData(addedRes.getId()));
+                    String getItemJson = RequestToServer
+                            .sendRequest(new Request().setAction("GET_ITEM").setData(addedRes.getId()));
                     GetItemResponse gottenRes = gson.fromJson(getItemJson, GetItemResponse.class);
 
-                    if (gottenRes == null || !gottenRes.getStatus().contains("SUCCESS")) return false;
+                    if (gottenRes == null || !gottenRes.getStatus().contains("SUCCESS"))
+                        return false;
 
                     // Parse item vừa lấy về
                     ItemRequest gottenItemReq = gson.fromJson(gottenRes.getItemJson(), ItemRequest.class);
                     @SuppressWarnings("rawtypes")
-                    ItemGeneric gottenItem = CreatorRegistry.getCreator(gottenItemReq.getCategory()).createItem(gottenItemReq);
+                    ItemGeneric gottenItem = CreatorRegistry.getCreator(gottenItemReq.getCategory())
+                            .createItem(gottenItemReq);
 
                     // 3. CREATE_AUCTION
                     AuctionDTO auction = new AuctionDTO()
@@ -324,42 +335,44 @@ public class UploadItem implements Initializable {
                             .setStartTime(LocalDateTime.now())
                             .setEndTime(datetime);
 
-                    String createAuctionJson = RequestToServer.sendRequest(new Request().setAction("CREATE_AUCTION").setData(auction));
+                    String createAuctionJson = RequestToServer
+                            .sendRequest(new Request().setAction("CREATE_AUCTION").setData(auction));
                     BaseResponse finalRes = gson.fromJson(createAuctionJson, BaseResponse.class);
 
                     return finalRes != null && finalRes.getStatus().contains("SUCCESS");
                 }
             };
 
-        // --- BƯỚC 4: XỬ LÝ KẾT QUẢ (Tự động quay về UI Thread) ---
-        uploadTask.setOnSucceeded(e -> {
-            boolean isSuccess = uploadTask.getValue();
-            if (isSuccess) {
-                System.out.println("[" + Thread.currentThread().getName() + "] Đăng tải thành công!");
-                registerButton.setText("Thành công! ✔");
-                registerButton.setStyle("-fx-background-color: #28a745; -fx-text-fill: white; -fx-font-weight: bold;");
+            // --- BƯỚC 4: XỬ LÝ KẾT QUẢ (Tự động quay về UI Thread) ---
+            uploadTask.setOnSucceeded(e -> {
+                boolean isSuccess = uploadTask.getValue();
+                if (isSuccess) {
+                    LOGGER.info("Đăng tải thành công!");
+                    registerButton.setText("Thành công! ✔");
+                    registerButton
+                            .setStyle("-fx-background-color: #28a745; -fx-text-fill: white; -fx-font-weight: bold;");
 
-                PauseTransition closePause = new PauseTransition(Duration.seconds(1));
-                closePause.setOnFinished(ev -> {
-                    ((Stage) registerButton.getScene().getWindow()).close();
-                });
-                closePause.play();
-            } else {
-                showErrorAlert("Lỗi Server", "Không thể hoàn thành quy trình đăng tải sản phẩm.");
+                    PauseTransition closePause = new PauseTransition(Duration.seconds(1));
+                    closePause.setOnFinished(ev -> {
+                        ((Stage) registerButton.getScene().getWindow()).close();
+                    });
+                    closePause.play();
+                } else {
+                    showErrorAlert("Lỗi Server", "Không thể hoàn thành quy trình đăng tải sản phẩm.");
+                    resetButtonState();
+                }
+            });
+
+            uploadTask.setOnFailed(e -> {
+                LOGGER.error("Task thất bại!");
+                showErrorAlert("Lỗi kết nối", "Có lỗi xảy ra trong quá trình gửi dữ liệu.");
+                LOGGER.error("Upload task error", uploadTask.getException());
                 resetButtonState();
-            }
-        });
+            });
 
-        uploadTask.setOnFailed(e -> {
-            System.err.println("[" + Thread.currentThread().getName() + "] Task thất bại!");
-            showErrorAlert("Lỗi kết nối", "Có lỗi xảy ra trong quá trình gửi dữ liệu.");
-            uploadTask.getException().printStackTrace();
-            resetButtonState();
-        });
+            // --- BƯỚC 5: CHẠY BẰNG VIRTUAL THREAD EXECUTOR ---
+            ClientContext.EXECUTOR.execute(uploadTask);
 
-        // --- BƯỚC 5: CHẠY BẰNG VIRTUAL THREAD EXECUTOR ---
-        ClientContext.EXECUTOR.execute(uploadTask);
-            
         } catch (ItemValidationException e) {
             showErrorAlert("Lỗi nhập liệu", e.getMessage());
             resetButtonState();
@@ -367,8 +380,8 @@ public class UploadItem implements Initializable {
             showErrorAlert("Lỗi định dạng", "Giá phải là số!");
             resetButtonState();
         } catch (DateTimeParseException e) {
-            showErrorAlert("Lỗi định dạng thời gian", 
-            "Vui lòng nhập đúng định dạng thời gian: Giờ : phút");
+            showErrorAlert("Lỗi định dạng thời gian",
+                    "Vui lòng nhập đúng định dạng thời gian: Giờ : phút");
             resetButtonState();
         }
     }
@@ -391,7 +404,7 @@ public class UploadItem implements Initializable {
         }
     }
 
-    //Thêm các phần của từng danh mục
+    // Thêm các phần của từng danh mục
     private TextField addTextField(String labelText, String promptText) {
         Label label = new Label(labelText);
         TextField textField = new TextField();
@@ -457,7 +470,13 @@ public class UploadItem implements Initializable {
 
     private void resetButtonState() {
         registerButton.setText("Đăng tải sản phẩm🚀"); // Tên ban đầu của nút
-        registerButton.setDisable(false);  // Mở khóa
-        registerButton.setStyle("-fx-background-color: #00008b; -fx-text-fill: white; -fx-background-radius: 8");       // Trả về style mặc định của JavaFX
+        registerButton.setDisable(false); // Mở khóa
+        registerButton.setStyle("-fx-background-color: #00008b; -fx-text-fill: white; -fx-background-radius: 8"); // Trả
+                                                                                                                  // về
+                                                                                                                  // style
+                                                                                                                  // mặc
+                                                                                                                  // định
+                                                                                                                  // của
+                                                                                                                  // JavaFX
     }
 }
