@@ -140,6 +140,8 @@ public class Bidding {
     }
 
     private void refreshDataFromServer() {
+        String defaultImage = "/ddc/client/views/bidding/image/watch.jpg";
+
         new Thread(() -> {
             try {
                 String JsonResponse = RealtimeToServer.sendRequest(new Request().setAction("GET_ALL"));
@@ -150,6 +152,20 @@ public class Bidding {
                     List<AuctionItemViewModel> newList = new ArrayList<>();
                     
                     for (AuctionDTO auction : auctions) {
+                        // Lấy URL từ DB (Bây giờ nó là: https://res.cloudinary.com/...)
+                        String imageUrlFromDB = auction.getItem().getImageUrl();
+                        LOGGER.debug("Debug URL: {}", imageUrlFromDB); // Kiểm tra xem nó là "abc.jpg" hay
+                                                                        // "https://..."
+
+                        // BƯỚC 2: Kiểm tra logic URL
+                        String fullImageUrl;
+                        if (imageUrlFromDB != null && imageUrlFromDB.startsWith("http")) {
+                            // Nếu đã là link (Cloudinary), dùng luôn
+                            fullImageUrl = imageUrlFromDB;
+                        } else {
+                            // Nếu null hoặc không phải link, dùng ảnh mặc định
+                            fullImageUrl = defaultImage;
+                        }
                         String initialTimeLeft = TimeCalculate(LocalDateTime.now(), auction.getEndTime());
 
                         newList.add(new AuctionItemViewModel(
@@ -158,7 +174,7 @@ public class Bidding {
                             new DecimalFormat("#,###").format(auction.getCurrentPrice()) + " đ",
                             auction.getEndTime(),
                             initialTimeLeft,
-                            "/ddc/client/views/bidding/image/watch.jpg",
+                            fullImageUrl,
                             CategoryTranslating(auction.getItem().getCategory())
                         ));
                     }
