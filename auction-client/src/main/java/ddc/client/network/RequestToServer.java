@@ -9,36 +9,39 @@ import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.gson.Gson;
 
+import ddc.client.config.ClientContext;
 import ddc.client.config.GsonConfig;
 import ddc.client.model.Request;
 import ddc.client.network.response.BaseResponse;
 
 public class RequestToServer {
+    private static final Logger LOGGER = LoggerFactory.getLogger(RequestToServer.class);
     private static final Gson gson = GsonConfig.newGson();
-    private static final String HOST = readConfig("DDC_SERVER_HOST", "ddc.server.host", "localhost");
-    private static final int PORT = readIntConfig("DDC_SERVER_PORT", "ddc.server.port", 8080);
     private static final int TIMEOUT_MS = 10_000;
 
-    private RequestToServer() {}
+    private RequestToServer() {
+    }
 
     public static String sendRequest(Request request) {
         try (Socket socket = new Socket()) {
-            socket.connect(new InetSocketAddress(HOST, PORT), TIMEOUT_MS);
+            socket.connect(new InetSocketAddress(ClientContext.SERVER_HOST, ClientContext.REQUEST_PORT), TIMEOUT_MS);
             socket.setSoTimeout(TIMEOUT_MS);
 
             try (PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+                    BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
 
-                System.out.println("Sending: " + request.getAction() + " , " + request.getData());
+                LOGGER.info("Sending: {} , {}", request.getAction(), request.getData());
                 out.println(gson.toJson(request));
-
                 String response = in.readLine();
                 if (response == null || response.isBlank()) {
                     return errorJson("EMPTY_RESPONSE", "Server khong tra response.");
                 }
-                System.out.println("Response: " + response);
+                LOGGER.debug("Response: {}", response);
                 return response;
             }
         } catch (Exception e) {
@@ -50,41 +53,22 @@ public class RequestToServer {
         return gson.toJson(new BaseResponse().setStatus(status).setMessage(message));
     }
 
-    private static String readConfig(String envName, String propertyName, String defaultValue) {
-        String value = System.getenv(envName);
-        if (value != null && !value.isBlank()) {
-            return value;
-        }
-
-        value = System.getProperty(propertyName);
-        return value == null || value.isBlank() ? defaultValue : value;
-    }
-
-    private static int readIntConfig(String envName, String propertyName, int defaultValue) {
-        String value = readConfig(envName, propertyName, String.valueOf(defaultValue));
-        try {
-            return Integer.parseInt(value);
-        } catch (NumberFormatException e) {
-            return defaultValue;
-        }
-    }
-
     public static String sendRequestWithImage(Request request, byte[] imageData) {
         try (Socket socket = new Socket()) {
-            socket.connect(new InetSocketAddress(HOST, PORT), TIMEOUT_MS);
-            
+            socket.connect(new InetSocketAddress(ClientContext.SERVER_HOST, ClientContext.REQUEST_PORT), TIMEOUT_MS);
+
             DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
             InputStream is = socket.getInputStream();
 
             // Bước 1: Gửi JSON + dấu xuống dòng (Dùng writeBytes để giống println)
             String json = gson.toJson(request);
             dos.writeBytes(json + "\n");
-            dos.flush(); 
+            dos.flush();
 
             // Bước 2: Gửi dữ liệu ảnh
             if (imageData != null && imageData.length > 0) {
                 dos.writeInt(imageData.length); // Gửi 4-byte int
-                dos.write(imageData);           // Gửi mảng byte
+                dos.write(imageData); // Gửi mảng byte
             } else {
                 dos.writeInt(0);
             }
@@ -94,7 +78,8 @@ public class RequestToServer {
             StringBuilder sb = new StringBuilder();
             int b;
             while ((b = is.read()) != -1) {
-                if (b == '\n') break;
+                if (b == '\n')
+                    break;
                 sb.append((char) b);
             }
             return sb.toString().trim();

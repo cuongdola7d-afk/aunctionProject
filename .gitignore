@@ -2,6 +2,7 @@ target/
 *.class
 .idea/
 *.log
+logs/
 .vscode
 .env
 .env.*

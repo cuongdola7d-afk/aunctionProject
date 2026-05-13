@@ -14,38 +14,43 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-public class Profile {
-    @FXML private Label nameLabel, usernameLabel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-    public void initialize(){
+public class Profile {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Profile.class);
+    @FXML
+    private Label nameLabel, usernameLabel;
+
+    public void initialize() {
         UserSession session = UserSession.getInstance();
 
-    // Đổ dữ liệu vào các ô TextField
+        // Đổ dữ liệu vào các ô TextField
         nameLabel.setText(session.getName());
         usernameLabel.setText("@" + session.getUsername());
     }
 
     @FXML
     @SuppressWarnings("unused")
-    private void switchToSelling (MouseEvent event) {
+    private void switchToSelling(MouseEvent event) {
         SceneSwitcher.goTo(event, "/ddc/client/views/selling/Selling.fxml");
     }
 
     @FXML
     @SuppressWarnings("unused")
-    private void switchToBidding (MouseEvent event) {
+    private void switchToBidding(MouseEvent event) {
         SceneSwitcher.goTo(event, "/ddc/client/views/bidding/Bidding.fxml");
     }
 
     @FXML
     @SuppressWarnings("unused")
-    private void switchToHome (MouseEvent event) {
+    private void switchToHome(MouseEvent event) {
         SceneSwitcher.goTo(event, "/ddc/client/views/home/Home.fxml");
     }
 
     @FXML
     @SuppressWarnings("unused")
-    private void switchToPersonalInfo (MouseEvent event) {
+    private void switchToPersonalInfo(MouseEvent event) {
         SceneSwitcher.goTo(event, "/ddc/client/views/profile/Personalinfo.fxml");
     }
 
@@ -60,7 +65,7 @@ public class Profile {
     }
 
     @FXML
-    @SuppressWarnings({"unused", "CallToPrintStackTrace"})
+    @SuppressWarnings("unused")
     private void showLogoutPopup(MouseEvent event) {
         try {
             // 1. Chỉ nạp FXML, TUYỆT ĐỐI không dùng SceneSwitcher ở đây
@@ -71,19 +76,19 @@ public class Profile {
             Stage popupStage = new Stage();
             popupStage.setTitle("Xác nhận đăng xuất");
             popupStage.setResizable(false);
-            
+
             Image icon = new Image(getClass().getResourceAsStream("/ddc/client/views/DDCAuction.png"));
             popupStage.getIcons().add(icon);
 
             // 3. Khóa màn hình chính (Profile) ở phía sau
             popupStage.initModality(Modality.APPLICATION_MODAL);
-            
+
             // 4. Chỉ định "chủ sở hữu" là cửa sổ Profile hiện tại
             Stage primaryStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             popupStage.initOwner(primaryStage);
 
             // 5. Tạo Scene mới
-            Scene scene = new Scene(root, 400, 300); 
+            Scene scene = new Scene(root, 400, 300);
             popupStage.setScene(scene);
 
             // 6. Hiển thị cửa sổ mới lên
@@ -91,7 +96,7 @@ public class Profile {
             popupStage.show();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error("Loi hien thi popup logout", e);
         }
     }
 }

@@ -5,9 +5,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import ddc.server.exception.ItemValidationException;
 
 public class Electronics extends ItemGeneric<Electronics> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Electronics.class);
     private String brand;
     private int warrantyMonths;
 
@@ -20,17 +24,22 @@ public class Electronics extends ItemGeneric<Electronics> {
         return new Electronics();
     }
 
-    //Getters
-    public String getBrand() { return brand; }
-    public int getWarrantyMonths() { return warrantyMonths; }
+    // Getters
+    public String getBrand() {
+        return brand;
+    }
 
-    //Setters
-    public Electronics setBrand (String brand) {
+    public int getWarrantyMonths() {
+        return warrantyMonths;
+    }
+
+    // Setters
+    public Electronics setBrand(String brand) {
         this.brand = brand;
         return this;
     }
-    
-    public Electronics setWarrantyMonths (int warrantyMonths) {
+
+    public Electronics setWarrantyMonths(int warrantyMonths) {
         this.warrantyMonths = warrantyMonths;
         return this;
     }
@@ -38,7 +47,7 @@ public class Electronics extends ItemGeneric<Electronics> {
     @Override
     public String save(Connection con) throws SQLException {
         String sqlInsert = "CALL insert_electronics (?, ?, ?, ?, ?, ?, ?)";
-        
+
         try (PreparedStatement pst1 = con.prepareStatement(sqlInsert)) {
             pst1.setString(1, getItemName());
             pst1.setString(2, getCategory());
@@ -47,12 +56,12 @@ public class Electronics extends ItemGeneric<Electronics> {
             pst1.setString(5, brand);
             pst1.setInt(6, warrantyMonths);
             pst1.setString(7, getImageUrl());
-            
+
             pst1.executeUpdate();
 
             String sqlGetId = "SELECT @item_id AS generated_id;";
             try (PreparedStatement pst2 = con.prepareStatement(sqlGetId);
-                ResultSet rs = pst2.executeQuery()) {
+                    ResultSet rs = pst2.executeQuery()) {
                 if (rs.next()) {
                     String id = rs.getString("generated_id");
                     return id;
@@ -60,12 +69,11 @@ public class Electronics extends ItemGeneric<Electronics> {
             }
             return null;
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.error("Loi luu Electronics", e);
             return null;
         }
     }
 
-    
     @Override
     public void load(Connection con) throws SQLException {
         String sql = "SELECT brand, warranty_months FROM item_electronics WHERE id = ?";

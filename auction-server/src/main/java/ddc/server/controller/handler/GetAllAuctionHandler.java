@@ -7,8 +7,12 @@ import ddc.server.model.transaction.Auction;
 import ddc.server.network.response.BaseResponse;
 import ddc.server.network.response.GetAllAuctionsResponse;
 import ddc.server.network.response.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class GetAllAuctionHandler implements ActionHandler{
+public class GetAllAuctionHandler implements ActionHandler {
+    private static final Logger LOGGER = LoggerFactory.getLogger(GetAllAuctionHandler.class);
+
     @Override
     public Response handle(RequestMessage request) {
         try {
@@ -19,9 +23,9 @@ public class GetAllAuctionHandler implements ActionHandler{
             }
 
             return new GetAllAuctionsResponse().setStatus("SUCCESS")
-                                            .setData(auctions);
+                    .setData(auctions);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("Loi lay danh sach auction", e);
             return new BaseResponse().setStatus("FAIL");
         }
     }

@@ -5,10 +5,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import ddc.server.exception.ItemValidationException;
 
 // Kế thừa ItemGeneric và truyền chính nó vào Generic T
 public class Art extends ItemGeneric<Art> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Art.class);
     private String author;
     private int yearCreated;
 
@@ -21,17 +25,22 @@ public class Art extends ItemGeneric<Art> {
         return new Art();
     }
 
-    //Getters
-    public String getAuthor() { return author; }
-    public int getyearCreated() { return yearCreated; }
+    // Getters
+    public String getAuthor() {
+        return author;
+    }
 
-    //Setters
-    public Art setAuthor (String author) {
+    public int getyearCreated() {
+        return yearCreated;
+    }
+
+    // Setters
+    public Art setAuthor(String author) {
         this.author = author;
         return this;
     }
 
-    public Art setyearCreated (int yearCreated) {
+    public Art setyearCreated(int yearCreated) {
         this.yearCreated = yearCreated;
         return this;
     }
@@ -48,12 +57,12 @@ public class Art extends ItemGeneric<Art> {
             pst1.setString(5, author);
             pst1.setInt(6, yearCreated);
             pst1.setString(7, getImageUrl());
-            
+
             pst1.executeUpdate();
-            
+
             String sqlGetId = "SELECT @item_id AS generated_id;";
             try (PreparedStatement pst2 = con.prepareStatement(sqlGetId);
-                ResultSet rs = pst2.executeQuery()) {
+                    ResultSet rs = pst2.executeQuery()) {
                 if (rs.next()) {
                     String id = rs.getString("generated_id");
                     return id;
@@ -61,11 +70,11 @@ public class Art extends ItemGeneric<Art> {
             }
             return null;
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.error("Loi luu Art", e);
             return null;
         }
     }
-    
+
     // Trong file Art.java
     @Override
     public void load(Connection con) throws SQLException {
@@ -80,7 +89,7 @@ public class Art extends ItemGeneric<Art> {
             }
         }
     }
-    
+
     // Kiểm tra toàn bộ Exception trước khi trả về
     public void validate() throws ItemValidationException {
         super.validate();

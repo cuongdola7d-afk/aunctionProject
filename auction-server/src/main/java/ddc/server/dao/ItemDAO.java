@@ -4,8 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ddc.server.config.DatabaseConnection;
 import ddc.server.exception.ItemValidationException;
@@ -14,7 +14,7 @@ import ddc.server.pattern.factory.CreatorRegistry;
 import ddc.server.pattern.factory.ItemRequest;
 
 public class ItemDAO {
-    private static final Logger LOGGER = Logger.getLogger(ItemDAO.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(ItemDAO.class);
 
     public String addItem(ItemGeneric item) {
         if (item == null) {
@@ -30,11 +30,11 @@ public class ItemDAO {
                 return id;
             } catch (SQLException e) {
                 con.rollback();
-                LOGGER.log(Level.WARNING, "Khong the luu item.", e);
+                LOGGER.warn("Khong the luu item: {}", e.getMessage());
                 return null;
             }
         } catch (SQLException e) {
-            LOGGER.log(Level.WARNING, "Khong the mo ket noi DB de luu item.", e);
+            LOGGER.warn("Khong the mo ket noi DB de luu item: {}", e.getMessage());
             return null;
         }
     }
@@ -43,45 +43,44 @@ public class ItemDAO {
         String sql = "SELECT * FROM ddc_items WHERE id = ?";
 
         try (Connection con = DatabaseConnection.getConnection();
-            PreparedStatement pst = con.prepareStatement(sql)) {
+                PreparedStatement pst = con.prepareStatement(sql)) {
 
             pst.setString(1, id.trim());
 
             ResultSet rs = pst.executeQuery();
 
             // BẮT BUỘC PHẢI GỌI rs.next() Ở ĐÂY
-            if (rs.next()) { 
+            if (rs.next()) {
                 ItemRequest request = new ItemRequest(
                         rs.getString("item_name"),
                         rs.getString("description"),
                         rs.getString("category"),
                         rs.getString("seller_name"),
-                        rs.getString("image_url")
-                );
+                        rs.getString("image_url"));
 
                 String category = rs.getString("category");
                 String itemId = rs.getString("id");
 
                 ItemGeneric item = CreatorRegistry.getCreator(category).createItem(request);
-                System.out.println(item.getItemName());
+                LOGGER.info("Lay item: {}", item.getItemName());
 
                 item.setId(itemId);
                 item.load(con);
-                
+
                 try {
                     item.validate();
                 } catch (ItemValidationException e) {
-                    e.printStackTrace();
+                    LOGGER.warn("Loi validation item: {}", e.getMessage());
                 }
-                return item;            
+                return item;
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.warn("Loi SQL: {}", e.getMessage());
         } catch (ItemValidationException e) {
-            e.printStackTrace();
+            LOGGER.warn("Loi validation item: {}", e.getMessage());
         }
-        
+
         return null;
     }
 

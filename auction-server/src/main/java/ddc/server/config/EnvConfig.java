@@ -6,13 +6,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class EnvConfig {
-    private static final Logger LOGGER = Logger.getLogger(EnvConfig.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(EnvConfig.class);
     private static final Map<String, String> ENV_VALUES = loadEnv();
 
-    private EnvConfig() {}
+    private EnvConfig() {
+    }
 
     public static String get(String envName, String propertyName) {
         return get(envName, propertyName, null);
@@ -43,12 +45,12 @@ public final class EnvConfig {
         try {
             int port = Integer.parseInt(value);
             if (port < 1 || port > 65535) {
-                LOGGER.warning("Cong khong hop le: " + envName);
+                LOGGER.warn("Cong khong hop le: {}", envName);
                 return defaultValue;
             }
             return port;
         } catch (NumberFormatException e) {
-            LOGGER.warning("Cong khong phai so: " + envName);
+            LOGGER.warn("Cong khong phai so: {}", envName);
             return defaultValue;
         }
     }
@@ -66,7 +68,7 @@ public final class EnvConfig {
                 parseLine(values, line);
             }
         } catch (IOException e) {
-            LOGGER.warning("Khong doc duoc file .env: " + e.getMessage());
+            LOGGER.warn("Khong doc duoc file .env: {}", e.getMessage());
         }
 
         return values;
