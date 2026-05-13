@@ -5,9 +5,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import ddc.server.exception.ItemValidationException;
 
 public class Vehicle extends ItemGeneric<Vehicle> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Vehicle.class);
     private String manufacturer;
     private int year;
 
@@ -20,30 +24,35 @@ public class Vehicle extends ItemGeneric<Vehicle> {
         return new Vehicle();
     }
 
-    //Getters
-    public String getManufacturer() { return manufacturer; }
-    public int getYear() { return year; }
+    // Getters
+    public String getManufacturer() {
+        return manufacturer;
+    }
 
-    //Setters
-    public Vehicle setManufacturer (String manufacturer) {
+    public int getYear() {
+        return year;
+    }
+
+    // Setters
+    public Vehicle setManufacturer(String manufacturer) {
         this.manufacturer = manufacturer;
         return this;
     }
 
-    public Vehicle setYear (int year) {
+    public Vehicle setYear(int year) {
         this.year = year;
         return this;
     }
-    
+
     @Override
     public String toString() {
-        return super.toString() + String.format(" | Brand: %s | Nam SX: %d", manufacturer , year);
+        return super.toString() + String.format(" | Brand: %s | Nam SX: %d", manufacturer, year);
     }
 
     @Override
     public String save(Connection con) throws SQLException {
         String sqlInsert = "CALL insert_vehicle (?, ?, ?, ?, ?, ?, ?)";
-        
+
         try (PreparedStatement pst1 = con.prepareStatement(sqlInsert)) {
             pst1.setString(1, getItemName());
             pst1.setString(2, getCategory());
@@ -52,12 +61,12 @@ public class Vehicle extends ItemGeneric<Vehicle> {
             pst1.setString(5, manufacturer);
             pst1.setInt(6, year);
             pst1.setString(7, getImageUrl());
-            
+
             pst1.executeUpdate();
 
             String sqlGetId = "SELECT @item_id AS generated_id;";
             try (PreparedStatement pst2 = con.prepareStatement(sqlGetId);
-                ResultSet rs = pst2.executeQuery()) {
+                    ResultSet rs = pst2.executeQuery()) {
                 if (rs.next()) {
                     String id = rs.getString("generated_id");
                     return id;
@@ -65,7 +74,7 @@ public class Vehicle extends ItemGeneric<Vehicle> {
             }
             return null;
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.error("Loi luu Vehicle", e);
             return null;
         }
     }

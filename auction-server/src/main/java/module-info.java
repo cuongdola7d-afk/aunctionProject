@@ -1,10 +1,10 @@
 module ddc.server {
     requires java.sql;
-    requires java.logging;
     requires com.google.gson;
     requires com.zaxxer.hikari;
     requires cloudinary.http44;
     requires cloudinary.core;
+    requires org.slf4j;
 
     exports ddc.server;
 

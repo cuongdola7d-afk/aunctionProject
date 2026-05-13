@@ -5,6 +5,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 
@@ -14,10 +16,12 @@ import ddc.client.model.Request;
 import ddc.client.network.response.BaseResponse;
 
 public class RealtimeToServer {
+    private static final Logger LOGGER = LoggerFactory.getLogger(RealtimeToServer.class);
     private static final Gson gson = GsonConfig.newGson();
     private static final int TIMEOUT_MS = 10_000;
 
-    private RealtimeToServer() {}
+    private RealtimeToServer() {
+    }
 
     public static String sendRequest(Request request) {
         try (Socket socket = new Socket()) {
@@ -25,16 +29,16 @@ public class RealtimeToServer {
             socket.setSoTimeout(TIMEOUT_MS);
 
             try (PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
-            
-                System.out.println("Sending: " + request.getAction() + " , " + request.getData());
+                    BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+
+                LOGGER.info("Sending: {} , {}", request.getAction(), request.getData());
                 out.println(gson.toJson(request));
 
                 String response = in.readLine();
                 if (response == null || response.isBlank()) {
                     return errorJson("EMPTY_RESPONSE", "Server khong tra response.");
                 }
-                System.out.println("Response: " + response);
+                LOGGER.debug("Response: {}", response);
                 return response;
             }
         } catch (Exception e) {

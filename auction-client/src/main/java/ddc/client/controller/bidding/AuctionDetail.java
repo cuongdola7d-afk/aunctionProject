@@ -16,7 +16,12 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class AuctionDetail implements ServerMessageListener {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuctionDetail.class);
 
     @FXML
     private Label lblStartTime;
@@ -91,7 +96,7 @@ public class AuctionDetail implements ServerMessageListener {
                 mainImage.setImage(new Image(imagePath, true));
             }
         } catch (Exception e) {
-            System.out.println("Lỗi load ảnh chi tiết");
+            LOGGER.warn("Lỗi load ảnh chi tiết");
         }
     }
 
@@ -109,7 +114,7 @@ public class AuctionDetail implements ServerMessageListener {
                 socketClient.subscribeAuction(auctionId);
                 Platform.runLater(() -> setMessage("Đã kết nối tới phiên đấu giá."));
             } catch (Exception e) {
-                e.printStackTrace();
+                LOGGER.error("Loi ket noi auction", e);
                 Platform.runLater(() -> setMessage("Không kết nối được server: " + e.getMessage()));
             }
         });
@@ -150,7 +155,7 @@ public class AuctionDetail implements ServerMessageListener {
                     setMessage("Đã gửi yêu cầu ra giá.");
                 });
             } catch (Exception e) {
-                e.printStackTrace();
+                LOGGER.error("Loi gui bid", e);
                 Platform.runLater(() -> setMessage("Không gửi được bid: " + e.getMessage()));
             }
         });
@@ -198,7 +203,7 @@ public class AuctionDetail implements ServerMessageListener {
         if (lblMessage != null) {
             lblMessage.setText(message);
         } else {
-            System.out.println(message);
+            LOGGER.info(message);
         }
     }
 

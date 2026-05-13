@@ -7,8 +7,8 @@ import java.net.Socket;
 import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 
@@ -27,9 +27,8 @@ import ddc.server.network.request.SubscribeAuctionRequest;
 import ddc.server.network.response.ErrorPayload;
 import ddc.server.pattern.Singleton.AuctionManager;
 
-
 public class RealtimeClientHandler implements Runnable {
-    private static final Logger LOGGER = Logger.getLogger(RealtimeClientHandler.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(RealtimeClientHandler.class);
     private static final Set<ClientConnection> ACTIVE_CONNECTIONS = ConcurrentHashMap.newKeySet();
     private static final ConcurrentHashMap<String, Object> AUCTION_LOCKS = new ConcurrentHashMap<>();
 
@@ -122,16 +121,6 @@ public class RealtimeClientHandler implements Runnable {
             sendError(client, "Không tìm thấy phiên đấu giá: " + auctionId);
             return;
         }
-    } catch (Exception e) {
-        LOGGER.log(Level.WARNING, "Lỗi xử lý message: " + e.getMessage(), e);
-        sendError(client, "Lỗi xử lý message: " + e.getMessage());
-    }
-}
-  
-// Xử lý subscribe auction — load auction + gửi snapshot
-private void handleSubscribe(ClientConnection client, SocketMessage message) {
-    SubscribeAuctionRequest request =
-            gson.fromJson(message.getPayloadJson(), SubscribeAuctionRequest.class);
 
         sendAuctionEvent(client, buildSnapshot(auction));
         LOGGER.info("Client {} subscribed auction: {}", client.getConnectionId(), auctionId);

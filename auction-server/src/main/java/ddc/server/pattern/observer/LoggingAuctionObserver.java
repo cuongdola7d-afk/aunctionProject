@@ -9,11 +9,13 @@ import com.google.gson.JsonObject;
 import ddc.server.config.GsonConfig;
 import ddc.server.network.client.ClientConnection;
 import ddc.server.network.message.MessageType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LoggingAuctionObserver implements AuctionObserver {
+    private static final Logger LOGGER = LoggerFactory.getLogger(LoggingAuctionObserver.class);
 
-    private static final DateTimeFormatter FORMATTER =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     private final Set<ClientConnection> activeConnections;
     private final Gson gson;
@@ -34,15 +36,14 @@ public class LoggingAuctionObserver implements AuctionObserver {
         }
 
         // 1) Log ra console để debug
-        System.out.println(
+        LOGGER.info(
                 "[AuctionObserver] type=" + event.getType()
                         + ", auctionId=" + event.getAuctionId()
                         + ", bidder=" + event.getBidderName()
                         + ", bidAmount=" + event.getBidAmount()
                         + ", currentPrice=" + event.getCurrentPrice()
                         + ", status=" + event.getStatus()
-                        + ", message=" + event.getMessage()
-        );
+                        + ", message=" + event.getMessage());
 
         // 2) Nếu không có auctionId thì không broadcast được
         if (event.getAuctionId() == null || event.getAuctionId().isBlank()) {
@@ -70,11 +71,7 @@ public class LoggingAuctionObserver implements AuctionObserver {
             try {
                 connection.send(MessageType.AUCTION_EVENT, payload, gson);
             } catch (Exception e) {
-                System.out.println(
-                        "[AuctionObserver] Broadcast lỗi tới client "
-                                + connection.getConnectionId()
-                                + ": " + e.getMessage()
-                );
+                LOGGER.warn("Broadcast lỗi tới client {}: {}", connection.getConnectionId(), e.getMessage());
             }
         }
     }
@@ -92,13 +89,11 @@ public class LoggingAuctionObserver implements AuctionObserver {
 
         json.addProperty(
                 "status",
-                event.getStatus() != null ? event.getStatus().name() : null
-        );
+                event.getStatus() != null ? event.getStatus().name() : null);
 
         json.addProperty(
                 "eventTime",
-                event.getEventTime() != null ? FORMATTER.format(event.getEventTime()) : null
-        );
+                event.getEventTime() != null ? FORMATTER.format(event.getEventTime()) : null);
 
         json.addProperty("message", event.getMessage());
 

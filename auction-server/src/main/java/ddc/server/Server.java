@@ -6,6 +6,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ddc.server.config.EnvConfig;
 import ddc.server.controller.service.AuctionService;
@@ -13,7 +15,7 @@ import ddc.server.network.RequestClientHandler;
 import ddc.server.network.client.RealtimeClientHandler;
 
 public class Server {
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(Server.class);
     /**
      * Cổng xử lý request-response thông thường.
      *
@@ -38,9 +40,9 @@ public class Server {
 
     private static final int IMAGE_PORT = EnvConfig.getPort("DDC_IMAGE_PORT", "ddc.image.port", 8081);
 
-
     private static final ExecutorService requestPool = Executors.newFixedThreadPool(100);
     private static final ExecutorService realtimePool = Executors.newVirtualThreadPerTaskExecutor();
+
     public static void main(String[] args) {
 
         /**
@@ -73,12 +75,12 @@ public class Server {
             while (true) {
                 Socket clientSocket = serverSocket.accept();
                 RequestClientHandler handler = new RequestClientHandler(clientSocket);
-                
+
                 // Thay vì new Thread().start(), hãy giao cho Pool xử lý
                 requestPool.execute(handler);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("Request server loi", e);
         }
     }
 
@@ -100,7 +102,7 @@ public class Server {
                 realtimePool.execute(new RealtimeClientHandler(clientSocket, auctionService));
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("Realtime server loi", e);
         }
     }
 

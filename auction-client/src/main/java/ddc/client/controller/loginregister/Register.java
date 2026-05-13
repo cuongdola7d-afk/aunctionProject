@@ -16,8 +16,13 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Register {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(Register.class);
+
     @FXML
     private TextField usernameTextField, emailTextField;
     @FXML
@@ -30,59 +35,60 @@ public class Register {
     private final Gson gson = GsonConfig.newGson();
 
     @FXML
-@SuppressWarnings("unused")
-private void register(ActionEvent event) {
-    String username = usernameTextField.getText() == null ? "" : usernameTextField.getText().trim();
-    String email = emailTextField.getText() == null ? "" : emailTextField.getText().trim();
-    String password = passwordField.getText() == null ? "" : passwordField.getText();
+    @SuppressWarnings("unused")
+    private void register(ActionEvent event) {
+        String username = usernameTextField.getText() == null ? "" : usernameTextField.getText().trim();
+        String email = emailTextField.getText() == null ? "" : emailTextField.getText().trim();
+        String password = passwordField.getText() == null ? "" : passwordField.getText();
 
-    if (username.isEmpty() || password.isEmpty() || email.isEmpty()) {
-        errorLabel.setText("Bạn chưa điền đầy đủ thông tin.");
-        return;
+        if (username.isEmpty() || password.isEmpty() || email.isEmpty()) {
+            errorLabel.setText("Bạn chưa điền đầy đủ thông tin.");
+            return;
+        }
+
+        UserDTO user = new UserDTO()
+                .setUsername(username)
+                .setEmail(email)
+                .setPassword(password);
+
+        errorLabel.setText("Đang đăng ký...");
+        registerButton.setDisable(true); // Khóa nút để tránh spam request
+
+        // Tạo Task xử lý logic ngầm
+        Task<String> registerTask = new Task<>() {
+            @Override
+            protected String call() throws Exception {
+                LOGGER.info("Dang gui request dang ki cho: {}", username);
+                Request request = new Request().setAction("REGISTER").setData(user);
+                return RequestToServer.sendRequest(request);
+            }
+        };
+
+        // Xử lý khi đăng ký xong (Tự động quay về luồng UI)
+        registerTask.setOnSucceeded(e -> {
+            registerButton.setDisable(false);
+            String response = registerTask.getValue();
+            BaseResponse baseResponse = gson.fromJson(response, BaseResponse.class);
+            String status = baseResponse == null ? null : baseResponse.getStatus();
+            errorLabel.setText(registerMessage(status));
+
+            // Nếu thành công, có thể tự động chuyển sang màn hình login hoặc thông báo
+            if ("SUCCESS".equalsIgnoreCase(status)) {
+                LOGGER.info("Dang ky thanh cong!");
+            }
+        });
+
+        // Xử lý khi lỗi
+        registerTask.setOnFailed(e -> {
+            registerButton.setDisable(false);
+            errorLabel.setText("Lỗi kết nối máy chủ khi đăng ký.");
+            LOGGER.error("Loi dang ky", registerTask.getException());
+
+        });
+
+        // Chạy bằng Executor dùng chung
+        ClientContext.EXECUTOR.execute(registerTask);
     }
-
-    UserDTO user = new UserDTO()
-            .setUsername(username)
-            .setEmail(email)
-            .setPassword(password);
-
-    errorLabel.setText("Đang đăng ký...");
-    registerButton.setDisable(true); // Khóa nút để tránh spam request
-
-    // Tạo Task xử lý logic ngầm
-    Task<String> registerTask = new Task<>() {
-        @Override
-        protected String call() throws Exception {
-            System.out.println("[" + Thread.currentThread().getName() + "] Dang gui request dang ki cho: " + username);
-            Request request = new Request().setAction("REGISTER").setData(user);
-            return RequestToServer.sendRequest(request);
-        }
-    };
-
-    // Xử lý khi đăng ký xong (Tự động quay về luồng UI)
-    registerTask.setOnSucceeded(e -> {
-        registerButton.setDisable(false);
-        String response = registerTask.getValue();
-        BaseResponse baseResponse = gson.fromJson(response, BaseResponse.class);
-        String status = baseResponse == null ? null : baseResponse.getStatus();
-        errorLabel.setText(registerMessage(status));
-        
-        // Nếu thành công, có thể tự động chuyển sang màn hình login hoặc thông báo
-        if ("SUCCESS".equalsIgnoreCase(status)) {
-            System.out.println("Dang ky thanh cong!");
-        }
-    });
-
-    // Xử lý khi lỗi
-    registerTask.setOnFailed(e -> {
-        registerButton.setDisable(false);
-        errorLabel.setText("Lỗi kết nối máy chủ khi đăng ký.");
-        registerTask.getException().printStackTrace();
-    });
-
-    // Chạy bằng Executor dùng chung
-    ClientContext.EXECUTOR.execute(registerTask);
-}
 
     private String registerMessage(String status) {
         return switch (status == null ? "" : status) {

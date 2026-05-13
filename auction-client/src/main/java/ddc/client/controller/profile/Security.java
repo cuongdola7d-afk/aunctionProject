@@ -18,13 +18,21 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Duration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Security {
-    @FXML private PasswordField txtCurrentPassword;
-    @FXML private PasswordField txtNewPassword;
-    @FXML private PasswordField txtConfirmPassword;
-    @FXML private Label errorLabel;
-    @FXML private Button btnChangePassword;
+    private static final Logger LOGGER = LoggerFactory.getLogger(Security.class);
+    @FXML
+    private PasswordField txtCurrentPassword;
+    @FXML
+    private PasswordField txtNewPassword;
+    @FXML
+    private PasswordField txtConfirmPassword;
+    @FXML
+    private Label errorLabel;
+    @FXML
+    private Button btnChangePassword;
 
     @FXML
     private void switchBackToProfile(MouseEvent event) {
@@ -80,13 +88,14 @@ public class Security {
         UserDTO user = new UserDTO().setUsername(username).setPassword(newPass);
 
         // --- BƯỚC 3: SỬ DỤNG TASK ĐỂ GỬI SOCKET CHẠY NGẦM ---
-        
+
         btnChangePassword.setDisable(true);
-        errorLabel.setText("Đang xử lý..."); 
+        errorLabel.setText("Đang xử lý...");
         errorLabel.setStyle("-fx-text-fill: #3498db;");
 
         Task<String> changePasswordTask = new Task<>() {
             Request rq = new Request("UPDATE_PASSWORD", user);
+
             @Override
             protected String call() throws Exception {
                 return RequestToServer.sendRequest(rq);
@@ -96,7 +105,7 @@ public class Security {
         // Xử lý khi Server phản hồi thành công
         changePasswordTask.setOnSucceeded(e -> {
             btnChangePassword.setDisable(false);
-            
+
             String jsonResponse = changePasswordTask.getValue();
             Gson gson = new Gson();
             BaseResponse res = gson.fromJson(jsonResponse, BaseResponse.class);
@@ -117,7 +126,7 @@ public class Security {
             btnChangePassword.setDisable(false);
             errorLabel.setStyle("-fx-text-fill: red;");
             showError("Khong the ket noi toi may chu!");
-            changePasswordTask.getException().printStackTrace();
+            LOGGER.error("Loi doi mat khau", changePasswordTask.getException());
         });
 
         // Kích hoạt luồng phụ chạy
@@ -133,14 +142,13 @@ public class Security {
         btnChangePassword.setDisable(true);
 
         Timeline timeline = new Timeline(new KeyFrame(
-            Duration.seconds(2),
-            ae -> {
-                btnChangePassword.setText(originalText);
-                btnChangePassword.setStyle(originalStyle);
-                btnChangePassword.setDisable(false);
-                errorLabel.setText("");
-            }
-        ));
+                Duration.seconds(2),
+                ae -> {
+                    btnChangePassword.setText(originalText);
+                    btnChangePassword.setStyle(originalStyle);
+                    btnChangePassword.setDisable(false);
+                    errorLabel.setText("");
+                }));
         timeline.play();
     }
 }
