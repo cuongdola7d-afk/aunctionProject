@@ -1,10 +1,13 @@
 package ddc.server;
 
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import ddc.server.config.EnvConfig;
 import ddc.server.controller.service.AuctionService;
 import ddc.server.network.RequestClientHandler;
 import ddc.server.network.client.RealtimeClientHandler;
@@ -20,7 +23,8 @@ public class Server {
      * - add item
      * - các request gửi 1 lần và nhận 1 lần
      */
-    private static final int REQUEST_PORT = 8080;
+    private static final String BIND_HOST = EnvConfig.get("DDC_SERVER_BIND_HOST", "ddc.server.bindHost", "0.0.0.0");
+    private static final int REQUEST_PORT = readRequestPort();
 
     /**
      * Cổng realtime cho bidding.
@@ -30,9 +34,9 @@ public class Server {
      * - place bid
      * - nhận event realtime từ server
      */
-    private static final int REALTIME_PORT = 5555;
+    private static final int REALTIME_PORT = EnvConfig.getPort("DDC_REALTIME_PORT", "ddc.realtime.port", 5555);
 
-    private static final int IMAGE_PORT = 8081;
+    private static final int IMAGE_PORT = EnvConfig.getPort("DDC_IMAGE_PORT", "ddc.image.port", 8081);
 
 
     private static final ExecutorService requestPool = Executors.newFixedThreadPool(100);
@@ -64,8 +68,8 @@ public class Server {
      * Mỗi client kết nối vào sẽ được giao cho 1 thread riêng để xử lý.
      */
     private static void startRequestServer() {
-       try (ServerSocket serverSocket = new ServerSocket(REQUEST_PORT)) {
-            System.out.println("[" + Thread.currentThread().getName() + "] Request server opened at port " + REQUEST_PORT);
+        try (ServerSocket serverSocket = openServerSocket(REQUEST_PORT)) {
+            LOGGER.info("Request server opened at {}:{}", BIND_HOST, REQUEST_PORT);
             while (true) {
                 Socket clientSocket = serverSocket.accept();
                 RequestClientHandler handler = new RequestClientHandler(clientSocket);
@@ -88,8 +92,8 @@ public class Server {
      * Các handler này dùng chung AuctionService để xử lý bid và phát event.
      */
     private static void startRealtimeServer(AuctionService auctionService) {
-        try (ServerSocket serverSocket = new ServerSocket(REALTIME_PORT)) {
-            System.out.println("[" + Thread.currentThread().getName() + "] Request server opened at port " + REALTIME_PORT);
+        try (ServerSocket serverSocket = openServerSocket(REALTIME_PORT)) {
+            LOGGER.info("Realtime server opened at {}:{}", BIND_HOST, REALTIME_PORT);
             while (true) {
                 Socket clientSocket = serverSocket.accept();
                 // Virtual Thread sẽ tự động xử lý việc "đợi" mạng cho bạn
@@ -98,5 +102,16 @@ public class Server {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private static ServerSocket openServerSocket(int port) throws Exception {
+        ServerSocket serverSocket = new ServerSocket();
+        serverSocket.bind(new InetSocketAddress(InetAddress.getByName(BIND_HOST), port));
+        return serverSocket;
+    }
+
+    private static int readRequestPort() {
+        int legacyPort = EnvConfig.getPort("DDC_SERVER_PORT", "ddc.server.port", 8080);
+        return EnvConfig.getPort("DDC_REQUEST_PORT", "ddc.request.port", legacyPort);
     }
 }
