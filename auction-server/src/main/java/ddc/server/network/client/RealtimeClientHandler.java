@@ -7,6 +7,7 @@ import java.net.Socket;
 import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,12 +74,7 @@ public class RealtimeClientHandler implements Runnable {
                 client.close();
                 LOGGER.info("Client cleaned up and closed.");
             } else {
-                try {
-                    if (socket != null && !socket.isClosed()) {
-                        socket.close();
-                    }
-                } catch (Exception ignored) {
-                }
+                closeSocket();
             }
         }
     }
@@ -88,7 +84,7 @@ public class RealtimeClientHandler implements Runnable {
             SocketMessage message = gson.fromJson(line, SocketMessage.class);
 
             if (message == null || message.getType() == null) {
-                sendError(client, "Message không hợp lệ.");
+                sendError(client, "Message khong hop le.");
                 return;
             }
 
@@ -97,11 +93,11 @@ public class RealtimeClientHandler implements Runnable {
             switch (message.getType()) {
                 case SUBSCRIBE_AUCTION -> handleSubscribe(client, message);
                 case PLACE_BID -> handlePlaceBid(client, message);
-                default -> sendError(client, "Message type không hỗ trợ: " + message.getType());
+                default -> sendError(client, "Message type khong ho tro: " + message.getType());
             }
         } catch (Exception e) {
             LOGGER.warn("Message handling failed: {}", e.getMessage(), e);
-            sendError(client, "Lỗi xử lý message: " + e.getMessage());
+            sendError(client, "Loi xu ly message: " + e.getMessage());
         }
     }
 
@@ -109,19 +105,18 @@ public class RealtimeClientHandler implements Runnable {
         SubscribeAuctionRequest request = gson.fromJson(message.getPayloadJson(), SubscribeAuctionRequest.class);
 
         if (request == null || request.getAuctionId() == null || request.getAuctionId().isBlank()) {
-            sendError(client, "auctionId không hợp lệ.");
+            sendError(client, "auctionId khong hop le.");
             return;
         }
 
         String auctionId = request.getAuctionId();
-        client.subscribe(auctionId);
-
         Auction auction = getAuctionOrLoad(auctionId);
         if (auction == null) {
-            sendError(client, "Không tìm thấy phiên đấu giá: " + auctionId);
+            sendError(client, "Khong tim thay phien dau gia: " + auctionId);
             return;
         }
 
+        client.subscribe(auctionId);
         sendAuctionEvent(client, buildSnapshot(auction));
         LOGGER.info("Client {} subscribed auction: {}", client.getConnectionId(), auctionId);
     }
@@ -130,20 +125,22 @@ public class RealtimeClientHandler implements Runnable {
         PlaceBidRequest request = gson.fromJson(message.getPayloadJson(), PlaceBidRequest.class);
 
         if (request == null) {
-            sendError(client, "Bid request không hợp lệ.");
+            sendError(client, "Bid request khong hop le.");
             return;
         }
 
-    // Lấy auction từ RAM, nếu chưa có thì load từ DB
-    Auction auction = getAuctionOrLoad(auctionId);
+        if (request.getAuctionId() == null || request.getAuctionId().isBlank()) {
+            sendError(client, "auctionId khong hop le.");
+            return;
+        }
 
         if (request.getBidderId() == null || request.getBidderId().isBlank()) {
-            sendError(client, "bidderId không hợp lệ.");
+            sendError(client, "bidderId khong hop le.");
             return;
         }
 
         if (request.getAmount() <= 0) {
-            sendError(client, "Số tiền bid phải lớn hơn 0.");
+            sendError(client, "So tien bid phai lon hon 0.");
             return;
         }
 
@@ -155,13 +152,13 @@ public class RealtimeClientHandler implements Runnable {
         synchronized (auctionLock) {
             Auction auction = getAuctionOrLoad(request.getAuctionId());
             if (auction == null) {
-                sendError(client, "Không tìm thấy phiên đấu giá: " + request.getAuctionId());
+                sendError(client, "Khong tim thay phien dau gia: " + request.getAuctionId());
                 return;
             }
 
             Bidder bidder = getBidderOrLoad(request.getBidderId());
             if (bidder == null) {
-                sendError(client, "Không tìm thấy bidder: " + request.getBidderId());
+                sendError(client, "Khong tim thay bidder: " + request.getBidderId());
                 return;
             }
 
@@ -172,9 +169,8 @@ public class RealtimeClientHandler implements Runnable {
                 return;
             }
 
-            // Keep the in-memory auction and database update atomic for this server process.
             if (!auctionDAO.updateAuction(auction)) {
-                sendError(client, "Không cập nhật được phiên đấu giá.");
+                sendError(client, "Khong cap nhat duoc phien dau gia.");
                 return;
             }
 
@@ -188,7 +184,7 @@ public class RealtimeClientHandler implements Runnable {
             event.setStatus(auction.getStatus().name());
             event.setBidderName(bidderName);
             event.setBidAmount(request.getAmount());
-            event.setMessage("Bid mới: " + bidderName + " - " + request.getAmount());
+            event.setMessage("Bid moi: " + bidderName + " - " + request.getAmount());
         }
 
         broadcastAuctionEvent(auctionId, event);
@@ -263,7 +259,16 @@ public class RealtimeClientHandler implements Runnable {
             snapshot.setBidderName(auction.getHighestBidder().getUsername());
         }
 
-        snapshot.setMessage("Snapshot phiên đấu giá.");
+        snapshot.setMessage("Snapshot phien dau gia.");
         return snapshot;
+    }
+
+    private void closeSocket() {
+        try {
+            if (socket != null && !socket.isClosed()) {
+                socket.close();
+            }
+        } catch (Exception ignored) {
+        }
     }
 }
