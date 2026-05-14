@@ -61,13 +61,13 @@ public class UploadItem implements Initializable {
     @FXML
     private VBox dynamicCategoryContainer, step1Container, step2Container;
     @FXML
-    private TextField itemNameField, priceField, timeField;
+    private TextField itemNameField, priceField, endTimeField, startTimeField;
     @FXML
     private TextArea itemDescriptionArea;
     @FXML
     private Button btnNext;
     @FXML
-    private DatePicker auctionDatePicker;
+    private DatePicker auctionEndPicker,auctionStartPicker;
     @FXML
     private Label nameErrorLabel, desErrorLabel;
 
@@ -123,25 +123,16 @@ public class UploadItem implements Initializable {
         priceField.textProperty().addListener((o, old, newVal) -> {
             updateRegisterButtonState();
         });
-        auctionDatePicker.valueProperty().addListener((o, old, newVal) -> {
+        auctionEndPicker.valueProperty().addListener((o, old, newVal) -> {
             updateRegisterButtonState();
         });
-        timeField.textProperty().addListener((o, old, nemVal) -> {
+        endTimeField.textProperty().addListener((o, old, nemVal) -> {
             updateRegisterButtonState();
         });
         setImageSelectedState(false);
 
         // Không cho DatePicker editable
-        TextField editor = auctionDatePicker.getEditor();
-
-        editor.setEditable(false);
-
-        editor.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-            if (event.getCode() == KeyCode.BACK_SPACE || event.getCode() == KeyCode.DELETE) {
-                event.consume();
-            }
-        });
-        editor.setContextMenu(new ContextMenu());
+        disableDatePickerTextInput(auctionEndPicker);
     }
 
     @FXML
@@ -262,20 +253,21 @@ public class UploadItem implements Initializable {
             if (startingPrice <= 0)
                 throw new ItemValidationException("Giá phải > 0");
             // kiểm tra ngày hợp lệ
-            if (auctionDatePicker.getValue() == null) {
+            if (auctionEndPicker.getValue() == null) {
                 throw new ItemValidationException.InvalidDurationException("Vui lòng chọn ngày kết thúc!");
             }
             // Kiểm tra nếu ngày chọn là ngày trong quá khứ
-            if (auctionDatePicker.getValue().isBefore(LocalDate.now())) {
+            if (auctionEndPicker.getValue().isBefore(LocalDate.now())) {
                 throw new ItemValidationException.InvalidDurationException("Ngày kết thúc không được ở quá khứ!");
             }
 
-            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+            LocalDateTime startDateTime = getAuctionStartTime();
+            LocalDateTime endDateTime = getAuctionEndTime();
 
-            LocalDate date = auctionDatePicker.getValue();
-            LocalTime time = LocalTime.parse(timeField.getText(), timeFormatter);
-
-            LocalDateTime datetime = LocalDateTime.of(date, time);
+            if (!endDateTime.isAfter(startDateTime)) {
+                throw new ItemValidationException.InvalidDurationException(
+                        "Thời gian kết thúc phải sau thời gian bắt đầu!");
+            }
 
             String itemName = itemNameField.getText();
             String description = itemDescriptionArea.getText();
@@ -332,8 +324,8 @@ public class UploadItem implements Initializable {
                     AuctionDTO auction = new AuctionDTO()
                             .setItem(gottenItem)
                             .setCurrentPrice(startingPrice)
-                            .setStartTime(LocalDateTime.now())
-                            .setEndTime(datetime);
+                            .setStartTime(startDateTime)
+                            .setEndTime(endDateTime);
 
                     String createAuctionJson = RequestToServer
                             .sendRequest(new Request().setAction("CREATE_AUCTION").setData(auction));
@@ -389,8 +381,8 @@ public class UploadItem implements Initializable {
     private void updateRegisterButtonState() {
         // Kiểm tra: giá không trống VÀ ngày đã được chọn
         boolean isPriceEntered = priceField.getText() != null && !priceField.getText().trim().isEmpty();
-        boolean isDateSelected = auctionDatePicker.getValue() != null;
-        boolean isTimeEntered = timeField.getText() != null && !timeField.getText().trim().isEmpty();
+        boolean isDateSelected = auctionEndPicker.getValue() != null;
+        boolean isTimeEntered = endTimeField.getText() != null && !endTimeField.getText().trim().isEmpty();
         boolean isImageSelected = selectedFile != null;
         boolean canProceed = isPriceEntered && isDateSelected && isTimeEntered && isImageSelected;
         // Nếu cả 2 đều thỏa mãn thì enable nút, ngược lại thì disable
@@ -405,6 +397,51 @@ public class UploadItem implements Initializable {
     }
 
     // Thêm các phần của từng danh mục
+    private LocalDateTime getAuctionStartTime() throws ItemValidationException.InvalidDurationException {
+        LocalDate startDate = auctionStartPicker.getValue();
+        String startTimeText = startTimeField.getText() == null ? "" : startTimeField.getText().trim();
+
+        if (startDate == null && startTimeText.isEmpty()) {
+            return LocalDateTime.now();
+        }
+
+        if (startDate == null || startTimeText.isEmpty()) {
+            throw new ItemValidationException.InvalidDurationException(
+                    "Vui lòng nhập đủ ngày và giờ bắt đầu, hoặc bỏ trống cả hai để bắt đầu ngay!");
+        }
+
+        LocalDateTime startDateTime = LocalDateTime.of(startDate, parseTime(startTimeText));
+        if (startDateTime.isBefore(LocalDateTime.now())) {
+            throw new ItemValidationException.InvalidDurationException(
+                    "Thời gian bắt đầu không được ở quá khứ!");
+        }
+
+        return startDateTime;
+    }
+
+    private LocalDateTime getAuctionEndTime() {
+        LocalDate endDate = auctionEndPicker.getValue();
+        LocalTime endTime = parseTime(endTimeField.getText() == null ? "" : endTimeField.getText().trim());
+        return LocalDateTime.of(endDate, endTime);
+    }
+
+    private LocalTime parseTime(String timeText) {
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+        return LocalTime.parse(timeText, timeFormatter);
+    }
+
+    private void disableDatePickerTextInput(DatePicker datePicker) {
+        TextField editor = datePicker.getEditor();
+        editor.setEditable(false);
+
+        editor.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode() == KeyCode.BACK_SPACE || event.getCode() == KeyCode.DELETE) {
+                event.consume();
+            }
+        });
+        editor.setContextMenu(new ContextMenu());
+    }
+
     private TextField addTextField(String labelText, String promptText) {
         Label label = new Label(labelText);
         TextField textField = new TextField();
@@ -471,12 +508,6 @@ public class UploadItem implements Initializable {
     private void resetButtonState() {
         registerButton.setText("Đăng tải sản phẩm🚀"); // Tên ban đầu của nút
         registerButton.setDisable(false); // Mở khóa
-        registerButton.setStyle("-fx-background-color: #00008b; -fx-text-fill: white; -fx-background-radius: 8"); // Trả
-                                                                                                                  // về
-                                                                                                                  // style
-                                                                                                                  // mặc
-                                                                                                                  // định
-                                                                                                                  // của
-                                                                                                                  // JavaFX
+        registerButton.setStyle("-fx-background-color: #00008b; -fx-text-fill: white; -fx-background-radius: 8");
     }
 }

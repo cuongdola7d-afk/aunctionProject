@@ -10,7 +10,6 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
@@ -121,29 +120,45 @@
                         <Font name="System Bold" size="20.0" />
                      </font>
                   </Label>
+                  <VBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="100.0">
+                     <children>
+                        <Label text="Nhập giá tiền sản phẩm:">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                        <TextField fx:id="priceField" style="-fx-background-color: transparent; -fx-border-color: #ccc; -fx-border-width: 0 0 1 0;" />
+                     </children>
+                     <padding>
+                        <Insets left="15.0" right="15.0" />
+                     </padding>
+                  </VBox>
                   <HBox prefHeight="90.0" prefWidth="460.0" spacing="20.0">
                      <children>
                         <VBox prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
                            <children>
-                              <Label text="Giá khởi điểm: ">
+                              <Label text="Ngày bắt đầu">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
                               </Label>
-                              <TextField fx:id="priceField" prefHeight="40.0" promptText="Nhập số tiền (VND)" style="-fx-background-color: transparent; -fx-border-color: #ccc; -fx-border-width: 0 0 1 0;" />
+                              <DatePicker fx:id="auctionStartPicker" focusTraversable="false" prefHeight="40.0" style="-fx-background-color: transparent; -fx-border-color: #ccc; -fx-border-width: 0 0 1 0; -fx-background-insets: 0; -fx-background-radius: 0;" />
                            </children>
                            <HBox.margin>
                               <Insets top="10.0" />
                            </HBox.margin>
+                           <padding>
+                              <Insets left="15.0" />
+                           </padding>
                         </VBox>
                         <VBox prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
                            <children>
-                              <Label text="Ngày đấu giá: ">
+                              <Label text="Ngày kết thúc: ">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
                               </Label>
-                              <DatePicker fx:id="auctionDatePicker" focusTraversable="false" prefHeight="40.0" style="-fx-background-color: transparent; -fx-border-color: #ccc; -fx-border-width: 0 0 1 0; -fx-background-insets: 0; -fx-background-radius: 0;" />
+                              <DatePicker fx:id="auctionEndPicker" focusTraversable="false" prefHeight="40.0" style="-fx-background-color: transparent; -fx-border-color: #ccc; -fx-border-width: 0 0 1 0; -fx-background-insets: 0; -fx-background-radius: 0;" />
                            </children>
                            <HBox.margin>
                               <Insets top="10.0" />
@@ -151,21 +166,32 @@
                         </VBox>
                      </children>
                   </HBox>
-                  <HBox alignment="CENTER_RIGHT" prefHeight="79.0" prefWidth="460.0">
+                  <HBox alignment="CENTER_RIGHT" prefHeight="79.0" prefWidth="460.0" spacing="30.0">
                      <children>
-                        <Region prefHeight="79.0" prefWidth="240.0" />
                         <VBox prefHeight="79.0" prefWidth="195.0">
                            <children>
-                              <Label text="Thời gian đấu giá: ">
+                              <Label text="Thời gian bắt đầu đấu giá: ">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
                               </Label>
-                              <TextField fx:id="timeField" prefHeight="40.0" promptText="Giờ : Phút" style="-fx-background-color: transparent; -fx-border-color: #ccc; -fx-border-width: 0 0 1 0;" />
+                              <TextField fx:id="startTimeField" prefHeight="40.0" promptText="Giờ : Phút" style="-fx-background-color: transparent; -fx-border-color: #ccc; -fx-border-width: 0 0 1 0;" />
                            </children>
                         </VBox>
-                        <Region prefHeight="79.0" prefWidth="25.0" />
+                        <VBox prefHeight="79.0" prefWidth="195.0">
+                           <children>
+                              <Label text="Thời gian kết thúc đấu giá: ">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </Label>
+                              <TextField fx:id="endTimeField" prefHeight="40.0" promptText="Giờ : Phút" style="-fx-background-color: transparent; -fx-border-color: #ccc; -fx-border-width: 0 0 1 0;" />
+                           </children>
+                        </VBox>
                      </children>
+                     <padding>
+                        <Insets right="30.0" />
+                     </padding>
                   </HBox>
                </children>
             </VBox>

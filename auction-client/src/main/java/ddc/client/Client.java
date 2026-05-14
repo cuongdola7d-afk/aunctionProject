@@ -32,4 +32,3 @@ public class Client extends Application {
         launch();
     }
 }
-//kkk
