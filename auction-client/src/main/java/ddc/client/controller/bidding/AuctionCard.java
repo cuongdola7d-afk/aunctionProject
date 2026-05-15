@@ -96,7 +96,8 @@ public class AuctionCard {
             controller.setProductData(
                     item.getName(),
                     item.getPrice(),
-                    item.getImagePath());
+                    item.getImagePath(),
+                    item);
 
             Stage stage = new Stage();
             stage.setTitle(item.getName());

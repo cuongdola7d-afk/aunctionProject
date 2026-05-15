@@ -1,1 +1,0 @@
-user, admin, bidder, seller nhét vào đây
