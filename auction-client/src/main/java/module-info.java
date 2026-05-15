@@ -12,7 +12,7 @@ module ddc.client {
     opens ddc.client.controller.notify to javafx.fxml;
     opens ddc.client.controller.loginregister to javafx.fxml, com.google.gson;
     opens ddc.client.controller.bidding to javafx.fxml;
-    opens ddc.client.controller.selling to javafx.fxml;
+    opens ddc.client.controller.selling to javafx.fxml,org.junit.platform.commons;
     opens ddc.client.controller.home to javafx.fxml;
     opens ddc.client.controller.profile to javafx.fxml, com.google.gson;
     opens ddc.client.network.client to com.google.gson;
