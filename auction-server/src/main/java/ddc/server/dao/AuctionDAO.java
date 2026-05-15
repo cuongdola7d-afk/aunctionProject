@@ -97,7 +97,7 @@ public class AuctionDAO {
 
     // Cập nhật giá, bidder, status của auction về DB
     public boolean updateAuction(Auction auction) {
-        String sql = "UPDATE ddc_auctions SET current_price = ?, highest_bidder_name = ?, status = ? WHERE id = ?";
+        String sql = "UPDATE ddc_auctions SET current_price = ?, highest_bidder_name = ?, status = ?, end_time = ? WHERE id = ?";
 
         try (Connection con = DatabaseConnection.getConnection();
                 PreparedStatement pst = con.prepareStatement(sql)) {
@@ -108,7 +108,8 @@ public class AuctionDAO {
                     : null;
             pst.setString(2, bidderName);
             pst.setString(3, auction.getStatus().name());
-            pst.setString(4, auction.getId());
+            pst.setTimestamp(4, auction.getEndTime() != null ? Timestamp.valueOf(auction.getEndTime()) : null);
+            pst.setString(5, auction.getId());
 
             return pst.executeUpdate() > 0;
         } catch (SQLException e) {

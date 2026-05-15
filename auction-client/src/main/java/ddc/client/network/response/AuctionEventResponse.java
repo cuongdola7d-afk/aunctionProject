@@ -11,6 +11,8 @@ public class AuctionEventResponse {
     private String status;
     private String eventTime;
     private String message;
+    private String endTime;
+    private boolean timeExtended;
 
     public AuctionEventResponse() {
     }
@@ -93,5 +95,21 @@ public class AuctionEventResponse {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
+
+    public boolean isTimeExtended() {
+        return timeExtended;
+    }
+
+    public void setTimeExtended(boolean timeExtended) {
+        this.timeExtended = timeExtended;
     }
 }

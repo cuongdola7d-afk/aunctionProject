@@ -177,12 +177,20 @@ public class AuctionDetail implements ServerMessageListener {
             if (lblPrice != null) {
                 lblPrice.setText(formatPrice(event.getCurrentPrice()));
             }
+            // Cập nhật endTime nếu server gửi (anti-snip gia hạn)
+            if (event.getEndTime() != null && lblEndTime != null) {
+                lblEndTime.setText(event.getEndTime());
+            }
 
             String eventType = event.getEventType();
             if ("SNAPSHOT".equals(eventType)) {
                 setMessage("Đã tải dữ liệu phiên đấu giá.");
             } else if ("NEW_BID".equals(eventType)) {
-                setMessage("Bid mới từ " + event.getBidderName() + ": " + formatPrice(event.getBidAmount()));
+                String msg = "Bid mới từ " + event.getBidderName() + ": " + formatPrice(event.getBidAmount());
+                if (event.isTimeExtended()) {
+                    msg += "Thời gian được gia hạn";
+                }
+                setMessage(msg);
             } else {
                 setMessage(event.getMessage() != null ? event.getMessage() : "Có cập nhật mới.");
             }

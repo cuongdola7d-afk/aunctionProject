@@ -1,8 +1,8 @@
- package ddc.server.controller.service;
+package ddc.server.controller.service;
 
- import java.time.LocalDateTime;
- import java.util.Collections;
- import java.util.List;
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 
 import ddc.server.dao.AuctionDAO;
 import ddc.server.exception.AuctionClosedException;
@@ -16,7 +16,9 @@ import ddc.server.model.user.User;
 public class AuctionService {
     private final AuctionDAO auctionDAO;
 
-    public AuctionService() { this.auctionDAO = new AuctionDAO(); }
+    public AuctionService() {
+        this.auctionDAO = new AuctionDAO();
+    }
 
     public boolean createAuction(Auction auction) {
         boolean isSuccess = auctionDAO.createAuction(auction);
@@ -28,34 +30,34 @@ public class AuctionService {
         return auctionDAO.getAllAuctions();
     }
 
-     public void refreshAuctionStatus(Auction auction) {
-         if (auction == null || auction.getStartTime() == null || auction.getEndTime() == null) {
-             return;
-         }
+    public void refreshAuctionStatus(Auction auction) {
+        if (auction == null || auction.getStartTime() == null || auction.getEndTime() == null) {
+            return;
+        }
 
         if (auction.getStatus() == AuctionStatus.CANCELLED) {
             return;
         }
 
-         LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now();
 
-         if (now.isBefore(auction.getStartTime())) {
-             auction.setStatus("OPEN");
-         } else if (now.isBefore(auction.getEndTime())) {
-             auction.setStatus("RUNNING");
-         } else {
-             auction.setStatus("FINISHED");
-         }
-     }
+        if (now.isBefore(auction.getStartTime())) {
+            auction.setStatus("OPEN");
+        } else if (now.isBefore(auction.getEndTime())) {
+            auction.setStatus("RUNNING");
+        } else {
+            auction.setStatus("FINISHED");
+        }
+    }
 
     public void startAuction(Auction auction) throws AuctionClosedException, InvalidBidException {
         validateAuctionStructure(auction);
         normalizeAuctionPriceIfNeeded(auction);
         refreshAuctionStatus(auction);
 
-         if (auction.getStatus() == AuctionStatus.FINISHED) {
-             throw new AuctionClosedException("Phiên đấu giá đã kết thúc.");
-         }
+        if (auction.getStatus() == AuctionStatus.FINISHED) {
+            throw new AuctionClosedException("Phiên đấu giá đã kết thúc.");
+        }
 
         if (auction.getStatus() == AuctionStatus.CANCELLED) {
             throw new AuctionClosedException("Phiên đấu giá đã bị hủy.");
@@ -68,7 +70,10 @@ public class AuctionService {
         auction.startAuction();
     }
 
-    public void placeBid(Auction auction, Bidder bidder, double amount, LocalDateTime time)
+    /**
+     * @return true nếu endTime bị gia hạn bởi anti-snip
+     */
+    public boolean placeBid(Auction auction, Bidder bidder, double amount, LocalDateTime time)
             throws AuctionClosedException, InvalidBidException {
 
         validateAuctionStructure(auction);
@@ -98,9 +103,9 @@ public class AuctionService {
         }
 
         Bid bid = new Bid()
-                    .setBidder(bidder)
-                    .setBidAmount(amount)
-                    .setBidTime(time);
+                .setBidder(bidder)
+                .setBidAmount(amount)
+                .setBidTime(time);
         bid.setAuctionId(auction.getId());
 
         try {
@@ -111,6 +116,9 @@ public class AuctionService {
 
         bidder.addBid(bid);
         auction.setCurrentPrice(amount);
+
+        // Anti-snipping: gia hạn nếu bid trong khoảng cuối
+        return applyAntiSnipExtension(auction, time);
     }
 
     public void finishAuction(Auction auction) throws InvalidBidException {
@@ -154,25 +162,25 @@ public class AuctionService {
         return auction.getCurrentPrice();
     }
 
-     public List<Bid> getBidHistory(Auction auction) {
-         if (auction == null || auction.getBidHistory() == null) {
-             return Collections.emptyList();
-         }
-         return auction.getBidHistory();
-     }
+    public List<Bid> getBidHistory(Auction auction) {
+        if (auction == null || auction.getBidHistory() == null) {
+            return Collections.emptyList();
+        }
+        return auction.getBidHistory();
+    }
 
     private void validateAuctionStructure(Auction auction) throws InvalidBidException {
         if (auction == null) {
             throw new InvalidBidException("Auction không được null.");
         }
 
-         if (auction.getItem() == null) {
-             throw new InvalidBidException("Auction chưa có item.");
-         }
+        if (auction.getItem() == null) {
+            throw new InvalidBidException("Auction chưa có item.");
+        }
 
-         if (auction.getStartTime() == null || auction.getEndTime() == null) {
-             throw new InvalidBidException("Auction phải có startTime và endTime.");
-         }
+        if (auction.getStartTime() == null || auction.getEndTime() == null) {
+            throw new InvalidBidException("Auction phải có startTime và endTime.");
+        }
 
         if (!auction.getEndTime().isAfter(auction.getStartTime())) {
             throw new InvalidBidException("endTime phải sau startTime.");
@@ -185,5 +193,26 @@ public class AuctionService {
                 && auction.getCurrentPrice() <= 0) {
             auction.setCurrentPrice(auction.getCurrentPrice());
         }
+    }
+
+    /**
+     * Kiểm tra và gia hạn endTime nếu bid nằm trong khoảng anti-snip.
+     * 
+     * @return true nếu endTime đã được gia hạn
+     */
+
+    public boolean applyAntiSnipExtension(Auction auction, LocalDateTime bidTime) {
+        if (auction.getEndTime() == null || bidTime == null) {
+            return false;
+        }
+
+        long secondsRemaining = java.time.Duration.between(bidTime, auction.getEndTime()).getSeconds();
+
+        if (secondsRemaining > 0 && secondsRemaining <= auction.getAntiSnipThresholdSeconds()) {
+            LocalDateTime newEndTime = auction.getEndTime().plusSeconds(auction.getAntiSnipExtensionSeconds());
+            auction.setEndTime(newEndTime);
+            return true;
+        }
+        return false;
     }
 }

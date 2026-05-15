@@ -161,9 +161,9 @@ public class RealtimeClientHandler implements Runnable {
                 sendError(client, "Khong tim thay bidder: " + request.getBidderId());
                 return;
             }
-
+            boolean timeExtended;
             try {
-                auctionService.placeBid(auction, bidder, request.getAmount(), LocalDateTime.now());
+                timeExtended = auctionService.placeBid(auction, bidder, request.getAmount(), LocalDateTime.now());
             } catch (Exception e) {
                 sendError(client, e.getMessage());
                 return;
@@ -184,7 +184,11 @@ public class RealtimeClientHandler implements Runnable {
             event.setStatus(auction.getStatus().name());
             event.setBidderName(bidderName);
             event.setBidAmount(request.getAmount());
-            event.setMessage("Bid moi: " + bidderName + " - " + request.getAmount());
+            event.setEndTime(auction.getEndTime() != null ? auction.getEndTime().toString() : null);
+            event.setTimeExtended(timeExtended);
+            event.setMessage(
+                    timeExtended ? "Bid moi: " + bidderName + " - " + request.getAmount() + "(thoi gian gia han)"
+                            : "Bid moi: " + bidderName + " - " + request.getAmount());
         }
 
         broadcastAuctionEvent(auctionId, event);
