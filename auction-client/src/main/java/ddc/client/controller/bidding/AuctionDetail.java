@@ -53,6 +53,7 @@ public class AuctionDetail implements ServerMessageListener {
     private AuctionSocketClient socketClient;
     private String currentAuctionId;
     private String currentBidderId;
+    private long minBidIncrement; // bước giá tối thiểu từ server
 
     @FXML
     public void initialize() {
@@ -132,9 +133,15 @@ public class AuctionDetail implements ServerMessageListener {
             return;
         }
 
-        final double amount;
+        final long amount;
         try {
-            amount = Double.parseDouble(txtBidAmount.getText().trim());
+            double raw = Double.parseDouble(txtBidAmount.getText().trim());
+            // Kiểm tra giá phải là số nguyên
+            if (raw != Math.floor(raw)) {
+                setMessage("Giá đặt phải là số nguyên!");
+                return;
+            }
+            amount = (long) raw;
         } catch (NumberFormatException e) {
             setMessage("Số tiền không hợp lệ.");
             return;
@@ -176,6 +183,10 @@ public class AuctionDetail implements ServerMessageListener {
         Platform.runLater(() -> {
             if (lblPrice != null) {
                 lblPrice.setText(formatPrice(event.getCurrentPrice()));
+            }
+            // Cập nhật bước giá tối thiểu từ server
+            if (event.getMinBidIncrement() > 0) {
+                minBidIncrement = event.getMinBidIncrement();
             }
             // Cập nhật endTime nếu server gửi (anti-snip gia hạn)
             if (event.getEndTime() != null && lblEndTime != null) {

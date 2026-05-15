@@ -186,6 +186,7 @@ public class RealtimeClientHandler implements Runnable {
             event.setBidAmount(request.getAmount());
             event.setEndTime(auction.getEndTime() != null ? auction.getEndTime().toString() : null);
             event.setTimeExtended(timeExtended);
+            event.setMinBidIncrement(auction.getMinBidIncrement());
             event.setMessage(
                     timeExtended ? "Bid moi: " + bidderName + " - " + request.getAmount() + "(thoi gian gia han)"
                             : "Bid moi: " + bidderName + " - " + request.getAmount());
@@ -263,6 +264,7 @@ public class RealtimeClientHandler implements Runnable {
             snapshot.setBidderName(auction.getHighestBidder().getUsername());
         }
 
+        snapshot.setMinBidIncrement(auction.getMinBidIncrement());
         snapshot.setMessage("Snapshot phien dau gia.");
         return snapshot;
     }

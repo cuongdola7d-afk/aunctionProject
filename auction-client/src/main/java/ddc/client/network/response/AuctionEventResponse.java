@@ -13,6 +13,7 @@ public class AuctionEventResponse {
     private String message;
     private String endTime;
     private boolean timeExtended;
+    private long minBidIncrement;
 
     public AuctionEventResponse() {
     }
@@ -111,5 +112,13 @@ public class AuctionEventResponse {
 
     public void setTimeExtended(boolean timeExtended) {
         this.timeExtended = timeExtended;
+    }
+
+    public long getMinBidIncrement() {
+        return minBidIncrement;
+    }
+
+    public void setMinBidIncrement(long minBidIncrement) {
+        this.minBidIncrement = minBidIncrement;
     }
 }

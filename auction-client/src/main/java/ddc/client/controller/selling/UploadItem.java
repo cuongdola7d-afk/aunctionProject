@@ -67,7 +67,7 @@ public class UploadItem implements Initializable {
     @FXML
     private Button btnNext;
     @FXML
-    private DatePicker auctionEndPicker,auctionStartPicker;
+    private DatePicker auctionEndPicker, auctionStartPicker;
     @FXML
     private Label nameErrorLabel, desErrorLabel;
 
@@ -252,6 +252,9 @@ public class UploadItem implements Initializable {
             // Kiểm tra giá hợp lệ
             if (startingPrice <= 0)
                 throw new ItemValidationException("Giá phải > 0");
+            // Kiểm tra giá phải là số nguyên
+            if (startingPrice != Math.floor(startingPrice))
+                throw new ItemValidationException("Giá khởi điểm phải là số nguyên!");
             // kiểm tra ngày hợp lệ
             if (auctionEndPicker.getValue() == null) {
                 throw new ItemValidationException.InvalidDurationException("Vui lòng chọn ngày kết thúc!");
@@ -324,6 +327,7 @@ public class UploadItem implements Initializable {
                     AuctionDTO auction = new AuctionDTO()
                             .setItem(gottenItem)
                             .setCurrentPrice(startingPrice)
+                            .setStartingPrice(startingPrice)
                             .setStartTime(startDateTime)
                             .setEndTime(endDateTime);
 

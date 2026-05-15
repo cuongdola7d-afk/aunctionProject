@@ -16,6 +16,7 @@ public class AuctionDTO {
 
     private UserDTO highestBidder;
     private double currentPrice;
+    private double startingPrice;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
 
@@ -31,6 +32,7 @@ public class AuctionDTO {
     public AuctionStatus getStatus () { return status; }
     public UserDTO getHighestBidder() { return highestBidder; }
     public double getCurrentPrice() { return currentPrice; }
+    public double getStartingPrice() { return startingPrice; }
     public LocalDateTime getStartTime() { return startTime; }
     public LocalDateTime getEndTime() { return endTime; }
 
@@ -60,6 +62,11 @@ public class AuctionDTO {
 
     public AuctionDTO setCurrentPrice (double currentPrice) {
         this.currentPrice = currentPrice;
+        return this;
+    }
+
+    public AuctionDTO setStartingPrice (double startingPrice) {
+        this.startingPrice = startingPrice;
         return this;
     }
 

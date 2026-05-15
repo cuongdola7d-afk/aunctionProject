@@ -97,9 +97,24 @@ public class AuctionService {
             throw new AuctionClosedException("Phiên đấu giá đã đóng.");
         }
 
-        if (amount <= auction.getCurrentPrice()) {
+        // Chặn bidder đặt giá liên tục khi đang giữ giá cao nhất
+        User currentHighestUser = auction.getHighestBidder();
+        if (currentHighestUser != null && currentHighestUser.getId().equals(bidder.getId())) {
+            throw new InvalidBidException("Bạn đang giữ giá cao nhất, chờ người khác đặt giá.");
+        }
+
+        // Kiểm tra giá phải là số nguyên
+        if (amount != Math.floor(amount)) {
+            throw new InvalidBidException("Giá đặt phải là số nguyên, không chấp nhận số thập phân.");
+        }
+
+        // Kiểm tra bước giá tối thiểu = 10% giá gốc
+        long minIncrement = auction.getMinBidIncrement();
+        double minBid = auction.getCurrentPrice() + minIncrement;
+        if (amount < minBid) {
             throw new InvalidBidException(
-                    "Giá bid phải lớn hơn giá hiện tại: " + auction.getCurrentPrice());
+                    "Giá tối thiểu phải là " + String.format("%,.0f", minBid)
+                    + " (bước giá: " + String.format("%,.0f", (double) minIncrement) + ")");
         }
 
         Bid bid = new Bid()
@@ -192,6 +207,10 @@ public class AuctionService {
                 && auction.getItem() != null
                 && auction.getCurrentPrice() <= 0) {
             auction.setCurrentPrice(auction.getCurrentPrice());
+        }
+        // Đảm bảo startingPrice luôn có giá trị
+        if (auction != null && auction.getStartingPrice() <= 0 && auction.getCurrentPrice() > 0) {
+            auction.setStartingPrice(auction.getCurrentPrice());
         }
     }
 

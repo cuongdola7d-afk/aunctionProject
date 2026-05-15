@@ -16,6 +16,7 @@ public class Auction extends Entity<Auction> {
 
     private User highestBidder;
     private double currentPrice;
+    private double startingPrice; // giá gốc cố định, dùng tính bước giá
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private int antiSnipThresholdSeconds = 60; // mặc định <= 60s sẽ gia hạn thêm 30s
@@ -43,6 +44,15 @@ public class Auction extends Entity<Auction> {
 
     public double getCurrentPrice() {
         return currentPrice;
+    }
+
+    public double getStartingPrice() {
+        return startingPrice;
+    }
+
+    // Tính bước giá tối thiểu = 10% giá gốc, làm tròn lên
+    public long getMinBidIncrement() {
+        return (long) Math.ceil(startingPrice * 0.1);
     }
 
     public LocalDateTime getStartTime() {
@@ -79,6 +89,11 @@ public class Auction extends Entity<Auction> {
 
     public Auction setCurrentPrice(double currentPrice) {
         this.currentPrice = currentPrice;
+        return this;
+    }
+
+    public Auction setStartingPrice(double startingPrice) {
+        this.startingPrice = startingPrice;
         return this;
     }
 

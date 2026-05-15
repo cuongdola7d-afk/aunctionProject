@@ -20,7 +20,7 @@ public class AuctionDAO {
     private final UserDAO userDAO = new UserDAO();
 
     public boolean createAuction(Auction auction) {
-        String sql = "INSERT INTO ddc_auctions (item_id, highest_bidder_name, current_price, start_time, end_time) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO ddc_auctions (item_id, highest_bidder_name, current_price, starting_price, start_time, end_time) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection con = DatabaseConnection.getConnection();
                 PreparedStatement pst = con.prepareStatement(sql)) {
@@ -28,8 +28,9 @@ public class AuctionDAO {
             pst.setString(1, auction.getItem().getId());
             pst.setString(2, "username");
             pst.setDouble(3, auction.getCurrentPrice());
-            pst.setTimestamp(4, Timestamp.valueOf(auction.getStartTime()));
-            pst.setTimestamp(5, Timestamp.valueOf(auction.getEndTime()));
+            pst.setDouble(4, auction.getStartingPrice() > 0 ? auction.getStartingPrice() : auction.getCurrentPrice());
+            pst.setTimestamp(5, Timestamp.valueOf(auction.getStartTime()));
+            pst.setTimestamp(6, Timestamp.valueOf(auction.getEndTime()));
 
             int insert = pst.executeUpdate();
             return insert > 0;
@@ -54,6 +55,7 @@ public class AuctionDAO {
                 a.setStatus(rs.getString("status"));
                 a.setHighestBidder(userDAO.getUser(rs.getString("highest_bidder_name")));
                 a.setCurrentPrice(rs.getDouble("current_price"));
+                a.setStartingPrice(rs.getDouble("starting_price"));
                 a.setStartTime(rs.getObject("start_time", LocalDateTime.class));
                 a.setEndTime(rs.getObject("end_time", LocalDateTime.class));
                 list.add(a);
@@ -83,6 +85,7 @@ public class AuctionDAO {
                     auction.setStatus(rs.getString("status"));
                     auction.setHighestBidder(userDAO.getUser(rs.getString("highest_bidder_name")));
                     auction.setCurrentPrice(rs.getDouble("current_price"));
+                    auction.setStartingPrice(rs.getDouble("starting_price"));
                     auction.setStartTime(rs.getObject("start_time", LocalDateTime.class));
                     auction.setEndTime(rs.getObject("end_time", LocalDateTime.class));
                     return auction;

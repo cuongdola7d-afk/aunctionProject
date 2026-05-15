@@ -12,6 +12,7 @@ public class AuctionEventPayload {
     private String endTime;
     private String message;
     private boolean timeExtended; // true nếu endTime đã bị gia hạn bởi anti-snip
+    private long minBidIncrement; // bước giá tối thiểu gửi cho client
 
     public AuctionEventPayload() {
     }
@@ -95,5 +96,13 @@ public class AuctionEventPayload {
 
     public void setTimeExtended(boolean timeExtended) {
         this.timeExtended = timeExtended;
+    }
+
+    public long getMinBidIncrement() {
+        return minBidIncrement;
+    }
+
+    public void setMinBidIncrement(long minBidIncrement) {
+        this.minBidIncrement = minBidIncrement;
     }
 }
