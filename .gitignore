@@ -4,6 +4,7 @@ target/
 *.log
 logs/
 .vscode
+conversation_cache/
 .env
 .env.*
 !.env.example
