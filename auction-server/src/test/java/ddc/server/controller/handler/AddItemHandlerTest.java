@@ -1,11 +1,10 @@
 package ddc.server.controller.handler;
 
-import ddc.server.controller.RequestMessage;
-
-import ddc.server.network.response.AddItemResponse;
-import ddc.server.network.response.Response;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+
+import ddc.server.controller.RequestMessage;
+import ddc.server.network.response.Response;
 
 class AddItemHandlerTest {
     // Khởi tạo handler thật của server

@@ -17,6 +17,11 @@ import ddc.server.controller.handler.*;
         routes.put("GET_ALL", new GetAllAuctionHandler());
         routes.put("UPDATE_PASSWORD", new ChangePasswordHandler());
         routes.put("UPDATE_PROFILE", new UpdateProfileHandler());
+        routes.put("ADMIN_STATS", new AdminGetStatsHandler());
+        routes.put("ADMIN_GET_USERS", new AdminGetUsersHandler());
+        routes.put("ADMIN_UPDATE_USER_STATUS", new AdminUpdateUserStatusHandler());
+        routes.put("ADMIN_DELETE_USER", new AdminDeleteUserHandler());
+        routes.put("ADMIN_CANCEL_AUCTION", new AdminCancelAuctionHandler());
     }
 
     public static ActionHandler getHandler (String action) {
