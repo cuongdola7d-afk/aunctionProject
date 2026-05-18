@@ -31,7 +31,6 @@ import ddc.server.pattern.Singleton.AuctionManager;
 public class RealtimeClientHandler implements Runnable {
     private static final Logger LOGGER = LoggerFactory.getLogger(RealtimeClientHandler.class);
     private static final Set<ClientConnection> ACTIVE_CONNECTIONS = ConcurrentHashMap.newKeySet();
-    private static final ConcurrentHashMap<String, Object> AUCTION_LOCKS = new ConcurrentHashMap<>();
 
     private final Socket socket;
     private final AuctionService auctionService;
@@ -148,27 +147,27 @@ public class RealtimeClientHandler implements Runnable {
         String auctionId;
         String bidderName;
 
-        Object auctionLock = AUCTION_LOCKS.computeIfAbsent(request.getAuctionId(), id -> new Object());
-        synchronized (auctionLock) {
-            Auction auction = getAuctionOrLoad(request.getAuctionId());
-            if (auction == null) {
-                sendError(client, "Khong tim thay phien dau gia: " + request.getAuctionId());
-                return;
-            }
+        Auction auction = getAuctionOrLoad(request.getAuctionId());
+        if (auction == null) {
+            sendError(client, "Khong tim thay phien dau gia: " + request.getAuctionId());
+            return;
+        }
 
-            Bidder bidder = getBidderOrLoad(request.getBidderId());
-            if (bidder == null) {
-                sendError(client, "Khong tim thay bidder: " + request.getBidderId());
-                return;
-            }
-            boolean timeExtended;
-            try {
-                timeExtended = auctionService.placeBid(auction, bidder, request.getAmount(), LocalDateTime.now());
-            } catch (Exception e) {
-                sendError(client, e.getMessage());
-                return;
-            }
+        Bidder bidder = getBidderOrLoad(request.getBidderId());
+        if (bidder == null) {
+            sendError(client, "Khong tim thay bidder: " + request.getBidderId());
+            return;
+        }
 
+        boolean timeExtended;
+        try {
+            timeExtended = auctionService.placeBid(auction, bidder, request.getAmount(), LocalDateTime.now());
+        } catch (Exception e) {
+            sendError(client, e.getMessage());
+            return;
+        }
+
+        synchronized (auction) {
             if (!auctionDAO.updateAuction(auction)) {
                 sendError(client, "Khong cap nhat duoc phien dau gia.");
                 return;

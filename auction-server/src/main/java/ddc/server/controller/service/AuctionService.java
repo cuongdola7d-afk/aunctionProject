@@ -83,6 +83,13 @@ public class AuctionService {
             throw new InvalidBidException("Người đấu giá không hợp lệ.");
         }
 
+        synchronized (auction) {
+            return placeBidLocked(auction, bidder, amount, time);
+        }
+    }
+
+    private boolean placeBidLocked(Auction auction, Bidder bidder, double amount, LocalDateTime time)
+            throws AuctionClosedException, InvalidBidException {
         refreshAuctionStatus(auction);
 
         if (auction.getStatus() == AuctionStatus.OPEN) {
