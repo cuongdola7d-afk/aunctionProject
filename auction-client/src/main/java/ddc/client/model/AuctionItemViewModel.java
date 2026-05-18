@@ -1,19 +1,26 @@
 package ddc.client.model;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.chart.XYChart;
 
 public class AuctionItemViewModel {
     private final String auctionId;
-    private final String name;
+    private String name;
     private String price;
     private StringProperty timeLeft = new SimpleStringProperty();
-    private final LocalDateTime endTime;
-    private final String imagePath;
-    private final String category;
+    private LocalDateTime endTime;
+    private String imagePath;
+    private String category;
+    private static final Map<String, ObservableList<XYChart.Data<String, Number>>> GLOBAL_PRICE_HISTORY = new java.util.concurrent.ConcurrentHashMap<>();
+    private final ObservableList<XYChart.Data<String, Number>> priceHistory;
 
+    
     public AuctionItemViewModel(String auctionId, String name, String price, LocalDateTime endTime, String timeLeft, String imagePath, String category) {
         this.auctionId = auctionId;
         this.name = name;
@@ -22,6 +29,11 @@ public class AuctionItemViewModel {
         this.timeLeft.set(timeLeft);
         this.imagePath = imagePath;
         this.category = category;
+        this.priceHistory = GLOBAL_PRICE_HISTORY.computeIfAbsent(auctionId, k -> FXCollections.observableArrayList());
+    }
+
+    public ObservableList<XYChart.Data<String, Number>> getPriceHistory() {
+        return priceHistory;
     }
 
     public String getAuctionId() {

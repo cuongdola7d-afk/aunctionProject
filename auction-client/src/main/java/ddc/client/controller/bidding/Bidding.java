@@ -6,7 +6,9 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +23,10 @@ import ddc.client.model.Request;
 import ddc.client.network.RealtimeToServer;
 import ddc.client.network.UserSession;
 import ddc.client.network.response.GetAllAuctionsResponse;
+import javafx.animation.Animation;
+import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
+import javafx.animation.RotateTransition;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -32,6 +37,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 
@@ -56,12 +62,13 @@ public class Bidding {
     private Label lblSelectedCategory;
 
     @FXML
-    private Label lblEmptyState;
+    private ImageView imageViewLoading;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Bidding.class);
 
     private final List<AuctionItemViewModel> itemList = new ArrayList<>();
     private final Gson gson = GsonConfig.newGson();
+    private final Map<String, CardNodeHolder> cardCache = new HashMap<>();
 
     private Timeline serverRefreshTimeline;
     private Timeline clockTimeline;
@@ -74,8 +81,8 @@ public class Bidding {
     @FXML
     public void initialize() {
         currentBidderId = UserSession.getInstance().getId();
-        // loadSampleData();
         setupCategoryTree();
+        loadingLogo();
         txtSearch.textProperty().addListener((observable, oldValue, newValue) -> applyFilters());
         
         refreshDataFromServer();
@@ -166,7 +173,7 @@ public class Bidding {
                             // Nếu null hoặc không phải link, dùng ảnh mặc định
                             fullImageUrl = defaultImage;
                         }
-                        String initialTimeLeft = TimeCalculate(LocalDateTime.now(), auction.getEndTime());
+                        String initialTimeLeft = TimeReturning(auction);
 
                         newList.add(new AuctionItemViewModel(
                             auction.getAuctionId(),
@@ -194,6 +201,9 @@ public class Bidding {
 
     private void updateAllCountdowns() {
         for (AuctionItemViewModel item : itemList) {
+            if (item.getTimeLeft().equals("Đã kết thúc.") || item.getTimeLeft().equals("Sắp bắt đầu.")) {
+                continue;
+            }
             String newTime = TimeCalculate(LocalDateTime.now(), item.getEndTime());
 
             if (!newTime.equals(item.getTimeLeft())) {
@@ -201,86 +211,6 @@ public class Bidding {
             }
         }
     }
-    // private void loadSampleData() {
-    //     itemList.clear();
-
-    //     // BƯỚC 1: Xóa bỏ việc ghép imageBaseUrl với IP Server vì link giờ nằm trên
-    //     // Cloud
-    //     // Bạn có thể giữ lại ảnh mặc định để dự phòng
-    //     String defaultImage = "/ddc/client/views/bidding/image/watch.jpg";
-
-    //     new Thread(() -> {
-    //         try {
-    //             String JsonResponse = RealtimeToServer.sendRequest(new Request().setAction("GET_ALL"));
-    //             GetAllAuctionsResponse response = gson.fromJson(JsonResponse, GetAllAuctionsResponse.class);
-
-    //             if (response != null && "SUCCESS".equals(response.getStatus())) {
-    //                 List<AuctionDTO> auctions = Arrays.asList(response.getData());
-
-    //                 Platform.runLater(() -> {
-    //                     for (AuctionDTO auction : auctions) {
-    //                         // Lấy URL từ DB (Bây giờ nó là: https://res.cloudinary.com/...)
-    //                         String imageUrlFromDB = auction.getItem().getImageUrl();
-    //                         LOGGER.debug("Debug URL: {}", imageUrlFromDB); // Kiểm tra xem nó là "abc.jpg" hay
-    //                                                                        // "https://..."
-
-    //                         // BƯỚC 2: Kiểm tra logic URL
-    //                         String fullImageUrl;
-    //                         if (imageUrlFromDB != null && imageUrlFromDB.startsWith("http")) {
-    //                             // Nếu đã là link (Cloudinary), dùng luôn
-    //                             fullImageUrl = imageUrlFromDB;
-    //                         } else {
-    //                             // Nếu null hoặc không phải link, dùng ảnh mặc định
-    //                             fullImageUrl = defaultImage;
-    //                         }
-
-    //                         itemList.add(new AuctionItemViewModel(
-    //                                 auction.getAuctionId(),
-    //                                 auction.getItem().getItemName(),
-    //                                 new DecimalFormat("#,###").format(auction.getCurrentPrice()) + " đ",
-    //                                 TimeCalculate(LocalDateTime.now(), auction.getEndTime()),
-    //                                 fullImageUrl, // Truyền link trực tiếp vào ViewModel
-    //                                 CategoryTranslating(auction.getItem().getCategory())));
-    //                     }
-
-    //                     itemList.add(new AuctionItemViewModel(
-    //                             "AUCT-001",
-    //                             "Đồng hồ thông minh",
-    //                             "1,250,000 đ",
-    //                             "02:15:30",
-    //                             "/ddc/client/views/bidding/image/watch.jpg",
-    //                             "Đồ điện tử"));
-
-    //                     itemList.add(new AuctionItemViewModel(
-    //                             "AUCT-002",
-    //                             "Đồng hồ Vintage",
-    //                             "3,400,000 đ",
-    //                             "00:45:12",
-    //                             "/ddc/client/views/bidding/image/vintageWatch.jpg",
-    //                             "Nghệ thuật"));
-
-    //                     itemList.add(new AuctionItemViewModel(
-    //                             "AUCT-003",
-    //                             "Tai nghe chống ồn",
-    //                             "850,000 đ",
-    //                             "05:10:00",
-    //                             "/ddc/client/views/bidding/image/headphone.jpg",
-    //                             "Đồ điện tử"));
-
-    //                     itemList.add(new AuctionItemViewModel(
-    //                             "AUCT-004",
-    //                             "Bàn phím cơ RGB",
-    //                             "2,100,000 đ",
-    //                             "01:20:45",
-    //                             "/ddc/client/views/bidding/image/mechanicalKeyboard.jpg",
-    //                             "Đồ điện tử"));
-    //                 });
-    //             }
-    //         } catch (Exception e) {
-    //             LOGGER.error("Loi load auction data", e);
-    //         }
-    //     }).start();
-    // }
 
     private void applyFilters() {
         String keyword = txtSearch.getText() == null ? "" : txtSearch.getText().trim().toLowerCase();
@@ -331,37 +261,46 @@ public class Bidding {
 
     @SuppressWarnings("CallToPrintStackTrace")
     private void renderItems(List<AuctionItemViewModel> items) {
-        auctionContainer.getChildren().clear();
-
-        boolean isEmpty = items.isEmpty();
-        lblEmptyState.setVisible(isEmpty);
-        lblEmptyState.setManaged(isEmpty);
+        List<Parent> willBeRenderedNodes = new ArrayList<>();
 
         for (AuctionItemViewModel item : items) {
             try {
-                FXMLLoader loader = new FXMLLoader(
+                CardNodeHolder holder = cardCache.get(item.getAuctionId());
+                
+                if (holder == null) {
+                    FXMLLoader loader = new FXMLLoader(
                         getClass().getResource("/ddc/client/views/bidding/auction-card.fxml"));
+                    Parent cardNode = loader.load();
+                    AuctionCard cardController = loader.getController();
 
-                Parent card = loader.load();
+                    holder = new CardNodeHolder(cardNode, cardController);
+                    cardCache.put(item.getAuctionId(), holder);
+                }
 
-                AuctionCard cardController = loader.getController();
-                cardController.setData(item, currentBidderId);
-
-                auctionContainer.getChildren().add(card);
-
+                holder.controller.setData(item, currentBidderId);
+                willBeRenderedNodes.add(holder.cardNode);
             } catch (IOException e) {
                 LOGGER.error("Không load được card item", e);
-
             }
+        }
+        auctionContainer.getChildren().setAll(willBeRenderedNodes);
+        cardCache.keySet().removeIf(id -> items.stream().noneMatch(i -> i.getAuctionId().equals(id)));
+    }
+
+    private static String TimeReturning(AuctionDTO auction) {
+        if (TimeComparing(auction.getStartTime(), LocalDateTime.now())) {
+            if (TimeComparing(LocalDateTime.now(), auction.getEndTime())) {
+                return TimeCalculate(LocalDateTime.now(), auction.getEndTime());
+            } else {
+                return "Đã kết thúc.";
+            }
+        } else {
+            return "Sắp bắt đầu.";
         }
     }
 
     private static String TimeCalculate(LocalDateTime start, LocalDateTime end) {
         Duration duration = Duration.between(start, end);
-
-        if (duration.isNegative() || duration.isZero()) {
-            return "Đã kết thúc.";
-        }
 
         long hours = duration.toHours();
         long minutes = duration.toMinutesPart();
@@ -369,6 +308,12 @@ public class Bidding {
 
         String timeRemaining = String.format("%02d:%02d:%02d", hours, minutes, seconds);
         return timeRemaining;
+    }
+
+    private static boolean TimeComparing(LocalDateTime start, LocalDateTime end) {
+        Duration duration = Duration.between(start, end);
+
+        return !(duration.isNegative() || duration.isZero());
     }
 
     private static String CategoryTranslating(String category) {
@@ -389,6 +334,17 @@ public class Bidding {
         }
     }
 
+    private void loadingLogo () {
+        RotateTransition rotate = new RotateTransition();
+        rotate.setNode(imageViewLoading);
+        rotate.setByAngle(360);
+        rotate.setDuration(javafx.util.Duration.seconds(1));
+        rotate.setCycleCount(Animation.INDEFINITE);
+        rotate.setInterpolator(Interpolator.LINEAR);
+
+        rotate.play();
+    }
+
     @FXML
     @SuppressWarnings("unused")
     private void handleClearFilters() {
@@ -407,6 +363,16 @@ public class Bidding {
     private void stopAutoRefresh() {
         if (serverRefreshTimeline != null) {
             serverRefreshTimeline.stop();
+        }
+    }
+
+    private static class CardNodeHolder {
+        final Parent cardNode;
+        final AuctionCard controller;
+
+        CardNodeHolder(Parent cardNode, AuctionCard controller) {
+            this.cardNode = cardNode;
+            this.controller = controller;
         }
     }
 

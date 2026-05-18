@@ -25,8 +25,7 @@ public class AuctionDTO {
 
     //Getters
     public String getId () { return id; }
-    public String getAuctionId () {
-         return isBlank(auctionId) ? id : auctionId; }
+    public String getAuctionId () { return isBlank(auctionId) ? id : auctionId; }
     public ItemGeneric getItem () { return item; }
     public List<BidDTO> getBidHistory () { return bidHistory; }
     public AuctionStatus getStatus () { return status; }

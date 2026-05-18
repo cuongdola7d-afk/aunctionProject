@@ -2,6 +2,9 @@ package ddc.client.controller.bidding;
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import ddc.client.model.AuctionItemViewModel;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
@@ -17,9 +20,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class AuctionCard {
 
@@ -45,6 +45,7 @@ public class AuctionCard {
 
     private AuctionItemViewModel item;
     private String currentBidderId;
+    private String currentloadedUrl;
 
     public void setData(AuctionItemViewModel item, String currentBidderId) {
         this.item = item;
@@ -52,22 +53,30 @@ public class AuctionCard {
 
         lblName.setText(item.getName());
         lblPrice.setText(item.getPrice());
+
+        lblTimeLeft.textProperty().unbind();
         lblTimeLeft.textProperty().bind(Bindings.concat("◷ ", item.timeLeftProperty()));
         lblCategory.setText(item.getCategory());
 
-        try {
-            var imageUrl = item.getImagePath().startsWith("http://") || item.getImagePath().startsWith("https://")
-                    ? null
-                    : getClass().getResource(item.getImagePath());
-            if (imageUrl != null) {
-                imgItem.setImage(new Image(imageUrl.toExternalForm()));
-            } else if (item.getImagePath().startsWith("http://") || item.getImagePath().startsWith("https://")) {
-                imgItem.setImage(new Image(item.getImagePath(), true));
-            } else {
-                LOGGER.warn("Không tìm thấy ảnh tại: {}", item.getImagePath());
+        String newImagePath = item.getImagePath();
+
+        if (newImagePath != null && !newImagePath.equals(currentloadedUrl)) {
+            currentloadedUrl = newImagePath;
+
+            try {
+                var imageUrl = item.getImagePath().startsWith("http://") || item.getImagePath().startsWith("https://")
+                        ? null
+                        : getClass().getResource(item.getImagePath());
+                if (imageUrl != null) {
+                    imgItem.setImage(new Image(imageUrl.toExternalForm()));
+                } else if (item.getImagePath().startsWith("http://") || item.getImagePath().startsWith("https://")) {
+                    imgItem.setImage(new Image(newImagePath, true));
+                } else {
+                    LOGGER.warn("Không tìm thấy ảnh tại: {}", item.getImagePath());
+                }
+            } catch (Exception e) {
+                LOGGER.warn("Lỗi khi load ảnh: {}", item.getImagePath());
             }
-        } catch (Exception e) {
-            LOGGER.warn("Lỗi khi load ảnh: {}", item.getImagePath());
         }
     }
 
@@ -96,7 +105,8 @@ public class AuctionCard {
             controller.setProductData(
                     item.getName(),
                     item.getPrice(),
-                    item.getImagePath());
+                    item.getImagePath(),
+                    item);
 
             Stage stage = new Stage();
             stage.setTitle(item.getName());

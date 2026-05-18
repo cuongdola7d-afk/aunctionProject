@@ -2,12 +2,17 @@ package ddc.client.controller.bidding;
 
 import ddc.client.config.ClientContext;
 import ddc.client.controller.SceneSwitcher;
+import ddc.client.model.AuctionItemViewModel;
 import ddc.client.network.client.AuctionSocketClient;
 import ddc.client.network.listener.ServerMessageListener;
 import ddc.client.network.response.AuctionEventResponse;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -15,6 +20,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
+
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,9 +58,15 @@ public class AuctionDetail implements ServerMessageListener {
     @FXML
     private FlowPane thumbnailContainer;
 
+    @FXML private LineChart<String, Number> priceChart;
+    @FXML private CategoryAxis xAxis;
+    @FXML private NumberAxis yAxis;
+    private XYChart.Series<String, Number> priceSeries;
+
     private AuctionSocketClient socketClient;
     private String currentAuctionId;
     private String currentBidderId;
+    private AuctionItemViewModel currentItem;
     private long minBidIncrement; // bước giá tối thiểu từ server
 
     @FXML
@@ -76,15 +90,32 @@ public class AuctionDetail implements ServerMessageListener {
         if (lblCountdown != null) {
             lblCountdown.setText("Đang chờ dữ liệu...");
         }
+
+        priceSeries = new XYChart.Series<>();
+        priceSeries.setName("Giá hiện tại");
+        priceChart.getData().add(priceSeries);
+        // Tối ưu cho Realtime
+        xAxis.setAnimated(false);
+        priceChart.setAnimated(false);
     }
 
-    public void setProductData(String name, String price, String imagePath) {
+    public void setProductData(String name, String price, String imagePath, AuctionItemViewModel item) {
+        this.currentItem = item;
         if (lblProductName != null) {
             lblProductName.setText(name);
         }
 
         if (lblPrice != null) {
             lblPrice.setText(price);
+        }
+
+        if (priceSeries != null && item != null) {
+            priceSeries.getData().clear();
+            // QUAN TRỌNG: Load lại toàn bộ lịch sử đã lưu trong ViewModel
+            for (XYChart.Data<String, Number> data : item.getPriceHistory()) {
+                // Phải tạo đối tượng Data mới để tránh lỗi "Duplicate Child" trong JavaFX
+                priceSeries.getData().add(new XYChart.Data<>(data.getXValue(), data.getYValue()));
+            }
         }
 
         try {
@@ -168,6 +199,30 @@ public class AuctionDetail implements ServerMessageListener {
         });
     }
 
+    private void addPricePoint(double price) {
+        String time = java.time.LocalDateTime.now().format(
+            java.time.format.DateTimeFormatter.ofPattern("dd/MM\nHH:mm:ss")
+        );
+        
+        // 1. Thêm vào biểu đồ hiện tại
+        XYChart.Data<String, Number> newData = new XYChart.Data<>(time, price);
+        priceSeries.getData().add(newData);
+
+        // 2. Lưu vào lịch sử trong ViewModel để khi mở lại vẫn thấy định dạng này
+        if (currentItem != null) {
+            currentItem.getPriceHistory().add(new XYChart.Data<>(time, price));
+            
+            if (currentItem.getPriceHistory().size() > 15) {
+                currentItem.getPriceHistory().remove(0);
+            }
+        }
+
+        // 3. Giới hạn số điểm hiển thị
+        if (priceSeries.getData().size() > 15) {
+            priceSeries.getData().remove(0);
+        }
+    }
+
     @Override
     public void onAuctionEvent(AuctionEventResponse event) {
         if (event == null) {
@@ -191,6 +246,10 @@ public class AuctionDetail implements ServerMessageListener {
             // Cập nhật endTime nếu server gửi (anti-snip gia hạn)
             if (event.getEndTime() != null && lblEndTime != null) {
                 lblEndTime.setText(event.getEndTime());
+            }
+
+            if ("NEW_BID".equals(event.getEventType()) || "SNAPSHOT".equals(event.getEventType())) {
+                addPricePoint(event.getCurrentPrice());
             }
 
             String eventType = event.getEventType();
@@ -232,13 +291,21 @@ public class AuctionDetail implements ServerMessageListener {
 
     @FXML
     private void handleBackToBidding(MouseEvent event) {
+        // 1. Lấy Stage và đóng ngay lập tức để người dùng không cảm thấy bị treo
         Node source = (Node) event.getSource();
-
         Stage stage = (Stage) source.getScene().getWindow();
-
         stage.close();
-    }
 
+        // 2. Chạy cleanup ở luồng phụ (EXECUTOR) để tránh block UI Thread
+        ddc.client.config.ClientContext.EXECUTOR.execute(() -> {
+            try {
+                cleanup();
+            } catch (Exception e) {
+                LOGGER.error("Lỗi khi cleanup: " + e.getMessage());
+            }
+        });
+    }
+    
     @FXML
     private void switchToHome(MouseEvent event) {
         cleanup();
