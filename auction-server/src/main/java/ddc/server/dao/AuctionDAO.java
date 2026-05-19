@@ -17,6 +17,7 @@ import ddc.server.model.transaction.AuctionStatus;
 
 public class AuctionDAO {
     private static final Logger LOGGER = LoggerFactory.getLogger(AuctionDAO.class);
+
     private final ItemDAO itemDAO = new ItemDAO();
     private final UserDAO userDAO = new UserDAO();
 

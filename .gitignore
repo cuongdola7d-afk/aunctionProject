@@ -8,3 +8,4 @@ conversation_cache/
 .env
 .env.*
 !.env.example
+AUCTION_FLOW.md

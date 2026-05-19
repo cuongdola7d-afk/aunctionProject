@@ -20,12 +20,7 @@ public class CloudinaryService {
                 "secure", true));
     }
 
-    /**
-     * Nhận mảng byte từ RequestMessage và đẩy lên mây
-     * 
-     * @param imageData mảng byte lấy từ request.getImageData()
-     * @return URL ảnh dạng https://... hoặc null nếu lỗi
-     */
+
     public static String uploadBytes(byte[] imageData) {
         if (imageData == null || imageData.length == 0)
             return null;

@@ -1,6 +1,7 @@
 package ddc.server.dao;
 
 import java.sql.Connection;
+import java.sql.ResultSetMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -46,13 +47,7 @@ public class UserDAO {
 
             try (ResultSet rs = pst.executeQuery()) {
                 if (rs.next()) {
-                    User user = new User()
-                            .setId(rs.getString("id"))
-                            .setUsername(rs.getString("username"))
-                            .setName(rs.getString("name"))
-                            .setEmail(rs.getString("email"))
-                            .setPassword(rs.getString("password"));
-                    return user;
+                    return mapUser(rs);
                 }
             }
         } catch (SQLException e) {
@@ -72,12 +67,7 @@ public class UserDAO {
 
             try (ResultSet rs = pst.executeQuery()) {
                 if (rs.next()) {
-                    return new User()
-                            .setId(rs.getString("id"))
-                            .setUsername(rs.getString("username"))
-                            .setName(rs.getString("name"))
-                            .setEmail(rs.getString("email"))
-                            .setPassword(rs.getString("password"));
+                    return mapUser(rs);
                 }
             }
         } catch (SQLException e) {
@@ -135,5 +125,32 @@ public class UserDAO {
             LOGGER.error("Loi khi cap nhat thong tin User: {}", e.getMessage(), e);
             return false;
         }
+    }
+
+    public User mapUser(ResultSet rs) throws SQLException {
+        User user = new User()
+                .setId(rs.getString("id"))
+                .setUsername(rs.getString("username"))
+                .setName(rs.getString("name"))
+                .setEmail(rs.getString("email"))
+                .setPassword(rs.getString("password"));
+
+        if (hasColumn(rs, "role")) {
+            user.setRole(rs.getString("role"));
+        }
+        if (hasColumn(rs, "status")) {
+            user.setStatus(rs.getString("status"));
+        }
+        return user;
+    }
+
+    private boolean hasColumn(ResultSet rs, String columnName) throws SQLException {
+        ResultSetMetaData metaData = rs.getMetaData();
+        for (int i = 1; i <= metaData.getColumnCount(); i++) {
+            if (columnName.equalsIgnoreCase(metaData.getColumnName(i))) {
+                return true;
+            }
+        }
+        return false;
     }
 }

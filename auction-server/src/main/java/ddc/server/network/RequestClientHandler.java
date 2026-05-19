@@ -87,7 +87,6 @@ public class RequestClientHandler implements Runnable {
         return (sb.length() == 0 && b == -1) ? null : sb.toString();
     }
 
-    // GIỮ NGUYÊN HÀM NÀY NHƯ YÊU CẦU
     private String handleRawRequest(RequestMessage request, String rawRequest) {
         try {
             if (rawRequest == null || rawRequest.isBlank()) {

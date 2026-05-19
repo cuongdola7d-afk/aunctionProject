@@ -6,6 +6,8 @@ public class UserDTO {
     private String name;
     private String email;
     private String id;
+    private String role;
+    private String status;
 
     public UserDTO () {}
 
@@ -15,6 +17,8 @@ public class UserDTO {
     public String getName () { return name; }
     public String getEmail () { return email; }
     public String getId () { return id;}
+    public String getRole() { return role == null || role.isBlank() ? "USER" : role; }
+    public String getStatus() { return status == null || status.isBlank() ? "ACTIVE" : status; }
     
     //Setters
     public UserDTO setUsername (String username) {
@@ -39,6 +43,16 @@ public class UserDTO {
 
     public UserDTO setId(String id){
         this.id = id;
+        return this;
+    }
+
+    public UserDTO setRole(String role) {
+        this.role = role == null || role.isBlank() ? "USER" : role;
+        return this;
+    }
+
+    public UserDTO setStatus(String status) {
+        this.status = status == null || status.isBlank() ? "ACTIVE" : status;
         return this;
     }
 }
