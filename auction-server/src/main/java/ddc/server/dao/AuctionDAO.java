@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import ddc.server.config.DatabaseConnection;
 import ddc.server.model.transaction.Auction;
+import ddc.server.model.transaction.AuctionStatus;
 
 public class AuctionDAO {
     private static final Logger LOGGER = LoggerFactory.getLogger(AuctionDAO.class);
@@ -117,6 +118,23 @@ public class AuctionDAO {
             return pst.executeUpdate() > 0;
         } catch (SQLException e) {
             LOGGER.error("Loi cap nhat auction", e);
+        }
+
+        return false;
+    }
+
+    public boolean updateAuctionStatus(String auctionId, AuctionStatus status) {
+        String sql = "UPDATE ddc_auctions SET status = ? WHERE id = ?";
+
+        try (Connection con = DatabaseConnection.getConnection();
+                PreparedStatement pst = con.prepareStatement(sql)) {
+
+            pst.setString(1, status.name());
+            pst.setString(2, auctionId);
+
+            return pst.executeUpdate() > 0;
+        } catch (SQLException e) {
+            LOGGER.error("Loi cap nhat trang thai auction", e);
         }
 
         return false;
