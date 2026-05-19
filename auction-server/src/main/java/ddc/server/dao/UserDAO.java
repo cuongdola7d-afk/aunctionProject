@@ -38,6 +38,10 @@ public class UserDAO {
     }
 
     public User getUser(String username) {
+        if (isBlank(username)) {
+            return null;
+        }
+
         String sql = "SELECT * FROM ddc_users WHERE username = ?";
 
         try (Connection con = DatabaseConnection.getConnection();

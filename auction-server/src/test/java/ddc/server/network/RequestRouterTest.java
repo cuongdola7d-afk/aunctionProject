@@ -8,11 +8,11 @@ import org.junit.jupiter.api.Test;
 import ddc.server.controller.handler.AddItemHandler;
 import ddc.server.controller.handler.ChangePasswordHandler;
 import ddc.server.controller.handler.CreateAuctionHandler;
-import ddc.server.controller.handler.GetAllAuctionHandler;
 import ddc.server.controller.handler.GetItemHandler;
 import ddc.server.controller.handler.LoginHandler;
 import ddc.server.controller.handler.RegisterHandler;
 import ddc.server.controller.handler.UpdateProfileHandler;
+import ddc.server.controller.handler.admin.GetAllAuctionHandler;
 
 class RequestRouterTest {
 

@@ -4,6 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import ddc.server.controller.handler.*;
+import ddc.server.controller.handler.admin.AdminCancelAuctionHandler;
+import ddc.server.controller.handler.admin.AdminDeleteUserHandler;
+import ddc.server.controller.handler.admin.AdminGetStatsHandler;
+import ddc.server.controller.handler.admin.AdminGetUsersHandler;
+import ddc.server.controller.handler.admin.AdminUpdateUserStatusHandler;
+import ddc.server.controller.handler.admin.GetAllAuctionHandler;
 
  public class RequestRouter {
      private static final Map<String, ActionHandler> routes = new HashMap<>();

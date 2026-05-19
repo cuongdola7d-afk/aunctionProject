@@ -1,8 +1,9 @@
-package ddc.server.controller.handler;
+package ddc.server.controller.handler.admin;
 
 import java.util.List;
 
 import ddc.server.controller.RequestMessage;
+import ddc.server.controller.handler.ActionHandler;
 import ddc.server.model.transaction.Auction;
 import ddc.server.network.response.BaseResponse;
 import ddc.server.network.response.GetAllAuctionsResponse;

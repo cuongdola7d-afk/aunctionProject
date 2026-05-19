@@ -1,8 +1,9 @@
-package ddc.server.controller.handler;
+package ddc.server.controller.handler.admin;
 
 import com.google.gson.JsonObject;
 
 import ddc.server.controller.RequestMessage;
+import ddc.server.controller.handler.ActionHandler;
 import ddc.server.controller.service.AdminService;
 import ddc.server.network.response.BaseResponse;
 import ddc.server.network.response.Response;
