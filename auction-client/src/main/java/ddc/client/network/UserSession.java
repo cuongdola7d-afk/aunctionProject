@@ -8,6 +8,8 @@ public class UserSession {
     private String email;
     private String id;
     private String password;
+    private String role = "USER";
+    private String status = "ACTIVE";
 
     private UserSession() {}
 
@@ -49,8 +51,26 @@ public class UserSession {
         return this;
     }
 
+    public String getRole() { return role; }
+    public UserSession setRole(String role) {
+        this.role = role == null || role.isBlank() ? "USER" : role;
+        return this;
+    }
+
+    public String getStatus() { return status; }
+    public UserSession setStatus(String status) {
+        this.status = status == null || status.isBlank() ? "ACTIVE" : status;
+        return this;
+    }
+
     public void cleanUserSession() {
         username = null;
+        name = null;
+        email = null;
+        id = null;
+        password = null;
+        role = "USER";
+        status = "ACTIVE";
         instance = null;
     }
 }

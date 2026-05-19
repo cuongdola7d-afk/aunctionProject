@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TreeView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ddc.client.controller.profile.BidHistory">
+   <children>
+      <VBox layoutX="11.0" prefHeight="80.0" prefWidth="774.0" AnchorPane.leftAnchor="11.0" AnchorPane.rightAnchor="9.599999999999909" AnchorPane.topAnchor="0.0">
+         <children>
+            <HBox prefHeight="100.0" prefWidth="779.0" spacing="10.0">
+               <children>
+                  <Label alignment="CENTER" onMouseClicked="#switchBackToProfile" prefHeight="71.0" prefWidth="36.0" style="-fx-background-color: transparent;" text="⬅" textAlignment="CENTER">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Label>
+                  <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="75.0" prefWidth="308.0" text="LỊCH SỬ ĐẤU GIÁ" textAlignment="CENTER" textFill="DARKBLUE">
+                     <font>
+                        <Font name="System Bold" size="36.0" />
+                     </font>
+                  </Label>
+                  <HBox alignment="TOP_RIGHT" prefHeight="100.0" prefWidth="414.0" HBox.hgrow="ALWAYS">
+                     <children>
+                        <ImageView fitHeight="70.0" fitWidth="70.0">
+                           <image>
+                              <Image url="@../DDCAuction.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </HBox>
+               </children>
+            </HBox>
+            <Separator halignment="RIGHT" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="3.2" prefWidth="779.0" style="-fx-background-color: #00008B;" VBox.vgrow="ALWAYS">
+               <VBox.margin>
+                  <Insets top="-30.0" />
+               </VBox.margin>
+            </Separator>
+         </children>
+      </VBox>
+      <AnchorPane layoutX="1.0" layoutY="80.0" prefHeight="522.0" prefWidth="800.0" AnchorPane.bottomAnchor="-3.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="80.80000000000007">
+         <children>
+            <TreeView fx:id="bidTreeView" prefHeight="517.0" prefWidth="178.0" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="621.6" AnchorPane.topAnchor="0.7999999999999545" />
+            <StackPane alignment="TOP_CENTER" focusTraversable="true" layoutX="178.0" prefHeight="518.0" prefWidth="621.0" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="177.60000000000002" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="0.7999999999999545">
+               <children>
+                  <ScrollPane focusTraversable="false" hbarPolicy="NEVER" pannable="true" prefHeight="200.0" prefWidth="200.0" vbarPolicy="ALWAYS">
+                    <content>
+                        <FlowPane fx:id="bidFlowPane" alignment="TOP_CENTER" hgap="18.0" vgap="18.0">
+                           <children>
+                              <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                                 <children>
+                                    <ImageView fx:id="imageViewLoading" fitHeight="250.0" fitWidth="250.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../DDCAuction.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Label alignment="CENTER" prefHeight="26.0" prefWidth="247.0" text="Đang tải sản phẩm..." textFill="DARKBLUE">
+                                       <font>
+                                          <Font name="Tahoma Bold" size="20.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </VBox>
+                           </children>
+                           <padding>
+                              <Insets bottom="90.0" left="18.0" right="18.0" top="18.0" />
+                           </padding>
+                        </FlowPane>
+                    </content>
+                  </ScrollPane>
+               </children>
+            </StackPane>
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>

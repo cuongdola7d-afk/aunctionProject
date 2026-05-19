@@ -13,6 +13,7 @@ import ddc.server.config.EnvConfig;
 import ddc.server.controller.service.AuctionService;
 import ddc.server.network.RequestClientHandler;
 import ddc.server.network.client.RealtimeClientHandler;
+import ddc.server.controller.service.AuctionStatusScheduler;
 
 public class Server {
     private static final Logger LOGGER = LoggerFactory.getLogger(Server.class);
@@ -53,6 +54,9 @@ public class Server {
          * - tránh mỗi client có 1 service riêng làm state bị lệch
          */
         AuctionService auctionService = new AuctionService();
+
+        AuctionStatusScheduler statusScheduler = new AuctionStatusScheduler(auctionService);
+        statusScheduler.start(10);
 
         Thread requestServerThread = new Thread(() -> startRequestServer(), "request-server-8080");
         Thread realtimeServerThread = new Thread(() -> startRealtimeServer(auctionService), "realtime-server-5555");

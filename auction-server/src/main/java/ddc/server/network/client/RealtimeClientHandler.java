@@ -211,10 +211,15 @@ public class RealtimeClientHandler implements Runnable {
         }
     }
 
-    private void broadcastAuctionEvent(String auctionId, Object payload) {
+    public static void broadcastAuctionEvent(String auctionId, Object payload) {
+        Gson gson = GsonConfig.newGson();
         for (ClientConnection connection : ACTIVE_CONNECTIONS) {
             if (connection.isSubscribedTo(auctionId)) {
-                sendAuctionEvent(connection, payload);
+                try {
+                    connection.send(MessageType.AUCTION_EVENT, payload, gson);
+                } catch (Exception e) {
+                    LOGGER.warn("Broadcast fail: {}", e.getMessage());
+                }
             }
         }
     }
