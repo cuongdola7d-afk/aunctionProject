@@ -19,6 +19,8 @@ import org.slf4j.LoggerFactory;
 
 public class Profile {
     private static final Logger LOGGER = LoggerFactory.getLogger(Profile.class);
+    private static final double WALLET_POPUP_WIDTH = 320;
+    private static final double WALLET_POPUP_HEIGHT = 320;
 
     @FXML
     private Label nameLabel, usernameLabel;
@@ -78,9 +80,9 @@ public class Profile {
             walletStage.setResizable(false);
             walletStage.initModality(Modality.APPLICATION_MODAL);
             walletStage.initOwner(owner);
-            walletStage.setScene(new Scene(root, 320, 200));
-            walletStage.setX(owner.getX() + (owner.getWidth() - 320) / 2);
-            walletStage.setY(owner.getY() + (owner.getHeight() - 200) / 2);
+            walletStage.setScene(new Scene(root, WALLET_POPUP_WIDTH, WALLET_POPUP_HEIGHT));
+            walletStage.setX(owner.getX() + (owner.getWidth() - WALLET_POPUP_WIDTH) / 2);
+            walletStage.setY(owner.getY() + (owner.getHeight() - WALLET_POPUP_HEIGHT) / 2);
             walletStage.show();
         } catch (IOException e) {
             LOGGER.error("Loi hien thi popup wallet", e);

@@ -4,15 +4,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import ddc.server.config.DatabaseConnection;
 
 
 public class WalletDAO {
     
     public double getBalance(String userId) {
-        String sql = "SELECT balance FROM wallets WHERE user_id = ?";
+        String sql = "SELECT balance FROM ddc_wallets WHERE user_id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, userId);
@@ -23,8 +22,8 @@ public class WalletDAO {
     }
 
     public boolean updateBalance(String userId, double amount, String type, String description) {
-        String updateSql = "UPDATE wallets SET balance = balance + ? WHERE user_id = ?";
-        String logSql = "INSERT INTO wallet_transactions (user_id, amount, transaction_type, description) VALUES (?, ?, ?, ?)";
+        String updateSql = "UPDATE ddc_wallets SET balance = balance + ? WHERE user_id = ?";
+        String logSql = "INSERT INTO ddc_wallet_transactions (user_id, amount, transaction_type, description) VALUES (?, ?, ?, ?)";
         
         Connection conn = null;
         try {
@@ -36,7 +35,7 @@ public class WalletDAO {
                 stmtUpdate.setString(2, userId);
                 int affectedRows = stmtUpdate.executeUpdate();
                 if (affectedRows == 0) {
-                    String insertWallet = "INSERT INTO wallets (user_id, balance) VALUES (?, ?)";
+                    String insertWallet = "INSERT INTO ddc_wallets (user_id, balance) VALUES (?, ?)";
                     try (PreparedStatement stmtIns = conn.prepareStatement(insertWallet)) {
                         stmtIns.setString(1, userId);
                         stmtIns.setDouble(2, amount);

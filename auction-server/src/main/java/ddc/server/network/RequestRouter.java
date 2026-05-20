@@ -28,6 +28,7 @@ import ddc.server.controller.handler.admin.GetAllAuctionHandler;
         routes.put("ADMIN_UPDATE_USER_STATUS", new AdminUpdateUserStatusHandler());
         routes.put("ADMIN_DELETE_USER", new AdminDeleteUserHandler());
         routes.put("ADMIN_CANCEL_AUCTION", new AdminCancelAuctionHandler());
+        routes.put("GET_WALLET_BALANCE", new GetWalletBalanceHandler());
         routes.put("DEPOSIT", new DepositHandler());
     }
 
