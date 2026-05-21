@@ -9,8 +9,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ddc.server.dao.AuctionDAO;
+import ddc.server.dao.UserDAO;
+import ddc.server.dao.WalletDAO;
 import ddc.server.model.transaction.Auction;
 import ddc.server.model.transaction.AuctionStatus;
+import ddc.server.model.user.User;
 import ddc.server.network.client.RealtimeClientHandler;
 import ddc.server.network.request.AuctionEventPayload;
 
@@ -66,6 +69,7 @@ public class AuctionStatusScheduler {
 
                     // Broadcast cho client đang subscribe
                     if (auction.getStatus() == AuctionStatus.FINISHED) {
+                        handleAuctionSettlement(auction);
                         broadcastFinished(auction);
                     }
                 }
@@ -93,4 +97,67 @@ public class AuctionStatusScheduler {
 
         RealtimeClientHandler.broadcastAuctionEvent(auction.getId(), event);
     }
+
+    private void handleAuctionSettlement(Auction auction) {
+        // 1. Kiểm tra xem có người ra giá nào không
+        if (auction.getHighestBidder() == null) {
+            LOGGER.info("Auction #{}: Kết thúc nhưng không có người đặt giá.", auction.getId());
+            return;
+        }
+
+        // Lấy thông tin từ đối tượng auction
+        String winnerId = auction.getHighestBidder().getId(); // Giả sử model có getId()
+        double finalPrice = auction.getCurrentPrice();
+        String sellerName = auction.getItem() != null ? auction.getItem().getSellerName() : null;
+
+        if (sellerName == null || sellerName.isBlank()) {
+            LOGGER.error("Auction #{}: Khong co sellerName tren item, khong the quyet toan tien.", auction.getId());
+            return;
+        }
+
+        UserDAO userDAO = new UserDAO();
+        User owner = userDAO.getUser(sellerName);
+        if (owner == null || owner.getId() == null || owner.getId().isBlank()) {
+            LOGGER.error("Auction #{}: Khong tim thay nguoi ban theo sellerName={}", auction.getId(), sellerName);
+            return;
+        }
+
+        String ownerId = owner.getId();
+        
+        WalletDAO walletDAO = new WalletDAO();
+
+        LOGGER.info("Auction #{}: Bắt đầu quyết toán tiền. Người thắng: {}, Số tiền: {}, Người bán: {}", 
+                auction.getId(), winnerId, finalPrice, ownerId);
+
+        // 2. Tiến hành TRỪ TIỀN người thắng cuộc
+        // Truyền số tiền âm (-) để giảm số dư
+        boolean deductSuccess = walletDAO.updateBalance(
+            winnerId, 
+            -finalPrice, 
+            "DEDUCT_BID", 
+            "Trừ tiền thắng đấu giá phiên #" + auction.getId()
+        );
+
+        if (!deductSuccess) {
+            LOGGER.error("Auction #{}: Thất bại khi trừ tiền người thắng (userId={})", auction.getId(), winnerId);
+            return; 
+        }
+
+        // 3. Tiến hành CỘNG TIỀN cho người bán (chủ sản phẩm)
+        // Truyền số tiền dương (+) để tăng số dư
+        boolean receiveSuccess = walletDAO.updateBalance(
+            ownerId, 
+            finalPrice, 
+            "RECEIVE_MONEY", 
+            "Nhận tiền bán sản phẩm từ phiên #" + auction.getId()
+        );
+
+        if (!receiveSuccess) {
+            LOGGER.error("Auction #{}: Thất bại khi cộng tiền người bán (userId={})", auction.getId(), ownerId);
+            // Lưu ý thực tế: Bạn có thể cần cơ chế hoàn tác tiền cho người thắng tại đây nếu cộng cho người bán lỗi
+        } else {
+            LOGGER.info("Auction #{}: Quyết toán tài chính thành công hoàn toàn.", auction.getId());
+        }
+    }
 }
+

@@ -11,6 +11,10 @@ public class WalletService {
         this.walletDAO = new WalletDAO();
     }
 
+    WalletService(WalletDAO walletDAO) {
+        this.walletDAO = walletDAO;
+    }
+
     public double getBalance(String userId) {
         return walletDAO.getBalance(userId);
     }

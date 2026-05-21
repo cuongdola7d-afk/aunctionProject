@@ -12,7 +12,15 @@ import org.slf4j.LoggerFactory;
 public class GetWalletBalanceHandler implements ActionHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(GetWalletBalanceHandler.class);
 
-    private final WalletService walletService = new WalletService();
+    private final WalletService walletService;
+
+    public GetWalletBalanceHandler() {
+        this(new WalletService());
+    }
+
+    GetWalletBalanceHandler(WalletService walletService) {
+        this.walletService = walletService;
+    }
 
     @Override
     public Response handle(RequestMessage request) {

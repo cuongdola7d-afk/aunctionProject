@@ -12,7 +12,15 @@ import org.slf4j.LoggerFactory;
 public class DepositHandler implements ActionHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(DepositHandler.class);
 
-    private final WalletService walletService = new WalletService();
+    private final WalletService walletService;
+
+    public DepositHandler() {
+        this(new WalletService());
+    }
+
+    DepositHandler(WalletService walletService) {
+        this.walletService = walletService;
+    }
 
     @Override
     public Response handle(RequestMessage request) {
