@@ -62,7 +62,7 @@ class WalletServiceTest {
     }
 
     @Test
-    void processAuctionFinished_shouldFailAndNotCreditSellerWhenDeductFails() {
+    void processAuctionFinished_shouldFailAndNotMoveMoneyWhenTransferFails() {
         FakeWalletDAO walletDAO = new FakeWalletDAO();
         walletDAO.balance = 200_000;
         walletDAO.nextUpdateResults.add(false);
@@ -71,9 +71,7 @@ class WalletServiceTest {
         boolean success = service.processAuctionFinished("A001", "BUYER", "SELLER", 100_000);
 
         assertFalse(success);
-        assertEquals(1, walletDAO.updates.size());
-        assertEquals("BUYER", walletDAO.updates.get(0).userId);
-        assertEquals(-100_000, walletDAO.updates.get(0).amount);
+        assertEquals(0, walletDAO.updates.size());
     }
 
     @Test
@@ -116,6 +114,21 @@ class WalletServiceTest {
             if (!nextUpdateResults.isEmpty()) {
                 return nextUpdateResults.remove(0);
             }
+            return true;
+        }
+
+        @Override
+        public boolean transferBalance(String fromUserId, String toUserId, double amount,
+                String deductType, String deductDescription,
+                String receiveType, String receiveDescription) {
+            if (amount <= 0 || balance < amount) {
+                return false;
+            }
+            if (!nextUpdateResults.isEmpty() && !nextUpdateResults.remove(0)) {
+                return false;
+            }
+            updates.add(new WalletUpdate(fromUserId, -amount, deductType, deductDescription));
+            updates.add(new WalletUpdate(toUserId, amount, receiveType, receiveDescription));
             return true;
         }
     }

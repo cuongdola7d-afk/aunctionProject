@@ -62,4 +62,85 @@ public class WalletDAO {
             if (conn != null) { try { conn.close(); } catch (SQLException e) { e.printStackTrace(); } }
         }
     }
+
+    public boolean transferBalance(String fromUserId, String toUserId, double amount,
+            String deductType, String deductDescription,
+            String receiveType, String receiveDescription) {
+        if (isBlank(fromUserId) || isBlank(toUserId) || amount <= 0) {
+            return false;
+        }
+
+        String deductSql = "UPDATE ddc_wallets SET balance = balance - ? WHERE user_id = ? AND balance >= ?";
+        String creditSql = "UPDATE ddc_wallets SET balance = balance + ? WHERE user_id = ?";
+        String insertWalletSql = "INSERT INTO ddc_wallets (user_id, balance) VALUES (?, ?)";
+        String logSql = "INSERT INTO ddc_wallet_transactions (user_id, amount, transaction_type, description) VALUES (?, ?, ?, ?)";
+
+        Connection conn = null;
+        try {
+            conn = DatabaseConnection.getConnection();
+            conn.setAutoCommit(false);
+
+            try (PreparedStatement stmtDeduct = conn.prepareStatement(deductSql)) {
+                stmtDeduct.setDouble(1, amount);
+                stmtDeduct.setString(2, fromUserId);
+                stmtDeduct.setDouble(3, amount);
+                if (stmtDeduct.executeUpdate() != 1) {
+                    conn.rollback();
+                    return false;
+                }
+            }
+
+            try (PreparedStatement stmtCredit = conn.prepareStatement(creditSql)) {
+                stmtCredit.setDouble(1, amount);
+                stmtCredit.setString(2, toUserId);
+                int affectedRows = stmtCredit.executeUpdate();
+                if (affectedRows == 0) {
+                    try (PreparedStatement stmtInsertWallet = conn.prepareStatement(insertWalletSql)) {
+                        stmtInsertWallet.setString(1, toUserId);
+                        stmtInsertWallet.setDouble(2, amount);
+                        stmtInsertWallet.executeUpdate();
+                    }
+                }
+            }
+
+            insertTransaction(conn, logSql, fromUserId, -amount, deductType, deductDescription);
+            insertTransaction(conn, logSql, toUserId, amount, receiveType, receiveDescription);
+
+            conn.commit();
+            return true;
+        } catch (SQLException e) {
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            e.printStackTrace();
+            return false;
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private void insertTransaction(Connection conn, String sql, String userId, double amount, String type, String description)
+            throws SQLException {
+        try (PreparedStatement stmtLog = conn.prepareStatement(sql)) {
+            stmtLog.setString(1, userId);
+            stmtLog.setDouble(2, amount);
+            stmtLog.setString(3, type);
+            stmtLog.setString(4, description);
+            stmtLog.executeUpdate();
+        }
+    }
+
+    private boolean isBlank(String value) {
+        return value == null || value.trim().isEmpty();
+    }
 }

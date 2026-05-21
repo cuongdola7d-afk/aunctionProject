@@ -1,4 +1,3 @@
-
 package ddc.server.controller.service;
 
 import ddc.server.dao.WalletDAO;
@@ -8,7 +7,7 @@ public class WalletService {
     private final WalletDAO walletDAO;
 
     public WalletService() {
-        this.walletDAO = new WalletDAO();
+        this(new WalletDAO());
     }
 
     WalletService(WalletDAO walletDAO) {
@@ -23,20 +22,21 @@ public class WalletService {
         if (amount <= 0) {
             return false;
         }
-        return walletDAO.updateBalance(userId, amount, "DEPOSIT", "Nạp tiền vào tài khoản");
+        return walletDAO.updateBalance(userId, amount, "DEPOSIT", "Nap tien vao tai khoan");
     }
 
     public boolean processAuctionFinished(String auctionId, String bidderId, String ownerId, double finalPrice) {
-        double bidderBalance = walletDAO.getBalance(bidderId);
-        if (bidderBalance < finalPrice) {
+        if (finalPrice <= 0) {
             return false;
         }
 
-        boolean deductOk = walletDAO.updateBalance(bidderId, -finalPrice, "DEDUCT_BID", "Trừ tiền thắng đấu giá mã: " + auctionId);
-        if (deductOk) {
-            walletDAO.updateBalance(ownerId, finalPrice, "RECEIVE_MONEY", "Nhận tiền bán tài sản mã: " + auctionId);
-            return true;
-        }
-        return false;
+        return walletDAO.transferBalance(
+                bidderId,
+                ownerId,
+                finalPrice,
+                "DEDUCT_BID",
+                "Deduct auction winning amount: " + auctionId,
+                "RECEIVE_MONEY",
+                "Receive auction sale amount: " + auctionId);
     }
 }
