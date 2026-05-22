@@ -2,6 +2,7 @@ package ddc.client.controller.profile;
 
 import java.io.IOException;
 
+import ddc.client.network.UserSession;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -40,6 +41,8 @@ public class Logout {
             // 3. Đóng cái Popup trước
             popupStage.close();
             primaryStage.close();
+            UserSession.getInstance().cleanUserSession();
+            ddc.client.network.client.GlobalSocketClient.getInstance().disconnect();
 
             // 4. Tải giao diện Login vào Stage chính (primaryStage)
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ddc/client/views/loginregister/Login.fxml"));

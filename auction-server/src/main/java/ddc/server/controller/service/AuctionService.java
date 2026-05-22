@@ -30,6 +30,10 @@ public class AuctionService {
         return auctionDAO.getAllAuctions();
     }
 
+    public List<Auction> getAllUserAuctions(String username) {
+        return auctionDAO.getAllUserAuctions(username);
+    }
+
     public void refreshAuctionStatus(Auction auction) {
         if (auction == null || auction.getStartTime() == null || auction.getEndTime() == null) {
             return;
@@ -83,6 +87,19 @@ public class AuctionService {
             throw new InvalidBidException("Người đấu giá không hợp lệ.");
         }
 
+        // Chặn seller tự bid vào sản phẩm của chính mình
+        if (auction.getItem() != null && auction.getItem().getSellerName() != null
+                && auction.getItem().getSellerName().equals(bidder.getUsername())) {
+            throw new InvalidBidException("Bạn không thể đấu giá sản phẩm của chính mình.");
+        }
+
+        synchronized (auction) {
+            return placeBidLocked(auction, bidder, amount, time);
+        }
+    }
+
+    private boolean placeBidLocked(Auction auction, Bidder bidder, double amount, LocalDateTime time)
+            throws AuctionClosedException, InvalidBidException {
         refreshAuctionStatus(auction);
 
         if (auction.getStatus() == AuctionStatus.OPEN) {
@@ -121,7 +138,7 @@ public class AuctionService {
                 .setBidder(bidder)
                 .setBidAmount(amount)
                 .setBidTime(time);
-        bid.setAuctionId(auction.getId());
+        bid.setAuction(auction);
 
         try {
             auction.placeBid(bid);

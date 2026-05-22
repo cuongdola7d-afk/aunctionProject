@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ddc.client.controller.profile.BidHistory">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ddc.client.controller.profile.History">
    <children>
       <VBox layoutX="11.0" prefHeight="80.0" prefWidth="774.0" AnchorPane.leftAnchor="11.0" AnchorPane.rightAnchor="9.599999999999909" AnchorPane.topAnchor="0.0">
          <children>
@@ -57,18 +57,18 @@
             <TreeView fx:id="bidTreeView" prefHeight="517.0" prefWidth="178.0" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="621.6" AnchorPane.topAnchor="0.7999999999999545" />
             <StackPane alignment="TOP_CENTER" focusTraversable="true" layoutX="178.0" prefHeight="518.0" prefWidth="621.0" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="177.60000000000002" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="0.7999999999999545">
                <children>
-                  <ScrollPane focusTraversable="false" hbarPolicy="NEVER" pannable="true" prefHeight="200.0" prefWidth="200.0" vbarPolicy="ALWAYS">
+                  <ScrollPane fitToWidth="true" focusTraversable="false" hbarPolicy="NEVER" pannable="true" prefHeight="200.0" prefWidth="200.0" vbarPolicy="ALWAYS">
                     <content>
-                        <FlowPane fx:id="bidFlowPane" alignment="TOP_CENTER" hgap="18.0" vgap="18.0">
+                        <FlowPane fx:id="bidFlowPane" alignment="CENTER" hgap="18.0" vgap="18.0">
                            <children>
-                              <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                              <VBox alignment="CENTER" prefHeight="300.0" prefWidth="300.0">
                                  <children>
-                                    <ImageView fx:id="imageViewLoading" fitHeight="250.0" fitWidth="250.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fx:id="loadingImageView" fitHeight="250.0" fitWidth="250.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../DDCAuction.png" />
                                        </image>
                                     </ImageView>
-                                    <Label alignment="CENTER" prefHeight="26.0" prefWidth="247.0" text="Đang tải sản phẩm..." textFill="DARKBLUE">
+                                    <Label alignment="CENTER" prefHeight="26.0" prefWidth="272.0" text="Đang tải lịch sử đấu giá..." textFill="DARKBLUE">
                                        <font>
                                           <Font name="Tahoma Bold" size="20.0" />
                                        </font>

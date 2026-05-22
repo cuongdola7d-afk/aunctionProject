@@ -2,6 +2,9 @@ package ddc.client.controller.profile;
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import ddc.client.controller.SceneSwitcher;
 import ddc.client.network.UserSession;
 import javafx.fxml.FXML;
@@ -14,18 +17,26 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import javafx.scene.control.Label;
+import ddc.client.controller.notify.NotificationBadgeUtil;
 
 public class Profile {
+
+    @FXML
+    private Label badgeLabel;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(Profile.class);
+    private static final double WALLET_POPUP_WIDTH = 320;
+    private static final double WALLET_POPUP_HEIGHT = 320;
+
     @FXML
     private Label nameLabel, usernameLabel;
 
+    @FXML
     public void initialize() {
+        NotificationBadgeUtil.setupBadge(badgeLabel);
         UserSession session = UserSession.getInstance();
-
-        // Đổ dữ liệu vào các ô TextField
         nameLabel.setText(session.getName());
         usernameLabel.setText("@" + session.getUsername());
     }
@@ -55,46 +66,66 @@ public class Profile {
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void switchToNotify(MouseEvent event) {
         SceneSwitcher.goTo(event, "/ddc/client/views/notify/Notify.fxml");
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void switchToSecurity(MouseEvent event) {
         SceneSwitcher.goTo(event, "/ddc/client/views/profile/Security.fxml");
+    }
+
+    @FXML
+    private void switchToHistory(MouseEvent event) {
+        SceneSwitcher.goTo(event, "/ddc/client/views/profile/History.fxml");
+    }
+
+    @FXML
+    @SuppressWarnings("unused")
+    private void showWallet(MouseEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ddc/client/views/profile/Wallet.fxml"));
+            Parent root = loader.load();
+
+            Stage owner = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            Stage walletStage = new Stage();
+            walletStage.setTitle("Ví của tôi");
+            walletStage.setResizable(false);
+            walletStage.initModality(Modality.APPLICATION_MODAL);
+            walletStage.initOwner(owner);
+            walletStage.setScene(new Scene(root, WALLET_POPUP_WIDTH, WALLET_POPUP_HEIGHT));
+            walletStage.setX(owner.getX() + (owner.getWidth() - WALLET_POPUP_WIDTH) / 2);
+            walletStage.setY(owner.getY() + (owner.getHeight() - WALLET_POPUP_HEIGHT) / 2);
+            walletStage.show();
+        } catch (IOException e) {
+            LOGGER.error("Loi hien thi popup wallet", e);
+        }
     }
 
     @FXML
     @SuppressWarnings("unused")
     private void showLogoutPopup(MouseEvent event) {
         try {
-            // 1. Chỉ nạp FXML, TUYỆT ĐỐI không dùng SceneSwitcher ở đây
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ddc/client/views/profile/logout.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ddc/client/views/profile/Logout.fxml"));
             Parent root = loader.load();
 
-            // 2. Tạo một cửa sổ MỚI (Stage mới)
             Stage popupStage = new Stage();
             popupStage.setTitle("Xác nhận đăng xuất");
             popupStage.setResizable(false);
 
             Image icon = new Image(getClass().getResourceAsStream("/ddc/client/views/DDCAuction.png"));
             popupStage.getIcons().add(icon);
-
-            // 3. Khóa màn hình chính (Profile) ở phía sau
             popupStage.initModality(Modality.APPLICATION_MODAL);
 
-            // 4. Chỉ định "chủ sở hữu" là cửa sổ Profile hiện tại
             Stage primaryStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             popupStage.initOwner(primaryStage);
 
-            // 5. Tạo Scene mới
             Scene scene = new Scene(root, 400, 300);
             popupStage.setScene(scene);
-
-            // 6. Hiển thị cửa sổ mới lên
             popupStage.centerOnScreen();
             popupStage.show();
-
         } catch (IOException e) {
             LOGGER.error("Loi hien thi popup logout", e);
         }

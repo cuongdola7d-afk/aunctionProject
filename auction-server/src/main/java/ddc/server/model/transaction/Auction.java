@@ -2,6 +2,7 @@ package ddc.server.model.transaction;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import ddc.server.model.entity.Entity;
@@ -31,35 +32,37 @@ public class Auction extends Entity<Auction> {
     }
 
     public List<Bid> getBidHistory() {
-        return bidHistory;
+        synchronized (this) {
+            return Collections.unmodifiableList(new ArrayList<>(bidHistory));
+        }
     }
 
-    public AuctionStatus getStatus() {
+    public synchronized AuctionStatus getStatus() {
         return status;
     }
 
-    public User getHighestBidder() {
+    public synchronized User getHighestBidder() {
         return highestBidder;
     }
 
-    public double getCurrentPrice() {
+    public synchronized double getCurrentPrice() {
         return currentPrice;
     }
 
-    public double getStartingPrice() {
+    public synchronized double getStartingPrice() {
         return startingPrice;
     }
 
     // Tính bước giá tối thiểu = 10% giá gốc, làm tròn lên
-    public long getMinBidIncrement() {
+    public synchronized long getMinBidIncrement() {
         return (long) Math.ceil(startingPrice * 0.1);
     }
 
-    public LocalDateTime getStartTime() {
+    public synchronized LocalDateTime getStartTime() {
         return startTime;
     }
 
-    public LocalDateTime getEndTime() {
+    public synchronized LocalDateTime getEndTime() {
         return endTime;
     }
 
@@ -77,45 +80,45 @@ public class Auction extends Entity<Auction> {
         return this;
     }
 
-    public Auction setStatus(String status) {
+    public synchronized Auction setStatus(String status) {
         this.status = AuctionStatus.valueOf(status);
         return this;
     }
 
-    public Auction setHighestBidder(User highestBidder) {
+    public synchronized Auction setHighestBidder(User highestBidder) {
         this.highestBidder = highestBidder;
         return this;
     }
 
-    public Auction setCurrentPrice(double currentPrice) {
+    public synchronized Auction setCurrentPrice(double currentPrice) {
         this.currentPrice = currentPrice;
         return this;
     }
 
-    public Auction setStartingPrice(double startingPrice) {
+    public synchronized Auction setStartingPrice(double startingPrice) {
         this.startingPrice = startingPrice;
         return this;
     }
 
-    public Auction setStartTime(LocalDateTime startTime) {
+    public synchronized Auction setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
         return this;
     }
 
-    public Auction setEndTime(LocalDateTime endTime) {
+    public synchronized Auction setEndTime(LocalDateTime endTime) {
         this.endTime = endTime;
         return this;
     }
 
-    public void startAuction() {
+    public synchronized void startAuction() {
         this.status = AuctionStatus.RUNNING;
     }
 
-    public void endAuction() {
+    public synchronized void endAuction() {
         this.status = AuctionStatus.FINISHED;
     }
 
-    public void placeBid(Bid bid) {
+    public synchronized void placeBid(Bid bid) {
         if (status != AuctionStatus.RUNNING) {
             throw new RuntimeException("Auction not running.");
         }

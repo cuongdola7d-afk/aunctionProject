@@ -9,16 +9,19 @@ import ddc.server.model.transaction.Auction;
 import ddc.server.model.user.Bidder;
 
 /**
- * AuctionManager là Singleton dùng để lưu Auction và Bidder đang hoạt động trong RAM.
+ * AuctionManager là Singleton dùng để lưu Auction và Bidder đang hoạt động
+ * trong RAM.
  *
  * Mục đích:
- * - Khi client gửi auctionId / bidderId lên server,p
- *   handler có thể lấy nhanh object thật từ đây.
- * - Dùng chung 1 instance cho toàn server để tránh mỗi nơi giữ 1 danh sách riêng.
+ * - Khi client gửi auctionId / bidderId lên server, handler có thể lấy nhanh
+ * object(bidder/auction) thật từ đây.
+ * - Dùng chung 1 instance cho toàn server để tránh mỗi nơi giữ 1 danh sách
+ * riêng.
  *
  * Lưu ý:
  * - Đây là dữ liệu in-memory, không thay thế database.
- * - DB dùng để lưu lâu dài, AuctionManager dùng để truy xuất nhanh lúc chạy realtime.
+ * - DB dùng để lưu lâu dài, AuctionManager dùng để truy xuất nhanh lúc chạy
+ * realtime.
  */
 public class AuctionManager {
 

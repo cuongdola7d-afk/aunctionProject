@@ -6,7 +6,7 @@ import ddc.server.model.entity.Entity;
 import ddc.server.model.user.User;
 
 public class Bid extends Entity<Bid> {
-    private String auctionId;
+    private Auction auction;
     private User bidder;
     private double bidAmount;
     private LocalDateTime bidTime;
@@ -14,14 +14,14 @@ public class Bid extends Entity<Bid> {
     public Bid () {}
 
     //Getters
-    public String auctionId () { return auctionId; }
+    public Auction getAuction () { return auction; }
     public User getBidder () { return bidder; }
     public double getBidAmount () { return bidAmount; } 
     public LocalDateTime getBidTime () { return bidTime; } 
 
     //Setters
-    public Bid setAuctionId (String auctionId) {
-        this.auctionId = auctionId;
+    public Bid setAuction (Auction auction) {
+        this.auction = auction;
         return this;
     }
 
