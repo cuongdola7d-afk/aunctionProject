@@ -113,6 +113,9 @@ public class RealtimeClientHandler implements Runnable {
     }
 
     public static void sendNotificationEventToUser(String userId, int unreadCount) {
+        if (userId == null) {
+            return;
+        }
         com.google.gson.JsonObject payload = new com.google.gson.JsonObject();
         payload.addProperty("unreadCount", unreadCount);
         Gson gson = GsonConfig.newGson();

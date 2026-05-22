@@ -9,7 +9,17 @@ import ddc.server.network.response.Response;
 
 
 public class AddItemHandler implements ActionHandler {
-    private final ItemService itemService = new ItemService();
+    private final ItemService itemService;
+
+    // Constructor mac dinh dung cho production
+    public AddItemHandler() {
+        this.itemService = new ItemService();
+    }
+
+    // Constructor dung cho Unit Test de inject mock Service
+    public AddItemHandler(ItemService itemService) {
+        this.itemService = itemService;
+    }
 
     @Override
     public Response handle(RequestMessage request) {
