@@ -96,7 +96,13 @@ public class Login {
                     .setName(user.getName())
                     .setUsername(user.getUsername())
                     .setEmail(user.getEmail())
-                    .setPassword(user.getPassword());
+                    .setPassword(user.getPassword())
+                    .setRole(user.getRole())
+                    .setStatus(user.getStatus());
+
+            // Connect global socket for realtime notifications
+            ddc.client.network.client.GlobalSocketClient.getInstance().connect();
+
             Platform.runLater(() -> errorLabel.setText("Đăng nhập thành công!"));
 
             try {
@@ -107,7 +113,7 @@ public class Login {
                 LOGGER.error("Login error: {}", e.getMessage());
             }
 
-            Platform.runLater(() -> openHome(event));
+            Platform.runLater(() -> openMainScreen(event, user));
             return;
         }
 
@@ -119,25 +125,29 @@ public class Login {
             case "PASSWORD_LESS_THAN_8" -> "Mật khẩu phải có từ 8 ký tự trở lên.";
             case "UNAVAILABLE" -> "Tài khoản không tồn tại.";
             case "INVALID PASSWORD" -> "Mật khẩu không đúng.";
+            case "BLOCKED" -> "Tai khoan da bi khoa.";
             case "CONNECTION_ERROR" -> "Không kết nối được với server.";
             default -> "Đăng nhập thất bại.";
         };
     }
 
-    private void openHome(ActionEvent event) {
+    private void openMainScreen(ActionEvent event, UserDTO user) {
         try {
             ((Stage) ((Node) event.getSource()).getScene().getWindow()).close();
-            Parent root = FXMLLoader.load(getClass().getResource("/ddc/client/views/home/Home.fxml"));
+            boolean isAdmin = "ADMIN".equalsIgnoreCase(user.getRole()) || "admin".equalsIgnoreCase(user.getUsername());
+            String fxml = isAdmin ? "/ddc/client/views/admin/AdminDashboard.fxml" : "/ddc/client/views/home/Home.fxml";
+            Parent root = FXMLLoader.load(getClass().getResource(fxml));
             Stage stage = new Stage();
             Image icon = new Image(getClass().getResourceAsStream("/ddc/client/views/DDCAuction.png"));
 
-            stage.setTitle("DDC Auction");
+            stage.setTitle(isAdmin ? "DDC Auction Admin" : "DDC Auction");
             stage.getIcons().add(icon);
             stage.setResizable(true);
             stage.centerOnScreen();
-            stage.setScene(new Scene(root, 800, 600));
+            stage.setScene(new Scene(root, isAdmin ? 980 : 800, isAdmin ? 680 : 600));
             stage.show();
         } catch (Exception e) {
+            LOGGER.error("Loi mo giao dien sau login", e);
             errorLabel.setText("Giao diện bị lỗi.");
         }
     }

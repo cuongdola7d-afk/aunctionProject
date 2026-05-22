@@ -25,7 +25,7 @@ public class RealtimeToServer {
 
     public static String sendRequest(Request request) {
         try (Socket socket = new Socket()) {
-            socket.connect(new InetSocketAddress(ClientContext.SERVER_HOST, ClientContext.REQUEST_PORT), TIMEOUT_MS);
+            socket.connect(new InetSocketAddress(ClientContext.SERVER_HOST, ClientContext.REALTIME_PORT), TIMEOUT_MS);
             socket.setSoTimeout(TIMEOUT_MS);
 
             try (PrintWriter out = new PrintWriter(socket.getOutputStream(), true);

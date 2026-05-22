@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
@@ -17,14 +20,19 @@
          <children>
             <VBox fx:id="notifyVBox" alignment="CENTER" layoutX="403.0" layoutY="15.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#switchToNotify" prefHeight="60.0" prefWidth="120.0" HBox.hgrow="ALWAYS">
                <children>
-                  <Label maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" text="🔔" textFill="DARKBLUE" VBox.vgrow="NEVER">
+                  <javafx.scene.layout.StackPane alignment="TOP_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity">
                      <VBox.margin>
                         <Insets top="10.0" />
                      </VBox.margin>
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Label>
+                     <children>
+                        <Label text="🔔" textFill="DARKBLUE">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="badgeLabel" style="-fx-background-color: red; -fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 0 4 0 4; -fx-font-size: 10;" text="0" visible="false" />
+                     </children>
+                  </javafx.scene.layout.StackPane>
                   <Label alignment="CENTER" ellipsisString="" prefHeight="45.0" text="THÔNG BÁO" textAlignment="CENTER" textFill="DARKBLUE" textOverrun="CLIP" VBox.vgrow="NEVER">
                      <VBox.margin>
                         <Insets />
@@ -223,6 +231,18 @@
                         <Font name="System Bold" size="36.0" />
                      </font>
                   </Label>
+                  <Region prefHeight="200.0" prefWidth="0.0" HBox.hgrow="ALWAYS" />
+                  <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" onMouseClicked="#showWallet" text="💳" textFill="DARKBLUE">
+                     <font>
+                        <Font size="36.0" />
+                     </font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                     <HBox.margin>
+                        <Insets right="20.0" />
+                     </HBox.margin>
+                  </Label>
                </children>
             </HBox>
             <Separator halignment="RIGHT" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="3.2" prefWidth="779.0" style="-fx-background-color: #00008B;" VBox.vgrow="ALWAYS">
@@ -232,5 +252,10 @@
             </Separator>
          </children>
       </VBox>
+      <Button fx:id="walletButton" mnemonicParsing="false" onMouseClicked="#showWallet" opacity="0.0" text="Button" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="20.0">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Button>
    </children>
 </AnchorPane>

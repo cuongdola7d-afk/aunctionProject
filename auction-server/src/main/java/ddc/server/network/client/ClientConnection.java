@@ -15,6 +15,7 @@ import ddc.server.network.message.SocketMessage;
 
 public class ClientConnection {
     private final String connectionId;
+    private String userId;
     private final Socket socket;
     private final BufferedReader reader;
     private final PrintWriter writer;
@@ -29,6 +30,14 @@ public class ClientConnection {
 
     public String getConnectionId() {
         return connectionId;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public Socket getSocket() {

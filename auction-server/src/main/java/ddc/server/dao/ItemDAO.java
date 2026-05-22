@@ -8,7 +8,6 @@ import java.sql.SQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ddc.server.config.DatabaseConnection;
 import ddc.server.exception.ItemValidationException;
 import ddc.server.model.item.ItemGeneric;
 import ddc.server.pattern.factory.CreatorRegistry;
@@ -22,7 +21,7 @@ public class ItemDAO {
             return null;
         }
 
-        try (Connection con = DatabaseConnection.getConnection()) {
+        try (Connection con = getConnection()) {
             con.setAutoCommit(false);
 
             try {
@@ -43,7 +42,7 @@ public class ItemDAO {
     public ItemGeneric getItem(String id) {
         String sql = "SELECT * FROM ddc_items WHERE id = ?";
 
-        try (Connection con = DatabaseConnection.getConnection();
+        try (Connection con = getConnection();
                 PreparedStatement pst = con.prepareStatement(sql)) {
 
             pst.setString(1, id.trim());
@@ -82,5 +81,13 @@ public class ItemDAO {
             LOGGER.warn("Loi validation item: {}", e.getMessage());
         }
         return null;
+    }
+
+    private boolean isBlank(String value) {
+        return value == null || value.trim().isEmpty();
+    }
+
+    protected Connection getConnection() throws SQLException {
+        return ddc.server.config.DatabaseConnection.getConnection();
     }
 }

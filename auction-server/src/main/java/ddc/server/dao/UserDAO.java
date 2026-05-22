@@ -1,6 +1,7 @@
 package ddc.server.dao;
 
 import java.sql.Connection;
+import java.sql.ResultSetMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,7 +21,7 @@ public class UserDAO {
             return false;
         }
 
-        try (Connection con = DatabaseConnection.getConnection();
+        try (Connection con = getConnection();
                 PreparedStatement pst = con.prepareStatement(sql)) {
 
             pst.setString(1, user.getUsername().trim());
@@ -37,22 +38,20 @@ public class UserDAO {
     }
 
     public User getUser(String username) {
+        if (isBlank(username)) {
+            return null;
+        }
+
         String sql = "SELECT * FROM ddc_users WHERE username = ?";
 
-        try (Connection con = DatabaseConnection.getConnection();
+        try (Connection con = getConnection();
                 PreparedStatement pst = con.prepareStatement(sql)) {
 
             pst.setString(1, username.trim());
 
             try (ResultSet rs = pst.executeQuery()) {
                 if (rs.next()) {
-                    User user = new User()
-                            .setId(rs.getString("id"))
-                            .setUsername(rs.getString("username"))
-                            .setName(rs.getString("name"))
-                            .setEmail(rs.getString("email"))
-                            .setPassword(rs.getString("password"));
-                    return user;
+                    return mapUser(rs);
                 }
             }
         } catch (SQLException e) {
@@ -65,19 +64,14 @@ public class UserDAO {
     public User getUserById(String id) {
         String sql = "SELECT * FROM ddc_users WHERE id = ?";
 
-        try (Connection con = DatabaseConnection.getConnection();
+        try (Connection con = getConnection();
                 PreparedStatement pst = con.prepareStatement(sql)) {
 
             pst.setString(1, id);
 
             try (ResultSet rs = pst.executeQuery()) {
                 if (rs.next()) {
-                    return new User()
-                            .setId(rs.getString("id"))
-                            .setUsername(rs.getString("username"))
-                            .setName(rs.getString("name"))
-                            .setEmail(rs.getString("email"))
-                            .setPassword(rs.getString("password"));
+                    return mapUser(rs);
                 }
             }
         } catch (SQLException e) {
@@ -95,7 +89,7 @@ public class UserDAO {
         String sql = "UPDATE ddc_users SET password = ? WHERE username = ?";
 
         // Sử dụng try-with-resources để tự động đóng Connection và PreparedStatement
-        try (Connection conn = DatabaseConnection.getConnection();
+        try (Connection conn = getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             // Gán các giá trị vào dấu "?"
@@ -118,7 +112,7 @@ public class UserDAO {
     public boolean updateUserProfile(User user) {
         String sql = "UPDATE ddc_users SET name = ?, email = ? WHERE id = ?";
 
-        try (Connection conn = DatabaseConnection.getConnection();
+        try (Connection conn = getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             // Set các tham số theo thứ tự dấu hỏi chấm
@@ -135,5 +129,36 @@ public class UserDAO {
             LOGGER.error("Loi khi cap nhat thong tin User: {}", e.getMessage(), e);
             return false;
         }
+    }
+
+    public User mapUser(ResultSet rs) throws SQLException {
+        User user = new User()
+                .setId(rs.getString("id"))
+                .setUsername(rs.getString("username"))
+                .setName(rs.getString("name"))
+                .setEmail(rs.getString("email"))
+                .setPassword(rs.getString("password"));
+
+        if (hasColumn(rs, "role")) {
+            user.setRole(rs.getString("role"));
+        }
+        if (hasColumn(rs, "status")) {
+            user.setStatus(rs.getString("status"));
+        }
+        return user;
+    }
+
+    private boolean hasColumn(ResultSet rs, String columnName) throws SQLException {
+        ResultSetMetaData metaData = rs.getMetaData();
+        for (int i = 1; i <= metaData.getColumnCount(); i++) {
+            if (columnName.equalsIgnoreCase(metaData.getColumnName(i))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    protected Connection getConnection() throws SQLException {
+        return ddc.server.config.DatabaseConnection.getConnection();
     }
 }

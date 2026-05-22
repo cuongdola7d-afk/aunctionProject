@@ -89,7 +89,6 @@ public class RequestClientHandler implements Runnable {
         return (sb.length() == 0 && b == -1) ? null : sb.toString();
     }
 
-    // GIỮ NGUYÊN HÀM NÀY NHƯ YÊU CẦU
     private String handleRawRequest(RequestMessage request, String rawRequest) {
         try {
             if (rawRequest == null || rawRequest.isBlank()) {
@@ -117,7 +116,8 @@ public class RequestClientHandler implements Runnable {
             return fail("INVALID_JSON", "JSON khong hop le.");
         } catch (Exception e) {
             LOGGER.warn("Handler xu ly loi.", e);
-            return fail("SERVER_ERROR", "Loi server.");
+            e.printStackTrace(); // DEBUG: in ra console
+            return fail("SERVER_ERROR", "Loi server: " + e.getMessage());
         }
     }
 

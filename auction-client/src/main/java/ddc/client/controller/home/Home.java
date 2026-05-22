@@ -3,8 +3,18 @@ import ddc.client.controller.SceneSwitcher;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.control.Label;
+import ddc.client.controller.notify.NotificationBadgeUtil;
 
 public class Home {
+
+    @FXML
+    private Label badgeLabel;
+
+    @FXML
+    public void initialize() {
+        NotificationBadgeUtil.setupBadge(badgeLabel);
+    }
 
     @FXML
     @SuppressWarnings("unused")

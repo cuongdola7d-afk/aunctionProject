@@ -14,16 +14,18 @@ import org.slf4j.LoggerFactory;
 
 import ddc.server.config.DatabaseConnection;
 import ddc.server.model.transaction.Auction;
+import ddc.server.model.transaction.AuctionStatus;
 
 public class AuctionDAO {
     private static final Logger LOGGER = LoggerFactory.getLogger(AuctionDAO.class);
+
     private final ItemDAO itemDAO = new ItemDAO();
     private final UserDAO userDAO = new UserDAO();
 
     public boolean createAuction(Auction auction) {
         String sql = "INSERT INTO ddc_auctions (item_id, highest_bidder_name, current_price, starting_price, start_time, end_time) VALUES (?, ?, ?, ?, ?, ?)";
 
-        try (Connection con = DatabaseConnection.getConnection();
+        try (Connection con = getConnection();
                 PreparedStatement pst = con.prepareStatement(sql)) {
 
             pst.setString(1, auction.getItem().getId());
@@ -45,7 +47,7 @@ public class AuctionDAO {
         List<Auction> list = new ArrayList<>();
         String sql = "SELECT * FROM ddc_auctions";
 
-        try (Connection con = DatabaseConnection.getConnection();
+        try (Connection con = getConnection();
                 PreparedStatement pst = con.prepareStatement(sql);
                 ResultSet rs = pst.executeQuery()) {
 
@@ -101,7 +103,7 @@ public class AuctionDAO {
     public Auction getAuctionById(String auctionId) {
         String sql = "SELECT * FROM ddc_auctions WHERE id = ?";
 
-        try (Connection con = DatabaseConnection.getConnection();
+        try (Connection con = getConnection();
                 PreparedStatement pst = con.prepareStatement(sql)) {
 
             pst.setString(1, auctionId);
@@ -131,7 +133,7 @@ public class AuctionDAO {
     public boolean updateAuction(Auction auction) {
         String sql = "UPDATE ddc_auctions SET current_price = ?, highest_bidder_name = ?, status = ?, end_time = ? WHERE id = ?";
 
-        try (Connection con = DatabaseConnection.getConnection();
+        try (Connection con = getConnection();
                 PreparedStatement pst = con.prepareStatement(sql)) {
 
             pst.setDouble(1, auction.getCurrentPrice());
@@ -151,4 +153,25 @@ public class AuctionDAO {
         return false;
     }
 
+    public boolean updateAuctionStatus(String auctionId, AuctionStatus status) {
+        String sql = "UPDATE ddc_auctions SET status = ? WHERE id = ?";
+
+        try (Connection con = getConnection();
+                PreparedStatement pst = con.prepareStatement(sql)) {
+
+            pst.setString(1, status.name());
+            pst.setString(2, auctionId);
+
+            return pst.executeUpdate() > 0;
+        } catch (SQLException e) {
+            LOGGER.error("Loi cap nhat trang thai auction", e);
+        }
+
+        return false;
+    }
+
+
+    protected Connection getConnection() throws SQLException {
+        return ddc.server.config.DatabaseConnection.getConnection();
+    }
 }

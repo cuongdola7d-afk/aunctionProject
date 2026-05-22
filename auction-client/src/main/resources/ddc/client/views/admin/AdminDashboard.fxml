@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="680.0" prefWidth="980.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ddc.client.controller.admin.AdminDashboard">
+   <children>
+      <VBox spacing="14.0" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="16.0">
+         <children>
+            <HBox alignment="CENTER_LEFT" spacing="12.0" style="-fx-background-color: cyan;">
+               <children>
+                  <ImageView fitHeight="75.0" fitWidth="76.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../DDCAuction.png" />
+                     </image>
+                  </ImageView>
+                  <VBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                     <children>
+                        <Label text="Admin Dashboard" textFill="DARKBLUE">
+                           <font>
+                              <Font name="System Bold" size="28.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="adminNameLabel" text="admin">
+                           <font>
+                              <Font size="14.0" />
+                           </font></Label>
+                     </children>
+                  </VBox>
+                  <Button mnemonicParsing="false" onAction="#refreshAll" style="-fx-background-radius: 10; -fx-border-radius: 10;" text="Refresh">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                     <font>
+                        <Font size="14.0" />
+                     </font></Button>
+                  <Button mnemonicParsing="false" onAction="#logout" style="-fx-background-color: red; -fx-border-radius: 10; -fx-background-radius: 10;" text="Logout" textFill="WHITE">
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin>
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font></Button>
+               </children>
+            </HBox>
+            <Separator prefWidth="200.0" style="-fx-background-color: darkblue;" />
+
+            <GridPane hgap="12.0" vgap="12.0">
+               <children>
+                  <VBox style="-fx-background-color: #e8f4f8; -fx-border-color: #9bc4d6; -fx-padding: 14;" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                     <children>
+                        <Label text="Users" textFill="#37586b" />
+                        <Label fx:id="totalUsersLabel" text="0">
+                           <font><Font name="System Bold" size="24.0" /></font>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <VBox style="-fx-background-color: #eef7ec; -fx-border-color: #a7caa0; -fx-padding: 14;" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                     <children>
+                        <Label text="Items" textFill="#42613d" />
+                        <Label fx:id="totalItemsLabel" text="0">
+                           <font><Font name="System Bold" size="24.0" /></font>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <VBox style="-fx-background-color: #fff5df; -fx-border-color: #d6b56c; -fx-padding: 14;" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                     <children>
+                        <Label text="Auctions" textFill="#7a5c1d" />
+                        <Label fx:id="totalAuctionsLabel" text="0">
+                           <font><Font name="System Bold" size="24.0" /></font>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <VBox style="-fx-background-color: #f8eeee; -fx-border-color: #d69a9a; -fx-padding: 14;" GridPane.columnIndex="3" GridPane.rowIndex="0">
+                     <children>
+                        <Label text="Running" textFill="#7a3a3a" />
+                        <Label fx:id="runningAuctionsLabel" text="0">
+                           <font><Font name="System Bold" size="24.0" /></font>
+                        </Label>
+                     </children>
+                  </VBox>
+               </children>
+               <columnConstraints>
+                  <ColumnConstraints />
+                  <ColumnConstraints />
+                  <ColumnConstraints />
+                  <ColumnConstraints />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints />
+               </rowConstraints>
+            </GridPane>
+
+            <TabPane style="-fx-background-color: darkblue;" VBox.vgrow="ALWAYS">
+               <tabs>
+                  <Tab closable="false" text="Users">
+                     <content>
+                        <VBox spacing="10.0">
+                           <padding><Insets top="10.0" /></padding>
+                           <children>
+                              <HBox spacing="8.0">
+                                 <children>
+                                    <Button mnemonicParsing="false" onAction="#activateSelectedUser" style="-fx-background-color: cyan;" text="Activate">
+                                       <HBox.margin>
+                                          <Insets left="10.0" />
+                                       </HBox.margin></Button>
+                                    <Button mnemonicParsing="false" onAction="#blockSelectedUser" style="-fx-background-color: cyan;" text="Block" />
+                                    <Button mnemonicParsing="false" onAction="#deleteSelectedUser" style="-fx-background-color: cyan;" text="Delete" />
+                                 </children>
+                              </HBox>
+                              <TableView fx:id="userTable" style="-fx-background-color: lightblue;" VBox.vgrow="ALWAYS">
+                                 <columns>
+                                    <TableColumn fx:id="userIdColumn" prefWidth="80.0" text="ID" />
+                                    <TableColumn fx:id="usernameColumn" prefWidth="140.0" text="Username" />
+                                    <TableColumn fx:id="nameColumn" prefWidth="160.0" text="Name" />
+                                    <TableColumn fx:id="emailColumn" prefWidth="220.0" text="Email" />
+                                    <TableColumn fx:id="roleColumn" prefWidth="100.0" text="Role" />
+                                    <TableColumn fx:id="userStatusColumn" prefWidth="110.0" text="Status" />
+                                 </columns>
+                              </TableView>
+                           </children>
+                        </VBox>
+                     </content>
+                  </Tab>
+                  <Tab closable="false" text="Auctions">
+                     <content>
+                        <VBox spacing="10.0">
+                           <padding><Insets top="10.0" /></padding>
+                           <children>
+                              <HBox spacing="8.0">
+                                 <children>
+                                    <Button mnemonicParsing="false" onAction="#cancelSelectedAuction" style="-fx-background-color: cyan;" text="Cancel Auction">
+                                       <HBox.margin>
+                                          <Insets left="10.0" />
+                                       </HBox.margin></Button>
+                                 </children>
+                              </HBox>
+                              <TableView fx:id="auctionTable" style="-fx-background-color: lightblue;" VBox.vgrow="ALWAYS">
+                                 <columns>
+                                    <TableColumn fx:id="auctionIdColumn" prefWidth="100.0" text="ID" />
+                                    <TableColumn fx:id="itemColumn" prefWidth="260.0" text="Item" />
+                                    <TableColumn fx:id="sellerColumn" prefWidth="160.0" text="Seller" />
+                                    <TableColumn fx:id="priceColumn" prefWidth="130.0" text="Current Price" />
+                                    <TableColumn fx:id="auctionStatusColumn" prefWidth="130.0" text="Status" />
+                                 </columns>
+                              </TableView>
+                           </children>
+                        </VBox>
+                     </content>
+                  </Tab>
+               </tabs>
+            </TabPane>
+            <Label fx:id="statusLabel" text="Ready" textFill="#426579" />
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>
