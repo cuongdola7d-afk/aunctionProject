@@ -5,8 +5,8 @@ import java.util.Map;
 
 import ddc.server.controller.handler.*;
 
- public class RequestRouter {
-     private static final Map<String, ActionHandler> routes = new HashMap<>();
+public class RequestRouter {
+    private static final Map<String, ActionHandler> routes = new HashMap<>();
 
     static {
         routes.put("LOGIN", new LoginHandler());
@@ -22,9 +22,11 @@ import ddc.server.controller.handler.*;
         routes.put("ADMIN_UPDATE_USER_STATUS", new AdminUpdateUserStatusHandler());
         routes.put("ADMIN_DELETE_USER", new AdminDeleteUserHandler());
         routes.put("ADMIN_CANCEL_AUCTION", new AdminCancelAuctionHandler());
+        routes.put("GET_NOTIFICATIONS", new GetNotificationsHandler());
+        routes.put("MARK_NOTIFICATION_READ", new MarkNotificationReadHandler());
     }
 
-    public static ActionHandler getHandler (String action) {
+    public static ActionHandler getHandler(String action) {
         return routes.get(action);
     }
- }
+}

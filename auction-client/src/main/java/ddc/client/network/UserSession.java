@@ -1,5 +1,8 @@
 package ddc.client.network;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+
 public class UserSession {
     private static UserSession instance;
 
@@ -10,6 +13,7 @@ public class UserSession {
     private String password;
     private String role = "USER";
     private String status = "ACTIVE";
+    private final IntegerProperty unreadCount = new SimpleIntegerProperty(0);
 
     private UserSession() {}
 
@@ -61,6 +65,18 @@ public class UserSession {
     public UserSession setStatus(String status) {
         this.status = status == null || status.isBlank() ? "ACTIVE" : status;
         return this;
+    }
+
+    public IntegerProperty unreadCountProperty() {
+        return unreadCount;
+    }
+
+    public int getUnreadCount() {
+        return unreadCount.get();
+    }
+
+    public void setUnreadCount(int unreadCount) {
+        this.unreadCount.set(unreadCount);
     }
 
     public void cleanUserSession() {

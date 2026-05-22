@@ -42,6 +42,7 @@ public class Logout {
             popupStage.close();
             primaryStage.close();
             UserSession.getInstance().cleanUserSession();
+            ddc.client.network.client.GlobalSocketClient.getInstance().disconnect();
 
             // 4. Tải giao diện Login vào Stage chính (primaryStage)
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ddc/client/views/loginregister/Login.fxml"));

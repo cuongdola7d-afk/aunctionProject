@@ -9,6 +9,8 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.control.ScrollPane?>
+
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ddc.client.controller.notify.Notify">
    <children>
@@ -39,14 +41,19 @@
          <children>
             <VBox fx:id="notifyVBox" alignment="CENTER" layoutX="403.0" layoutY="15.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="60.0" prefWidth="120.0" style="-fx-background-color: #001F3F; -fx-background-radius: 15;" HBox.hgrow="ALWAYS">
                <children>
-                  <Label maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" text="🔔" textFill="AQUA" VBox.vgrow="NEVER">
+                  <javafx.scene.layout.StackPane alignment="TOP_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity">
                      <VBox.margin>
                         <Insets top="10.0" />
                      </VBox.margin>
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Label>
+                     <children>
+                        <Label text="🔔" textFill="AQUA">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="badgeLabel" style="-fx-background-color: red; -fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 0 4 0 4; -fx-font-size: 10;" text="0" visible="false" />
+                     </children>
+                  </javafx.scene.layout.StackPane>
                   <Label alignment="CENTER" ellipsisString="" prefHeight="45.0" text="THÔNG BÁO" textAlignment="CENTER" textFill="AQUA" textOverrun="CLIP" VBox.vgrow="NEVER">
                      <VBox.margin>
                         <Insets />
@@ -155,10 +162,17 @@
             </VBox>
          </children>
       </HBox>
-      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="178.0" layoutY="485.0" text="TẠM THỜI CHƯA CÓ GÌ Ở ĐÂY CẢ :V" textFill="DARKBLUE" AnchorPane.bottomAnchor="84.6" AnchorPane.leftAnchor="177.59999999999997" AnchorPane.rightAnchor="177.2">
-         <font>
-            <Font name="Arial Bold Italic" size="25.0" />
-         </font>
-      </Label>
+      <ScrollPane fitToWidth="true"
+                  AnchorPane.topAnchor="55.0"
+                  AnchorPane.bottomAnchor="70.0"
+                  AnchorPane.leftAnchor="10.0"
+                  AnchorPane.rightAnchor="10.0"
+                  style="-fx-background: transparent;">
+         <content>
+            <VBox fx:id="notificationListVBox" spacing="8">
+               <padding><Insets top="10" bottom="10" left="5" right="5" /></padding>
+            </VBox>
+         </content>
+      </ScrollPane>
    </children>
 </AnchorPane>

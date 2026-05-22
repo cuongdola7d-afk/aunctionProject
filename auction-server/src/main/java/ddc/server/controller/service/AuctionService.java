@@ -83,6 +83,12 @@ public class AuctionService {
             throw new InvalidBidException("Người đấu giá không hợp lệ.");
         }
 
+        // Chặn seller tự bid vào sản phẩm của chính mình
+        if (auction.getItem() != null && auction.getItem().getSellerName() != null
+                && auction.getItem().getSellerName().equals(bidder.getUsername())) {
+            throw new InvalidBidException("Bạn không thể đấu giá sản phẩm của chính mình.");
+        }
+
         synchronized (auction) {
             return placeBidLocked(auction, bidder, amount, time);
         }

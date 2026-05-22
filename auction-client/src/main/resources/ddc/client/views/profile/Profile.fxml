@@ -17,14 +17,19 @@
          <children>
             <VBox fx:id="notifyVBox" alignment="CENTER" layoutX="403.0" layoutY="15.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#switchToNotify" prefHeight="60.0" prefWidth="120.0" HBox.hgrow="ALWAYS">
                <children>
-                  <Label maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" text="🔔" textFill="DARKBLUE" VBox.vgrow="NEVER">
+                  <javafx.scene.layout.StackPane alignment="TOP_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity">
                      <VBox.margin>
                         <Insets top="10.0" />
                      </VBox.margin>
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Label>
+                     <children>
+                        <Label text="🔔" textFill="DARKBLUE">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="badgeLabel" style="-fx-background-color: red; -fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 0 4 0 4; -fx-font-size: 10;" text="0" visible="false" />
+                     </children>
+                  </javafx.scene.layout.StackPane>
                   <Label alignment="CENTER" ellipsisString="" prefHeight="45.0" text="THÔNG BÁO" textAlignment="CENTER" textFill="DARKBLUE" textOverrun="CLIP" VBox.vgrow="NEVER">
                      <VBox.margin>
                         <Insets />

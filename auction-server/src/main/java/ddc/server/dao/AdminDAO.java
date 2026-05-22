@@ -25,7 +25,7 @@ public class AdminDAO {
     public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
 
-        try (Connection con = DatabaseConnection.getConnection()) {
+        try (Connection con = getConnection()) {
             String sql = hasColumn(con, "ddc_users", "status")
                     ? "SELECT * FROM ddc_users WHERE status <> 'DELETED' ORDER BY username"
                     : "SELECT * FROM ddc_users ORDER BY username";
@@ -46,7 +46,7 @@ public class AdminDAO {
     public boolean deleteUser(String userId) {
         String sql = "DELETE FROM ddc_users WHERE id = ?";
 
-        try (Connection con = DatabaseConnection.getConnection();
+        try (Connection con = getConnection();
                 PreparedStatement pst = con.prepareStatement(sql)) {
 
             pst.setString(1, userId);
@@ -63,7 +63,7 @@ public class AdminDAO {
     public boolean updateUserStatus(String userId, String status) {
         String sql = "UPDATE ddc_users SET status = ? WHERE id = ?";
 
-        try (Connection con = DatabaseConnection.getConnection()) {
+        try (Connection con = getConnection()) {
             if (!hasColumn(con, "ddc_users", "status")) {
                 LOGGER.warn("Bang ddc_users chua co cot status.");
                 return false;
@@ -90,7 +90,7 @@ public class AdminDAO {
     }
 
     private int countUsers() {
-        try (Connection con = DatabaseConnection.getConnection()) {
+        try (Connection con = getConnection()) {
             if (hasColumn(con, "ddc_users", "status")) {
                 return countWhere("ddc_users", "status <> 'DELETED'");
             }
@@ -107,7 +107,7 @@ public class AdminDAO {
     private int countWhere(String tableName, String whereClause) {
         String sql = "SELECT COUNT(*) FROM " + tableName + (whereClause == null ? "" : " WHERE " + whereClause);
 
-        try (Connection con = DatabaseConnection.getConnection();
+        try (Connection con = getConnection();
                 PreparedStatement pst = con.prepareStatement(sql);
                 ResultSet rs = pst.executeQuery()) {
 
@@ -130,5 +130,9 @@ public class AdminDAO {
             }
         }
         return false;
+    }
+
+    protected Connection getConnection() throws SQLException {
+        return ddc.server.config.DatabaseConnection.getConnection();
     }
 }

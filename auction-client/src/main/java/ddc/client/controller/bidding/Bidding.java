@@ -41,7 +41,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 
+import ddc.client.controller.notify.NotificationBadgeUtil;
+
 public class Bidding {
+
+    @FXML
+    private Label badgeLabel;
 
     @FXML
     private ScrollPane mainScrollPane;
@@ -80,6 +85,7 @@ public class Bidding {
 
     @FXML
     public void initialize() {
+        NotificationBadgeUtil.setupBadge(badgeLabel);
         currentBidderId = UserSession.getInstance().getId();
         setupCategoryTree();
         loadingLogo();

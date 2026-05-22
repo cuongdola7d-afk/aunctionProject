@@ -123,14 +123,19 @@
 
                         <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#switchToNotify" prefHeight="60.0" prefWidth="120.0" style="-fx-cursor: hand;" HBox.hgrow="ALWAYS">
                             <children>
-                                <Label text="🔔" textFill="DARKBLUE">
-                                    <font>
-                                        <Font size="14.0" />
-                                    </font>
-                                    <VBox.margin>
-                                        <Insets top="10.0" />
-                                    </VBox.margin>
-                                </Label>
+                                <javafx.scene.layout.StackPane alignment="TOP_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity">
+                                   <VBox.margin>
+                                      <Insets top="10.0" />
+                                   </VBox.margin>
+                                   <children>
+                                      <Label text="🔔" textFill="DARKBLUE">
+                                         <font>
+                                            <Font size="14.0" />
+                                         </font>
+                                      </Label>
+                                      <Label fx:id="badgeLabel" style="-fx-background-color: red; -fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 0 4 0 4; -fx-font-size: 10;" text="0" visible="false" />
+                                   </children>
+                                </javafx.scene.layout.StackPane>
                                 <Label alignment="CENTER" prefHeight="45.0" text="THÔNG BÁO" textAlignment="CENTER" textFill="DARKBLUE">
                                     <font>
                                         <Font name="Roboto" size="13.0" />

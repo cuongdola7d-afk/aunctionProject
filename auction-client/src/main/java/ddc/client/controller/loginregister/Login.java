@@ -99,6 +99,10 @@ public class Login {
                     .setPassword(user.getPassword())
                     .setRole(user.getRole())
                     .setStatus(user.getStatus());
+
+            // Connect global socket for realtime notifications
+            ddc.client.network.client.GlobalSocketClient.getInstance().connect();
+
             Platform.runLater(() -> errorLabel.setText("Đăng nhập thành công!"));
 
             try {

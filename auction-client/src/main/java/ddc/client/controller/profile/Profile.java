@@ -17,12 +17,21 @@ import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javafx.scene.control.Label;
+import ddc.client.controller.notify.NotificationBadgeUtil;
+
 public class Profile {
+
+    @FXML
+    private Label badgeLabel;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(Profile.class);
     @FXML
     private Label nameLabel, usernameLabel;
 
+    @FXML
     public void initialize() {
+        NotificationBadgeUtil.setupBadge(badgeLabel);
         UserSession session = UserSession.getInstance();
 
         // Đổ dữ liệu vào các ô TextField

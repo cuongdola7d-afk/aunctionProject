@@ -21,7 +21,7 @@ public class ItemDAO {
             return null;
         }
 
-        try (Connection con = DatabaseConnection.getConnection()) {
+        try (Connection con = getConnection()) {
             con.setAutoCommit(false);
 
             try {
@@ -42,7 +42,7 @@ public class ItemDAO {
     public ItemGeneric getItem(String id) {
         String sql = "SELECT * FROM ddc_items WHERE id = ?";
 
-        try (Connection con = DatabaseConnection.getConnection();
+        try (Connection con = getConnection();
                 PreparedStatement pst = con.prepareStatement(sql)) {
 
             pst.setString(1, id.trim());
@@ -86,5 +86,9 @@ public class ItemDAO {
 
     private boolean isBlank(String value) {
         return value == null || value.trim().isEmpty();
+    }
+
+    protected Connection getConnection() throws SQLException {
+        return ddc.server.config.DatabaseConnection.getConnection();
     }
 }
