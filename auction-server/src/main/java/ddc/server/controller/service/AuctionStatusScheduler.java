@@ -9,18 +9,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ddc.server.dao.AuctionDAO;
-<<<<<<< HEAD
 import ddc.server.dao.UserDAO;
-=======
 import ddc.server.model.notification.NotificationType;
->>>>>>> origin
 import ddc.server.model.transaction.Auction;
 import ddc.server.model.transaction.AuctionStatus;
 import ddc.server.model.user.User;
 import ddc.server.network.client.RealtimeClientHandler;
 import ddc.server.network.request.AuctionEventPayload;
-import ddc.server.dao.UserDAO;
-import ddc.server.model.user.User;
 
 // Scheduler quét auction hết hạn, cập nhật DB + broadcast
 public class AuctionStatusScheduler {
@@ -34,11 +29,8 @@ public class AuctionStatusScheduler {
 
     private final AuctionService auctionService;
     private final AuctionDAO auctionDAO = new AuctionDAO();
-<<<<<<< HEAD
     private final WalletService walletService = new WalletService();
-=======
     private final NotificationService notifService = new NotificationService();
->>>>>>> origin
 
     public AuctionStatusScheduler(AuctionService auctionService) {
         this.auctionService = auctionService;
@@ -108,7 +100,7 @@ public class AuctionStatusScheduler {
         RealtimeClientHandler.broadcastAuctionEvent(auction.getId(), event);
     }
 
-<<<<<<< HEAD
+
     private void handleAuctionSettlement(Auction auction) {
         LOGGER.info("Auction #{}: settlement check. highestBidder={}, sellerName={}, finalPrice={}",
                 auction.getId(),
@@ -151,7 +143,9 @@ public class AuctionStatusScheduler {
         } else {
             LOGGER.error("Auction #{}: wallet settlement failed. winnerId={}, ownerId={}, finalPrice={}",
                     auction.getId(), winnerId, owner.getId(), finalPrice);
-=======
+        }
+    }
+
     private void createFinishedNotifications(Auction auction) {
         try {
             // Lấy sellerId từ sellerName qua UserDAO
@@ -194,7 +188,6 @@ public class AuctionStatusScheduler {
             }
         } catch (Exception e) {
             LOGGER.error("Loi tao notification khi auction ket thuc", e);
->>>>>>> origin
         }
     }
 }

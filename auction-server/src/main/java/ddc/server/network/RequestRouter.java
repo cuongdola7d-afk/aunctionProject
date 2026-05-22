@@ -3,7 +3,18 @@ package ddc.server.network;
 import java.util.HashMap;
 import java.util.Map;
 
-import ddc.server.controller.handler.*;
+import ddc.server.controller.handler.ActionHandler;
+import ddc.server.controller.handler.AddItemHandler;
+import ddc.server.controller.handler.ChangePasswordHandler;
+import ddc.server.controller.handler.CreateAuctionHandler;
+import ddc.server.controller.handler.DepositHandler;
+import ddc.server.controller.handler.GetItemHandler;
+import ddc.server.controller.handler.GetNotificationsHandler;
+import ddc.server.controller.handler.GetWalletBalanceHandler;
+import ddc.server.controller.handler.LoginHandler;
+import ddc.server.controller.handler.MarkNotificationReadHandler;
+import ddc.server.controller.handler.RegisterHandler;
+import ddc.server.controller.handler.UpdateProfileHandler;
 import ddc.server.controller.handler.admin.AdminCancelAuctionHandler;
 import ddc.server.controller.handler.admin.AdminDeleteUserHandler;
 import ddc.server.controller.handler.admin.AdminGetStatsHandler;
@@ -28,13 +39,10 @@ public class RequestRouter {
         routes.put("ADMIN_UPDATE_USER_STATUS", new AdminUpdateUserStatusHandler());
         routes.put("ADMIN_DELETE_USER", new AdminDeleteUserHandler());
         routes.put("ADMIN_CANCEL_AUCTION", new AdminCancelAuctionHandler());
-<<<<<<< HEAD
         routes.put("GET_WALLET_BALANCE", new GetWalletBalanceHandler());
         routes.put("DEPOSIT", new DepositHandler());
-=======
         routes.put("GET_NOTIFICATIONS", new GetNotificationsHandler());
         routes.put("MARK_NOTIFICATION_READ", new MarkNotificationReadHandler());
->>>>>>> origin
     }
 
     public static ActionHandler getHandler(String action) {
