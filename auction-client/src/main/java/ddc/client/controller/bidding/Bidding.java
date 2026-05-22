@@ -20,7 +20,7 @@ import ddc.client.controller.SceneSwitcher;
 import ddc.client.model.AuctionDTO;
 import ddc.client.model.AuctionItemViewModel;
 import ddc.client.model.Request;
-import ddc.client.network.RealtimeToServer;
+import ddc.client.network.RequestToServer;
 import ddc.client.network.UserSession;
 import ddc.client.network.response.GetAllAuctionsResponse;
 import javafx.animation.Animation;
@@ -41,7 +41,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 
+import ddc.client.controller.notify.NotificationBadgeUtil;
+
 public class Bidding {
+
+    @FXML
+    private Label badgeLabel;
 
     @FXML
     private ScrollPane mainScrollPane;
@@ -80,6 +85,7 @@ public class Bidding {
 
     @FXML
     public void initialize() {
+        NotificationBadgeUtil.setupBadge(badgeLabel);
         currentBidderId = UserSession.getInstance().getId();
         setupCategoryTree();
         loadingLogo();
@@ -151,7 +157,7 @@ public class Bidding {
 
         new Thread(() -> {
             try {
-                String JsonResponse = RealtimeToServer.sendRequest(new Request().setAction("GET_ALL"));
+                String JsonResponse = RequestToServer.sendRequest(new Request().setAction("GET_ALL"));
                 GetAllAuctionsResponse response = gson.fromJson(JsonResponse, GetAllAuctionsResponse.class);
                 
                 if ("SUCCESS".equals(response.getStatus())) {
@@ -193,8 +199,7 @@ public class Bidding {
                 }
                 
             } catch (Exception e) {
-                System.out.println(e.getMessage());
-                e.printStackTrace();
+                LOGGER.error("Loi load danh sach auction", e);
             }
         }).start();
     }

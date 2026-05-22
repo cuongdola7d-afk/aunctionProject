@@ -1,66 +1,83 @@
 package ddc.server.controller.handler;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.google.gson.Gson;
-
 import ddc.server.controller.RequestMessage;
-import ddc.server.model.user.User;
 import ddc.server.network.response.Response;
 
+@DisplayName("RegisterHandler - Unit Tests")
 class RegisterHandlerTest {
     private final RegisterHandler handler = new RegisterHandler();
-    private final Gson gson = new Gson();
 
     @Test
-    void handle_shouldReturnInvalidInputWhenUsernameMissing() {
-        User user = new User()
-                .setEmail("alice@example.com")
-                .setPassword("password123");
-
-        Response<?> response = handler.handle(request(user));
-
-        assertEquals("INVALID_INPUT", response.getStatus());
+    @DisplayName("register - Null data → INVALID_INPUT")
+    void testHandle_NullData() {
+        RequestMessage req = new RequestMessage("REGISTER", null);
+        Response resp = handler.handle(req);
+        assertEquals("INVALID_INPUT", resp.getStatus());
     }
 
     @Test
-    void handle_shouldReturnInvalidInputWhenEmailMissing() {
-        User user = new User()
-                .setUsername("alice")
-                .setPassword("password123");
-
-        Response<?> response = handler.handle(request(user));
-
-        assertEquals("INVALID_INPUT", response.getStatus());
+    @DisplayName("register - JSON rỗng {} → INVALID_INPUT (thiếu field)")
+    void testHandle_EmptyJson() {
+        RequestMessage req = new RequestMessage("REGISTER", "{}");
+        Response resp = handler.handle(req);
+        assertEquals("INVALID_INPUT", resp.getStatus());
     }
 
     @Test
-    void handle_shouldReturnPasswordLessThan8WhenPasswordTooShort() {
-        User user = new User()
-                .setUsername("alice")
-                .setEmail("alice@example.com")
-                .setPassword("1234567");
-
-        Response<?> response = handler.handle(request(user));
-
-        assertEquals("PASSWORD_LESS_THAN_8", response.getStatus());
+    @DisplayName("register - Mật khẩu < 8 ký tự → PASSWORD_LESS_THAN_8")
+    void testHandle_PasswordTooShort() {
+        String json = "{\"username\":\"user1\",\"email\":\"user@test.com\",\"password\":\"1234\"}";
+        RequestMessage req = new RequestMessage("REGISTER", json);
+        Response resp = handler.handle(req);
+        assertEquals("PASSWORD_LESS_THAN_8", resp.getStatus());
     }
 
     @Test
-    void handle_shouldReturnInvalidEmailWhenEmailFormatInvalid() {
-        User user = new User()
-                .setUsername("alice")
-                .setEmail("not-an-email")
-                .setPassword("password123");
-
-        Response<?> response = handler.handle(request(user));
-
-        assertEquals("INVALID_EMAIL", response.getStatus());
+    @DisplayName("register - Email không hợp lệ → INVALID_EMAIL")
+    void testHandle_InvalidEmail() {
+        String json = "{\"username\":\"user1\",\"email\":\"invalidemail\",\"password\":\"password123\"}";
+        RequestMessage req = new RequestMessage("REGISTER", json);
+        Response resp = handler.handle(req);
+        assertEquals("INVALID_EMAIL", resp.getStatus());
     }
 
-    private RequestMessage request(User user) {
-        return new RequestMessage("REGISTER", gson.toJson(user));
+    @Test
+    @DisplayName("register - Email thiếu domain → INVALID_EMAIL")
+    void testHandle_EmailMissingDomain() {
+        String json = "{\"username\":\"user1\",\"email\":\"user@\",\"password\":\"password123\"}";
+        RequestMessage req = new RequestMessage("REGISTER", json);
+        Response resp = handler.handle(req);
+        assertEquals("INVALID_EMAIL", resp.getStatus());
+    }
+
+    @Test
+    @DisplayName("register - Thiếu email → INVALID_INPUT")
+    void testHandle_MissingEmail() {
+        String json = "{\"username\":\"user1\",\"password\":\"password123\"}";
+        RequestMessage req = new RequestMessage("REGISTER", json);
+        Response resp = handler.handle(req);
+        assertEquals("INVALID_INPUT", resp.getStatus());
+    }
+
+    @Test
+    @DisplayName("register - Thiếu username → INVALID_INPUT")
+    void testHandle_MissingUsername() {
+        String json = "{\"email\":\"user@test.com\",\"password\":\"password123\"}";
+        RequestMessage req = new RequestMessage("REGISTER", json);
+        Response resp = handler.handle(req);
+        assertEquals("INVALID_INPUT", resp.getStatus());
+    }
+
+    @Test
+    @DisplayName("register - JSON lỗi format → ném JsonSyntaxException (handler không bắt)")
+    void testHandle_MalformedJson() {
+        RequestMessage req = new RequestMessage("REGISTER", "NOT_VALID_JSON");
+        // Gson ném JsonSyntaxException khi parse non-JSON object
+        assertThrows(Exception.class, () -> handler.handle(req));
     }
 }

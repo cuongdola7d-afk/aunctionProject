@@ -15,8 +15,10 @@ import com.google.gson.Gson;
 
 import ddc.server.config.GsonConfig;
 import ddc.server.controller.service.AuctionService;
+import ddc.server.controller.service.NotificationService;
 import ddc.server.dao.AuctionDAO;
 import ddc.server.dao.UserDAO;
+import ddc.server.model.notification.NotificationType;
 import ddc.server.model.transaction.Auction;
 import ddc.server.model.user.Bidder;
 import ddc.server.model.user.User;
@@ -31,7 +33,6 @@ import ddc.server.pattern.Singleton.AuctionManager;
 public class RealtimeClientHandler implements Runnable {
     private static final Logger LOGGER = LoggerFactory.getLogger(RealtimeClientHandler.class);
     private static final Set<ClientConnection> ACTIVE_CONNECTIONS = ConcurrentHashMap.newKeySet();
-    private static final ConcurrentHashMap<String, Object> AUCTION_LOCKS = new ConcurrentHashMap<>();
 
     private final Socket socket;
     private final AuctionService auctionService;
@@ -91,6 +92,7 @@ public class RealtimeClientHandler implements Runnable {
             LOGGER.info("Received message type: {} from client: {}", message.getType(), client.getConnectionId());
 
             switch (message.getType()) {
+                case AUTH -> handleAuth(client, message);
                 case SUBSCRIBE_AUCTION -> handleSubscribe(client, message);
                 case PLACE_BID -> handlePlaceBid(client, message);
                 default -> sendError(client, "Message type khong ho tro: " + message.getType());
@@ -98,6 +100,30 @@ public class RealtimeClientHandler implements Runnable {
         } catch (Exception e) {
             LOGGER.warn("Message handling failed: {}", e.getMessage(), e);
             sendError(client, "Loi xu ly message: " + e.getMessage());
+        }
+    }
+
+    private void handleAuth(ClientConnection client, SocketMessage message) {
+        com.google.gson.JsonObject payload = gson.fromJson(message.getPayloadJson(), com.google.gson.JsonObject.class);
+        if (payload != null && payload.has("userId")) {
+            String userId = payload.get("userId").getAsString();
+            client.setUserId(userId);
+            LOGGER.info("Client {} authenticated as user {}", client.getConnectionId(), userId);
+        }
+    }
+
+    public static void sendNotificationEventToUser(String userId, int unreadCount) {
+        com.google.gson.JsonObject payload = new com.google.gson.JsonObject();
+        payload.addProperty("unreadCount", unreadCount);
+        Gson gson = GsonConfig.newGson();
+        for (ClientConnection connection : ACTIVE_CONNECTIONS) {
+            if (userId.equals(connection.getUserId())) {
+                try {
+                    connection.send(MessageType.NOTIFICATION_EVENT, payload, gson);
+                } catch (Exception e) {
+                    LOGGER.warn("Failed to send notification event: {}", e.getMessage());
+                }
+            }
         }
     }
 
@@ -148,27 +174,29 @@ public class RealtimeClientHandler implements Runnable {
         String auctionId;
         String bidderName;
 
-        Object auctionLock = AUCTION_LOCKS.computeIfAbsent(request.getAuctionId(), id -> new Object());
-        synchronized (auctionLock) {
-            Auction auction = getAuctionOrLoad(request.getAuctionId());
-            if (auction == null) {
-                sendError(client, "Khong tim thay phien dau gia: " + request.getAuctionId());
-                return;
-            }
+        Auction auction = getAuctionOrLoad(request.getAuctionId());
+        if (auction == null) {
+            sendError(client, "Khong tim thay phien dau gia: " + request.getAuctionId());
+            return;
+        }
 
-            Bidder bidder = getBidderOrLoad(request.getBidderId());
-            if (bidder == null) {
-                sendError(client, "Khong tim thay bidder: " + request.getBidderId());
-                return;
-            }
-            boolean timeExtended;
-            try {
-                timeExtended = auctionService.placeBid(auction, bidder, request.getAmount(), LocalDateTime.now());
-            } catch (Exception e) {
-                sendError(client, e.getMessage());
-                return;
-            }
+        Bidder bidder = getBidderOrLoad(request.getBidderId());
+        if (bidder == null) {
+            sendError(client, "Khong tim thay bidder: " + request.getBidderId());
+            return;
+        }
 
+        String previousBidderId = auction.getHighestBidder() != null ? auction.getHighestBidder().getId() : null;
+
+        boolean timeExtended;
+        try {
+            timeExtended = auctionService.placeBid(auction, bidder, request.getAmount(), LocalDateTime.now());
+        } catch (Exception e) {
+            sendError(client, e.getMessage());
+            return;
+        }
+
+        synchronized (auction) {
             if (!auctionDAO.updateAuction(auction)) {
                 sendError(client, "Khong cap nhat duoc phien dau gia.");
                 return;
@@ -193,6 +221,12 @@ public class RealtimeClientHandler implements Runnable {
         }
 
         broadcastAuctionEvent(auctionId, event);
+        if (previousBidderId != null && !previousBidderId.equals(request.getBidderId())) {
+            NotificationService notifService = new NotificationService();
+            notifService.createNotification(previousBidderId, NotificationType.BID_OUTBID,
+                    auctionId, "Bạn đã bị vượt giá!",
+                    "Phiên " + auction.getItem().getItemName() + " có bid mới: " + request.getAmount());
+        }
         LOGGER.info("Bid thanh cong: auction={} bidder={} amount={}", auctionId, bidderName, request.getAmount());
     }
 

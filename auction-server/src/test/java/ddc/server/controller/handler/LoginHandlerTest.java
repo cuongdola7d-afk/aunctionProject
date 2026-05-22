@@ -1,49 +1,66 @@
 package ddc.server.controller.handler;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.google.gson.Gson;
-
 import ddc.server.controller.RequestMessage;
-import ddc.server.model.user.User;
 import ddc.server.network.response.Response;
 
+@DisplayName("LoginHandler - Unit Tests")
 class LoginHandlerTest {
     private final LoginHandler handler = new LoginHandler();
-    private final Gson gson = new Gson();
 
+    // JSON request không có username/password
     @Test
-    void handle_shouldReturnInvalidInputWhenUsernameMissing() {
-        User user = new User().setPassword("password123");
-
-        Response<?> response = handler.handle(request(user));
-
-        assertEquals("INVALID_INPUT", response.getStatus());
+    @DisplayName("login - Null data trả INVALID_INPUT")
+    void testHandle_NullData() {
+        RequestMessage req = new RequestMessage("LOGIN", null);
+        Response resp = handler.handle(req);
+        assertEquals("INVALID_INPUT", resp.getStatus());
     }
 
     @Test
-    void handle_shouldReturnInvalidInputWhenPasswordMissing() {
-        User user = new User().setUsername("alice");
-
-        Response<?> response = handler.handle(request(user));
-
-        assertEquals("INVALID_INPUT", response.getStatus());
+    @DisplayName("login - JSON rỗng trả INVALID_INPUT")
+    void testHandle_EmptyJson() {
+        RequestMessage req = new RequestMessage("LOGIN", "{}");
+        Response resp = handler.handle(req);
+        assertEquals("INVALID_INPUT", resp.getStatus());
     }
 
     @Test
-    void handle_shouldReturnPasswordLessThan8WhenPasswordTooShort() {
-        User user = new User()
-                .setUsername("alice")
-                .setPassword("1234567");
-
-        Response<?> response = handler.handle(request(user));
-
-        assertEquals("PASSWORD_LESS_THAN_8", response.getStatus());
+    @DisplayName("login - Mật khẩu < 8 ký tự trả PASSWORD_LESS_THAN_8")
+    void testHandle_PasswordTooShort() {
+        String json = "{\"username\":\"user1\",\"password\":\"123\"}";
+        RequestMessage req = new RequestMessage("LOGIN", json);
+        Response resp = handler.handle(req);
+        assertEquals("PASSWORD_LESS_THAN_8", resp.getStatus());
     }
 
-    private RequestMessage request(User user) {
-        return new RequestMessage("LOGIN", gson.toJson(user));
+    @Test
+    @DisplayName("login - Thiếu username trả INVALID_INPUT")
+    void testHandle_MissingUsername() {
+        String json = "{\"password\":\"password123\"}";
+        RequestMessage req = new RequestMessage("LOGIN", json);
+        Response resp = handler.handle(req);
+        assertEquals("INVALID_INPUT", resp.getStatus());
+    }
+
+    @Test
+    @DisplayName("login - User không tồn tại trả UNAVAILABLE")
+    void testHandle_UserNotFound() {
+        String json = "{\"username\":\"nonexistent_user_xyz\",\"password\":\"password123\"}";
+        RequestMessage req = new RequestMessage("LOGIN", json);
+        Response resp = handler.handle(req);
+        assertEquals("UNAVAILABLE", resp.getStatus());
+    }
+
+    @Test
+    @DisplayName("login - JSON lỗi format → ném JsonSyntaxException (handler không bắt)")
+    void testHandle_MalformedJson() {
+        RequestMessage req = new RequestMessage("LOGIN", "NOT_JSON_DATA");
+        // Gson ném JsonSyntaxException khi parse non-JSON object string
+        assertThrows(Exception.class, () -> handler.handle(req));
     }
 }

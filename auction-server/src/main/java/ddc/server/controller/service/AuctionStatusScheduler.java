@@ -9,12 +9,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ddc.server.dao.AuctionDAO;
+<<<<<<< HEAD
 import ddc.server.dao.UserDAO;
+=======
+import ddc.server.model.notification.NotificationType;
+>>>>>>> origin
 import ddc.server.model.transaction.Auction;
 import ddc.server.model.transaction.AuctionStatus;
 import ddc.server.model.user.User;
 import ddc.server.network.client.RealtimeClientHandler;
 import ddc.server.network.request.AuctionEventPayload;
+import ddc.server.dao.UserDAO;
+import ddc.server.model.user.User;
 
 // Scheduler quét auction hết hạn, cập nhật DB + broadcast
 public class AuctionStatusScheduler {
@@ -28,7 +34,11 @@ public class AuctionStatusScheduler {
 
     private final AuctionService auctionService;
     private final AuctionDAO auctionDAO = new AuctionDAO();
+<<<<<<< HEAD
     private final WalletService walletService = new WalletService();
+=======
+    private final NotificationService notifService = new NotificationService();
+>>>>>>> origin
 
     public AuctionStatusScheduler(AuctionService auctionService) {
         this.auctionService = auctionService;
@@ -71,6 +81,7 @@ public class AuctionStatusScheduler {
                     if (auction.getStatus() == AuctionStatus.FINISHED) {
                         handleAuctionSettlement(auction);
                         broadcastFinished(auction);
+                        createFinishedNotifications(auction);
                     }
                 }
             }
@@ -97,6 +108,7 @@ public class AuctionStatusScheduler {
         RealtimeClientHandler.broadcastAuctionEvent(auction.getId(), event);
     }
 
+<<<<<<< HEAD
     private void handleAuctionSettlement(Auction auction) {
         LOGGER.info("Auction #{}: settlement check. highestBidder={}, sellerName={}, finalPrice={}",
                 auction.getId(),
@@ -139,6 +151,50 @@ public class AuctionStatusScheduler {
         } else {
             LOGGER.error("Auction #{}: wallet settlement failed. winnerId={}, ownerId={}, finalPrice={}",
                     auction.getId(), winnerId, owner.getId(), finalPrice);
+=======
+    private void createFinishedNotifications(Auction auction) {
+        try {
+            // Lấy sellerId từ sellerName qua UserDAO
+            String sellerName = auction.getItem().getSellerName();
+            String sellerId = null;
+            if (sellerName != null && !sellerName.isBlank()) {
+                User seller = new UserDAO().getUser(sellerName);
+                if (seller != null) {
+                    sellerId = seller.getId();
+                }
+            }
+            String auctionName = auction.getItem().getItemName();
+            if (auction.getHighestBidder() != null) {
+                // Thông báo cho WINNER
+                notifService.createNotification(
+                        auction.getHighestBidder().getId(),
+                        NotificationType.AUCTION_WON,
+                        auction.getId(),
+                        "Bạn đã thắng đấu giá!",
+                        "Bạn thắng: " + auctionName + " với giá " + auction.getCurrentPrice());
+                // Thông báo cho SELLER
+                if (sellerId != null) {
+                    notifService.createNotification(
+                            sellerId,
+                            NotificationType.AUCTION_ENDED,
+                            auction.getId(),
+                            "Phiên đấu giá kết thúc",
+                            auctionName + " đã bán với giá " + auction.getCurrentPrice());
+                }
+            } else {
+                // Không ai bid -> thông báo seller
+                if (sellerId != null) {
+                    notifService.createNotification(
+                            sellerId,
+                            NotificationType.AUCTION_NO_BID,
+                            auction.getId(),
+                            "Phiên đấu giá không có ai tham gia",
+                            auctionName + " đã hết hạn mà không có bid nào.");
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.error("Loi tao notification khi auction ket thuc", e);
+>>>>>>> origin
         }
     }
 }

@@ -11,8 +11,8 @@ import ddc.server.controller.handler.admin.AdminGetUsersHandler;
 import ddc.server.controller.handler.admin.AdminUpdateUserStatusHandler;
 import ddc.server.controller.handler.admin.GetAllAuctionHandler;
 
- public class RequestRouter {
-     private static final Map<String, ActionHandler> routes = new HashMap<>();
+public class RequestRouter {
+    private static final Map<String, ActionHandler> routes = new HashMap<>();
 
     static {
         routes.put("LOGIN", new LoginHandler());
@@ -28,11 +28,16 @@ import ddc.server.controller.handler.admin.GetAllAuctionHandler;
         routes.put("ADMIN_UPDATE_USER_STATUS", new AdminUpdateUserStatusHandler());
         routes.put("ADMIN_DELETE_USER", new AdminDeleteUserHandler());
         routes.put("ADMIN_CANCEL_AUCTION", new AdminCancelAuctionHandler());
+<<<<<<< HEAD
         routes.put("GET_WALLET_BALANCE", new GetWalletBalanceHandler());
         routes.put("DEPOSIT", new DepositHandler());
+=======
+        routes.put("GET_NOTIFICATIONS", new GetNotificationsHandler());
+        routes.put("MARK_NOTIFICATION_READ", new MarkNotificationReadHandler());
+>>>>>>> origin
     }
 
-    public static ActionHandler getHandler (String action) {
+    public static ActionHandler getHandler(String action) {
         return routes.get(action);
     }
- }
+}

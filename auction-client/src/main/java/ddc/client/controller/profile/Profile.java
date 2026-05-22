@@ -17,7 +17,14 @@ import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javafx.scene.control.Label;
+import ddc.client.controller.notify.NotificationBadgeUtil;
+
 public class Profile {
+
+    @FXML
+    private Label badgeLabel;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(Profile.class);
     private static final double WALLET_POPUP_WIDTH = 320;
     private static final double WALLET_POPUP_HEIGHT = 320;
@@ -25,7 +32,9 @@ public class Profile {
     @FXML
     private Label nameLabel, usernameLabel;
 
+    @FXML
     public void initialize() {
+        NotificationBadgeUtil.setupBadge(badgeLabel);
         UserSession session = UserSession.getInstance();
         nameLabel.setText(session.getName());
         usernameLabel.setText("@" + session.getUsername());
