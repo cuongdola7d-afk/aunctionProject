@@ -1,8 +1,9 @@
-package ddc.server.controller.handler;
+package ddc.server.controller.handler.admin;
 
-import static org.junit.jupiter.api.Assertions.*;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import ddc.server.controller.RequestMessage;
 import ddc.server.network.response.Response;
