@@ -31,38 +31,29 @@ public class Logout {
     @FXML
     void handleConfirmLogout(ActionEvent event) {
         try {
-            // 1. Lấy Stage của cái Popup và đóng nó lại
             Stage popupStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-
-            // 2. Lấy Stage "Chủ" (Chính là Stage đang hiện màn hình Profile)
-            // Vì popup này được mở từ Profile, owner của nó chính là Stage Profile
             Stage primaryStage = (Stage) popupStage.getOwner();
 
-            // 3. Đóng cái Popup trước
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ddc/client/views/loginregister/login.fxml"));
+            Parent root = loader.load();
+
+            Stage loginStage = new Stage();
+            Image icon = new Image(getClass().getResourceAsStream("/ddc/client/views/DDCAuction.png"));
+            Scene scene = new Scene(root, 400, 500);
+
+            loginStage.getIcons().add(icon);
+            loginStage.setTitle("DDC Auction");
+            loginStage.setScene(scene);
+            loginStage.setResizable(false);
+            loginStage.show();
+
             popupStage.close();
             primaryStage.close();
             UserSession.getInstance().cleanUserSession();
-            ddc.client.network.client.GlobalSocketClient.getInstance().disconnect();
-
-            // 4. Tải giao diện Login vào Stage chính (primaryStage)
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ddc/client/views/loginregister/Login.fxml"));
-            Parent root = loader.load();
-
-            Stage stage = new Stage();
-
-            Image icon = new Image(getClass().getResourceAsStream("/ddc/client/views/DDCAuction.png"));
-
-            Scene scene = new Scene(root, 400, 500);
-
-            stage.getIcons().add(icon);
-
-            stage.setTitle("DDC Auction");
-            stage.setScene(scene);
-            stage.setResizable(false);
-            stage.show();
-
+            ddc.client.config.ClientContext.EXECUTOR.execute(() ->
+                    ddc.client.network.client.GlobalSocketClient.getInstance().disconnect());
         } catch (IOException e) {
-            LOGGER.error("Không tìm thấy file Login.fxml", e);
+            LOGGER.error("Khong tim thay file login.fxml", e);
         }
     }
 }
