@@ -9,6 +9,8 @@ import ddc.server.dao.UserDAO;
 import ddc.server.model.transaction.Auction;
 import ddc.server.model.transaction.AuctionStatus;
 import ddc.server.model.user.User;
+import ddc.server.network.client.RealtimeClientHandler;
+import ddc.server.network.request.AuctionEventPayload;
 import ddc.server.pattern.Singleton.AuctionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,11 +83,29 @@ public class AdminService {
                 if (cachedAuction != null) {
                     cachedAuction.setStatus(AuctionStatus.CANCELLED.name());
                 }
+                broadcastAuctionCancelled(auction);
             }
             return updated;
         } catch (Exception e) {
             LOGGER.warn("Khong huy duoc auction: {}", auctionId, e);
             return false;
         }
+    }
+
+    private void broadcastAuctionCancelled(Auction auction) {
+        AuctionEventPayload event = new AuctionEventPayload();
+        event.setEventType("CANCELLED");
+        event.setAuctionId(auction.getId());
+        event.setCurrentPrice(auction.getCurrentPrice());
+        event.setStatus(AuctionStatus.CANCELLED.name());
+        event.setEndTime(auction.getEndTime() != null ? auction.getEndTime().toString() : null);
+        event.setMinBidIncrement(auction.getMinBidIncrement());
+
+        if (auction.getHighestBidder() != null) {
+            event.setBidderName(auction.getHighestBidder().getUsername());
+        }
+
+        event.setMessage("Phien dau gia da bi huy.");
+        RealtimeClientHandler.broadcastAuctionEvent(auction.getId(), event);
     }
 }

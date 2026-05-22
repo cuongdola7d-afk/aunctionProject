@@ -16,7 +16,7 @@ class GetWalletBalanceHandlerTest {
     void handle_shouldReturnInvalidInputWhenRequestIsNull() {
         GetWalletBalanceHandler handler = new GetWalletBalanceHandler(new FakeWalletService());
 
-        Response<?> response = handler.handle(null);
+        Response response = handler.handle(null);
 
         assertEquals("INVALID_INPUT", response.getStatus());
     }
@@ -25,7 +25,7 @@ class GetWalletBalanceHandlerTest {
     void handle_shouldReturnInvalidInputWhenDataBlank() {
         GetWalletBalanceHandler handler = new GetWalletBalanceHandler(new FakeWalletService());
 
-        Response<?> response = handler.handle(new RequestMessage("GET_WALLET_BALANCE", " "));
+        Response response = handler.handle(new RequestMessage("GET_WALLET_BALANCE", " "));
 
         assertEquals("INVALID_INPUT", response.getStatus());
     }
@@ -34,7 +34,7 @@ class GetWalletBalanceHandlerTest {
     void handle_shouldReturnInvalidInputWhenUserIdMissing() {
         GetWalletBalanceHandler handler = new GetWalletBalanceHandler(new FakeWalletService());
 
-        Response<?> response = handler.handle(request("""
+        Response response = handler.handle(request("""
                 { "userId": " " }
                 """));
 
@@ -47,7 +47,7 @@ class GetWalletBalanceHandlerTest {
         walletService.balance = 250_000;
         GetWalletBalanceHandler handler = new GetWalletBalanceHandler(walletService);
 
-        Response<?> response = handler.handle(request("""
+        Response response = handler.handle(request("""
                 { "userId": "  U001  " }
                 """));
 
@@ -63,7 +63,7 @@ class GetWalletBalanceHandlerTest {
         walletService.throwOnGetBalance = true;
         GetWalletBalanceHandler handler = new GetWalletBalanceHandler(walletService);
 
-        Response<?> response = handler.handle(request("""
+        Response response = handler.handle(request("""
                 { "userId": "U001" }
                 """));
 

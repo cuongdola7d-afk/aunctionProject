@@ -16,7 +16,7 @@ class DepositHandlerTest {
     void handle_shouldReturnInvalidInputWhenRequestIsNull() {
         DepositHandler handler = new DepositHandler(new FakeWalletService());
 
-        Response<?> response = handler.handle(null);
+        Response response = handler.handle(null);
 
         assertEquals("INVALID_INPUT", response.getStatus());
     }
@@ -25,7 +25,7 @@ class DepositHandlerTest {
     void handle_shouldReturnInvalidInputWhenDataBlank() {
         DepositHandler handler = new DepositHandler(new FakeWalletService());
 
-        Response<?> response = handler.handle(new RequestMessage("DEPOSIT", " "));
+        Response response = handler.handle(new RequestMessage("DEPOSIT", " "));
 
         assertEquals("INVALID_INPUT", response.getStatus());
     }
@@ -34,7 +34,7 @@ class DepositHandlerTest {
     void handle_shouldReturnInvalidInputWhenUserIdMissing() {
         DepositHandler handler = new DepositHandler(new FakeWalletService());
 
-        Response<?> response = handler.handle(request("""
+        Response response = handler.handle(request("""
                 { "amount": 100000 }
                 """));
 
@@ -45,7 +45,7 @@ class DepositHandlerTest {
     void handle_shouldReturnInvalidInputWhenAmountIsNotPositive() {
         DepositHandler handler = new DepositHandler(new FakeWalletService());
 
-        Response<?> response = handler.handle(request("""
+        Response response = handler.handle(request("""
                 { "userId": "U001", "amount": 0 }
                 """));
 
@@ -58,7 +58,7 @@ class DepositHandlerTest {
         walletService.depositResult = false;
         DepositHandler handler = new DepositHandler(walletService);
 
-        Response<?> response = handler.handle(request("""
+        Response response = handler.handle(request("""
                 { "userId": "U001", "amount": 100000 }
                 """));
 
@@ -71,7 +71,7 @@ class DepositHandlerTest {
         walletService.balance = 150_000;
         DepositHandler handler = new DepositHandler(walletService);
 
-        Response<?> response = handler.handle(request("""
+        Response response = handler.handle(request("""
                 { "userId": "  U001  ", "amount": 100000 }
                 """));
 
@@ -89,7 +89,7 @@ class DepositHandlerTest {
         walletService.throwOnDeposit = true;
         DepositHandler handler = new DepositHandler(walletService);
 
-        Response<?> response = handler.handle(request("""
+        Response response = handler.handle(request("""
                 { "userId": "U001", "amount": 100000 }
                 """));
 

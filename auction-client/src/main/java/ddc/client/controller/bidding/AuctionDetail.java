@@ -253,7 +253,14 @@ public class AuctionDetail implements ServerMessageListener {
             }
 
             String eventType = event.getEventType();
-            if ("SNAPSHOT".equals(eventType)) {
+            if ("CANCELLED".equals(eventType) || "CANCELLED".equals(event.getStatus())) {
+                if (lblCountdown != null) {
+                    lblCountdown.setText("Da huy");
+                }
+                setMessage(event.getMessage() != null ? event.getMessage() : "Phien dau gia da bi huy.");
+            } else if ("FINISHED".equals(eventType) || "FINISHED".equals(event.getStatus())) {
+                setMessage(event.getMessage() != null ? event.getMessage() : "Phien dau gia da ket thuc.");
+            } else if ("SNAPSHOT".equals(eventType)) {
                 setMessage("Đã tải dữ liệu phiên đấu giá.");
             } else if ("NEW_BID".equals(eventType)) {
                 String msg = "Bid mới từ " + event.getBidderName() + ": " + formatPrice(event.getBidAmount());

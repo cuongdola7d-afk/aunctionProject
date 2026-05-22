@@ -15,7 +15,7 @@ public class DepositHandler implements ActionHandler {
     private final WalletService walletService;
 
     public DepositHandler() {
-        this(new WalletService());
+        this.walletService = new WalletService();
     }
 
     DepositHandler(WalletService walletService) {

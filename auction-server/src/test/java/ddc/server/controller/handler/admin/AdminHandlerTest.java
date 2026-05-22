@@ -11,8 +11,6 @@ import ddc.server.network.response.Response;
 @DisplayName("Admin Handlers - Unit Tests")
 class AdminHandlerTest {
 
-    // ==================== AdminGetUsersHandler ====================
-
     private final AdminGetUsersHandler getUsersHandler = new AdminGetUsersHandler();
 
     @Test

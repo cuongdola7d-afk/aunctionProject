@@ -19,6 +19,7 @@ import ddc.client.config.GsonConfig;
 import ddc.client.controller.SceneSwitcher;
 import ddc.client.model.AuctionDTO;
 import ddc.client.model.AuctionItemViewModel;
+import ddc.client.model.AuctionStatus;
 import ddc.client.model.Request;
 import ddc.client.network.RequestToServer;
 import ddc.client.network.UserSession;
@@ -188,7 +189,8 @@ public class Bidding {
                             auction.getEndTime(),
                             initialTimeLeft,
                             fullImageUrl,
-                            CategoryTranslating(auction.getItem().getCategory())
+                            CategoryTranslating(auction.getItem().getCategory()),
+                            auction.getStatus()
                         ));
                     }
                     Platform.runLater(() ->{
@@ -206,7 +208,9 @@ public class Bidding {
 
     private void updateAllCountdowns() {
         for (AuctionItemViewModel item : itemList) {
-            if (item.getTimeLeft().equals("Đã kết thúc.") || item.getTimeLeft().equals("Sắp bắt đầu.")) {
+            if (item.getStatus() == AuctionStatus.CANCELLED
+                    || item.getTimeLeft().equals("Đã kết thúc.")
+                    || item.getTimeLeft().equals("Sắp bắt đầu.")) {
                 continue;
             }
             String newTime = TimeCalculate(LocalDateTime.now(), item.getEndTime());
@@ -293,6 +297,10 @@ public class Bidding {
     }
 
     private static String TimeReturning(AuctionDTO auction) {
+        if (auction.getStatus() == AuctionStatus.CANCELLED) {
+            return "CANCELLED";
+        }
+
         if (TimeComparing(auction.getStartTime(), LocalDateTime.now())) {
             if (TimeComparing(LocalDateTime.now(), auction.getEndTime())) {
                 return TimeCalculate(LocalDateTime.now(), auction.getEndTime());

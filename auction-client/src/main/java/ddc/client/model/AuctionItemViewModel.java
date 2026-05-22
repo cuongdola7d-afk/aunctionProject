@@ -17,11 +17,12 @@ public class AuctionItemViewModel {
     private LocalDateTime endTime;
     private String imagePath;
     private String category;
+    private AuctionStatus status;
     private static final Map<String, ObservableList<XYChart.Data<String, Number>>> GLOBAL_PRICE_HISTORY = new java.util.concurrent.ConcurrentHashMap<>();
     private final ObservableList<XYChart.Data<String, Number>> priceHistory;
 
     
-    public AuctionItemViewModel(String auctionId, String name, String price, LocalDateTime endTime, String timeLeft, String imagePath, String category) {
+    public AuctionItemViewModel(String auctionId, String name, String price, LocalDateTime endTime, String timeLeft, String imagePath, String category, AuctionStatus status) {
         this.auctionId = auctionId;
         this.name = name;
         this.price = price;
@@ -29,6 +30,7 @@ public class AuctionItemViewModel {
         this.timeLeft.set(timeLeft);
         this.imagePath = imagePath;
         this.category = category;
+        this.status = status;
         this.priceHistory = GLOBAL_PRICE_HISTORY.computeIfAbsent(auctionId, k -> FXCollections.observableArrayList());
     }
 
@@ -76,5 +78,8 @@ public class AuctionItemViewModel {
         return category;
     }
 
+    public AuctionStatus getStatus() {
+        return status;
+    }
 
 }

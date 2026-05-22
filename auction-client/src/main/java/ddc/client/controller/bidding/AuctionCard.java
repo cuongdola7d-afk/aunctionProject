@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ddc.client.model.AuctionItemViewModel;
+import ddc.client.model.AuctionStatus;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
@@ -54,9 +55,8 @@ public class AuctionCard {
         lblName.setText(item.getName());
         lblPrice.setText(item.getPrice());
 
-        lblTimeLeft.textProperty().unbind();
-        lblTimeLeft.textProperty().bind(Bindings.concat("◷ ", item.timeLeftProperty()));
         lblCategory.setText(item.getCategory());
+        updateStatusLabel(item);
 
         String newImagePath = item.getImagePath();
 
@@ -78,6 +78,18 @@ public class AuctionCard {
                 LOGGER.warn("Lỗi khi load ảnh: {}", item.getImagePath());
             }
         }
+    }
+
+    private void updateStatusLabel(AuctionItemViewModel item) {
+        lblTimeLeft.textProperty().unbind();
+        if (item.getStatus() == AuctionStatus.CANCELLED) {
+            lblTimeLeft.setText("◷: Phiên đấu giá đã bị huỷ");
+            lblTimeLeft.setStyle("-fx-font-size: 13px; -fx-text-fill: #334155;");
+            return;
+        }
+
+        lblTimeLeft.textProperty().bind(Bindings.concat("◷: ", item.timeLeftProperty()));
+        lblTimeLeft.setStyle("-fx-font-size: 13px; -fx-text-fill: #334155;");
     }
 
     @FXML
