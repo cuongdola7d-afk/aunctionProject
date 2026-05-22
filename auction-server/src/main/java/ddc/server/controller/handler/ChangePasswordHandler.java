@@ -1,17 +1,15 @@
 package ddc.server.controller.handler;
 
-import com.google.gson.Gson;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ddc.server.controller.RequestMessage;
 import ddc.server.model.user.User;
 import ddc.server.network.response.BaseResponse;
 import ddc.server.network.response.Response;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ChangePasswordHandler implements ActionHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(ChangePasswordHandler.class);
-    private static final Gson gson = new Gson();
 
     @Override
     public Response handle(RequestMessage request) {

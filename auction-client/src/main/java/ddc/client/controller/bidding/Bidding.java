@@ -151,7 +151,7 @@ public class Bidding {
 
         new Thread(() -> {
             try {
-                String JsonResponse = RealtimeToServer.sendRequest(new Request().setAction("GET_ALL"));
+                String JsonResponse = RealtimeToServer.sendRequest(new Request().setAction("GET_ALL_AUCTIONS"));
                 GetAllAuctionsResponse response = gson.fromJson(JsonResponse, GetAllAuctionsResponse.class);
                 
                 if ("SUCCESS".equals(response.getStatus())) {

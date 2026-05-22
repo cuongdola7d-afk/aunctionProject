@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,7 +65,35 @@ public class AuctionDAO {
         } catch (SQLException e) {
             LOGGER.error("Loi lay danh sach auction", e);
         }
+        return list;
+    }
 
+    public List<Auction> getAllUserAuctions(String username) {
+        List<Auction> list = new ArrayList<>();
+        String sql = "SELECT a.id, a.item_id, a.status, a.highest_bidder_name, a.current_price, a.starting_price, start_time, end_time FROM ddc_auctions a INNER JOIN ddc_items i ON a.item_id = i.id WHERE seller_name = ?";
+
+        try (Connection con = DatabaseConnection.getConnection();
+                PreparedStatement pst = con.prepareStatement(sql);) {
+
+            pst.setString(1, username.trim());
+            
+            try (ResultSet rs = pst.executeQuery()) {
+                while (rs.next()) {
+                    Auction a = new Auction();
+                    a.setId(rs.getString("id"));
+                    a.setItem(itemDAO.getItem(rs.getString("item_id")));
+                    a.setStatus(rs.getString("status"));
+                    a.setHighestBidder(userDAO.getUser(rs.getString("highest_bidder_name")));
+                    a.setCurrentPrice(rs.getDouble("current_price"));
+                    a.setStartingPrice(rs.getDouble("starting_price"));
+                    a.setStartTime(rs.getObject("start_time", LocalDateTime.class));
+                    a.setEndTime(rs.getObject("end_time", LocalDateTime.class));
+                    list.add(a);
+                }
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Loi lay danh sach auction", e);
+        }
         return list;
     }
 

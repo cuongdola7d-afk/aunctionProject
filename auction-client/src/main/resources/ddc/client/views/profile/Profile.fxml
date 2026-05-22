@@ -147,9 +147,9 @@
                   </Label>
                </children>
             </HBox>
-            <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: #e0e0e0; -fx-border-radius: 10;" VBox.vgrow="ALWAYS">
+            <HBox alignment="CENTER_LEFT" onMouseClicked="#switchToHistory" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: #e0e0e0; -fx-border-radius: 10;" VBox.vgrow="ALWAYS">
                <children>
-                  <Label prefWidth="250.0" text="--&gt; Lịch sử đấu giá" textFill="DARKBLUE">
+                  <Label prefWidth="250.0" text="--&gt; Lịch sử" textFill="DARKBLUE">
                      <HBox.margin>
                         <Insets left="20.0" />
                      </HBox.margin>

@@ -30,6 +30,10 @@ public class AuctionService {
         return auctionDAO.getAllAuctions();
     }
 
+    public List<Auction> getAllUserAuctions(String username) {
+        return auctionDAO.getAllUserAuctions(username);
+    }
+
     public void refreshAuctionStatus(Auction auction) {
         if (auction == null || auction.getStartTime() == null || auction.getEndTime() == null) {
             return;
@@ -121,7 +125,7 @@ public class AuctionService {
                 .setBidder(bidder)
                 .setBidAmount(amount)
                 .setBidTime(time);
-        bid.setAuctionId(auction.getId());
+        bid.setAuction(auction);
 
         try {
             auction.placeBid(bid);
