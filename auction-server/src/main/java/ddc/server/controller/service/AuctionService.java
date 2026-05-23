@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import ddc.server.dao.AuctionDAO;
+import ddc.server.dao.BidDAO;
 import ddc.server.exception.AuctionClosedException;
 import ddc.server.exception.InvalidBidException;
 import ddc.server.model.transaction.Auction;
@@ -15,9 +16,11 @@ import ddc.server.model.user.User;
 
 public class AuctionService {
     private final AuctionDAO auctionDAO;
+    private final BidDAO bidDAO;
 
     public AuctionService() {
         this.auctionDAO = new AuctionDAO();
+        this.bidDAO = new BidDAO();
     }
 
     public boolean createAuction(Auction auction) {
@@ -28,6 +31,10 @@ public class AuctionService {
 
     public List<Auction> getAll() {
         return auctionDAO.getAllAuctions();
+    }
+
+    public List<Auction> getAllUserAuctions(String username) {
+        return auctionDAO.getAllUserAuctions(username);
     }
 
     public void refreshAuctionStatus(Auction auction) {
@@ -134,7 +141,9 @@ public class AuctionService {
                 .setBidder(bidder)
                 .setBidAmount(amount)
                 .setBidTime(time);
-        bid.setAuctionId(auction.getId());
+        bid.setAuction(auction);
+
+        bidDAO.insertBid(bid);
 
         try {
             auction.placeBid(bid);

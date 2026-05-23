@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ddc.client.controller.profile.HistoryBidCard">
+   <children>
+      <Region prefHeight="100.0" prefWidth="20.0" style="-fx-background-color: cyan;" />
+      <VBox prefHeight="102.0" prefWidth="450.0" HBox.hgrow="ALWAYS">
+         <children>
+            <Label fx:id="idLabel" prefHeight="26.0" prefWidth="580.0" text="B00000" textFill="DARKBLUE">
+               <font>
+                  <Font name="Tahoma Bold" size="20.0" />
+               </font>
+            </Label>
+            <Label fx:id="itemNameLabel" prefHeight="26.0" prefWidth="580.0" text="Tên sản phẩm đấu giá" textFill="DARKBLUE">
+               <font>
+                  <Font name="Tahoma Bold" size="20.0" />
+               </font>
+            </Label>
+            <Label fx:id="bidPriceLabel" prefHeight="26.0" prefWidth="580.0" text="Giá đấu giá" textFill="DARKBLUE">
+               <font>
+                  <Font name="Tahoma Bold" size="20.0" />
+               </font>
+            </Label>
+            <Label fx:id="bidTimeLabel" prefHeight="26.0" prefWidth="580.0" text="Thời gian đấu giá" textFill="DARKBLUE">
+               <font>
+                  <Font name="Tahoma Bold" size="20.0" />
+               </font>
+            </Label>
+         </children>
+      </VBox>
+      <VBox alignment="CENTER" prefHeight="100.0" prefWidth="130.0" HBox.hgrow="ALWAYS">
+         <children>
+            <Label text="Trạng thái:" textFill="DARKBLUE">
+               <font>
+                  <Font name="Tahoma Bold" size="15.0" />
+               </font>
+            </Label>
+            <Label fx:id="auctionStatusLabel" text="Đang diễn ra" textFill="DARKBLUE">
+               <font>
+                  <Font name="Tahoma Bold" size="15.0" />
+               </font>
+            </Label>
+         </children>
+      </VBox>
+   </children>
+</HBox>

@@ -2,6 +2,9 @@ package ddc.client.controller.profile;
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import ddc.client.network.UserSession;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -12,9 +15,6 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class Logout {
     private static final Logger LOGGER = LoggerFactory.getLogger(Logout.class);

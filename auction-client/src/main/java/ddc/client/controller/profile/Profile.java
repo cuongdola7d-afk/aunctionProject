@@ -2,6 +2,9 @@ package ddc.client.controller.profile;
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import ddc.client.controller.SceneSwitcher;
 import ddc.client.network.UserSession;
 import javafx.fxml.FXML;
@@ -14,8 +17,6 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javafx.scene.control.Label;
 import ddc.client.controller.notify.NotificationBadgeUtil;
@@ -74,6 +75,11 @@ public class Profile {
     @SuppressWarnings("unused")
     private void switchToSecurity(MouseEvent event) {
         SceneSwitcher.goTo(event, "/ddc/client/views/profile/Security.fxml");
+    }
+
+    @FXML
+    private void switchToHistory(MouseEvent event) {
+        SceneSwitcher.goTo(event, "/ddc/client/views/profile/History.fxml");
     }
 
     @FXML

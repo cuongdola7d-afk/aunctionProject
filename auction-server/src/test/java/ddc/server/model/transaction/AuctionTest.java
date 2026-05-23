@@ -1,12 +1,11 @@
 package ddc.server.model.transaction;
 
+import java.time.LocalDateTime;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.time.LocalDateTime;
-
 import org.junit.jupiter.api.Test;
 
 import ddc.server.model.user.User;
@@ -57,14 +56,15 @@ class AuctionTest {
     @Test
     void placeBid_shouldStoreBidUpdatePriceAndHighestBidder() {
         User bidder = new User().setName("Buyer One");
-        Bid bid = new Bid()
-                .setAuctionId("A001")
-                .setBidder(bidder)
-                .setBidAmount(125)
-                .setBidTime(LocalDateTime.now());
         Auction auction = new Auction()
                 .setId("A001")
                 .setCurrentPrice(100);
+        Bid bid = new Bid()
+                .setAuction(auction)
+                .setBidder(bidder)
+                .setBidAmount(125)
+                .setBidTime(LocalDateTime.now());
+        
         auction.startAuction();
 
         auction.placeBid(bid);

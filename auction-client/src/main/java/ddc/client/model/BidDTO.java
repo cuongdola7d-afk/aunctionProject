@@ -3,7 +3,8 @@ package ddc.client.model;
 import java.time.LocalDateTime;
 
 public class BidDTO {
-    private String auctionId;
+    private String id;
+    private AuctionDTO auction;
     private UserDTO bidder;
     private double bidAmount;
     private LocalDateTime bidTime;
@@ -11,14 +12,20 @@ public class BidDTO {
     public BidDTO () {}
 
     //Getters
-    public String auctionId () { return auctionId; }
+    public String getId () { return id;}
+    public AuctionDTO getAuction () { return auction; }
     public UserDTO getBidder () { return bidder; }
     public double getBidAmount () { return bidAmount; } 
     public LocalDateTime getBidTime () { return bidTime; } 
 
     //Setters
-    public BidDTO setAuctionId (String auctionId) {
-        this.auctionId = auctionId;
+    public BidDTO setId (String id) {
+        this.id = id;
+        return this;
+    }
+    
+    public BidDTO setAuction (AuctionDTO auction) {
+        this.auction = auction;
         return this;
     }
 

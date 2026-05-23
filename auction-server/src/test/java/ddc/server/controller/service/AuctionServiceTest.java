@@ -141,7 +141,7 @@ class AuctionServiceTest {
         assertSame(bidder, auction.getHighestBidder());
         assertEquals(1, auction.getBidHistory().size());
         assertEquals(1, bidder.getBidHistory().size());
-        assertEquals("A001", auction.getBidHistory().getFirst().auctionId());
+        assertEquals("A001", auction.getBidHistory().getFirst().getAuction().getId());
     }
 
     @Test

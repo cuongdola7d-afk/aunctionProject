@@ -30,4 +30,6 @@ module ddc.server {
     opens ddc.server.pattern.Singleton to org.junit.platform.commons;
 
     opens ddc.server.config to com.zaxxer.hikari;
+
+    opens ddc.server.model.notification to com.google.gson;
 }

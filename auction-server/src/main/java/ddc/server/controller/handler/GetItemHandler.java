@@ -1,19 +1,16 @@
 package ddc.server.controller.handler;
 
-import com.google.gson.Gson;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import ddc.server.config.GsonConfig;
 import ddc.server.controller.RequestMessage;
 import ddc.server.model.item.ItemGeneric;
 import ddc.server.network.response.BaseResponse;
 import ddc.server.network.response.GetItemResponse;
 import ddc.server.network.response.Response;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class GetItemHandler implements ActionHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(GetItemHandler.class);
-    private final Gson gson = GsonConfig.newGson();
 
     @Override
     public Response handle(RequestMessage request) {
