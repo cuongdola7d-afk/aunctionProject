@@ -10,6 +10,7 @@ import ddc.server.controller.handler.CreateAuctionHandler;
 import ddc.server.controller.handler.DepositHandler;
 import ddc.server.controller.handler.GetAllUserAuctionHandler;
 import ddc.server.controller.handler.GetAllUserBidHandler;
+import ddc.server.controller.handler.GetHotAuctionsHandler;
 import ddc.server.controller.handler.GetItemHandler;
 import ddc.server.controller.handler.GetNotificationsHandler;
 import ddc.server.controller.handler.GetWalletBalanceHandler;
@@ -36,6 +37,7 @@ public class RequestRouter {
         routes.put("GET_ALL_AUCTIONS", new GetAllAuctionHandler());
         routes.put("GET_ALL_USER_BIDS", new GetAllUserBidHandler());
         routes.put("GET_ALL_USER_AUCTIONS", new GetAllUserAuctionHandler());
+        routes.put("GET_HOT_AUCTIONS", new GetHotAuctionsHandler());
         routes.put("UPDATE_PASSWORD", new ChangePasswordHandler());
         routes.put("UPDATE_PROFILE", new UpdateProfileHandler());
         routes.put("ADMIN_STATS", new AdminGetStatsHandler());

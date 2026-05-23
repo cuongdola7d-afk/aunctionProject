@@ -8,6 +8,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.TextFlow?>
@@ -169,7 +170,7 @@
       </Label>
       <HBox alignment="CENTER_LEFT" layoutX="18.0" layoutY="122.0" prefHeight="80.0" prefWidth="630.0">
          <children>
-            <VBox alignment="CENTER" prefHeight="80.0" prefWidth="120.0" style="-fx-background-color: cyan; -fx-background-radius: 15; -fx-border-color: #00008b; -fx-border-radius: 15;">
+            <VBox alignment="CENTER" onMouseClicked="#learnMore2" prefHeight="80.0" prefWidth="120.0" style="-fx-background-color: cyan; -fx-background-radius: 15; -fx-border-color: #00008b; -fx-border-radius: 15;">
                <children>
                   <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="80.0" prefWidth="120.0" style="-fx-text-fill: #00008b;" text="🎨">
                      <font>
@@ -184,7 +185,7 @@
                </children>
             </VBox>
             <Separator orientation="VERTICAL" prefHeight="80.0" prefWidth="30.0" />
-            <VBox alignment="CENTER" prefHeight="80.0" prefWidth="120.0" style="-fx-background-color: cyan; -fx-background-radius: 15; -fx-border-color: #00008b; -fx-border-radius: 15;">
+            <VBox alignment="CENTER" onMouseClicked="#learnMore2" prefHeight="80.0" prefWidth="120.0" style="-fx-background-color: cyan; -fx-background-radius: 15; -fx-border-color: #00008b; -fx-border-radius: 15;">
                <children>
                   <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="80.0" prefWidth="120.0" style="-fx-text-fill: #00008b;" text="💻">
                      <font>
@@ -199,7 +200,7 @@
                </children>
             </VBox>
             <Separator orientation="VERTICAL" prefHeight="80.0" prefWidth="30.0" />
-            <VBox alignment="CENTER" prefHeight="80.0" prefWidth="120.0" style="-fx-background-color: cyan; -fx-background-radius: 15; -fx-border-color: #00008b; -fx-border-radius: 15;">
+            <VBox alignment="CENTER" onMouseClicked="#learnMore2" prefHeight="80.0" prefWidth="120.0" style="-fx-background-color: cyan; -fx-background-radius: 15; -fx-border-color: #00008b; -fx-border-radius: 15;">
                <children>
                   <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="80.0" prefWidth="120.0" style="-fx-text-fill: #00008b;" text="🚗">
                      <font>
@@ -222,16 +223,20 @@
       </Label>
       <HBox alignment="CENTER_LEFT" layoutX="18.0" layoutY="255.0" prefHeight="260.0" prefWidth="630.0">
          <children>
-            <VBox alignment="CENTER" prefHeight="220.0" prefWidth="160.0" style="-fx-background-color: cyan; -fx-border-color: #00008b;">
+            <VBox fx:id="mostBidsVBox" alignment="CENTER" prefHeight="220.0" prefWidth="160.0" style="-fx-background-color: cyan; -fx-border-color: #00008b;">
                <children>
-                  <ImageView fx:id="iv1" fitHeight="150.0" fitWidth="180.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../+icon.png" />
-                     </image>
-                  </ImageView>
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #00008b;">
+                     <children>
+                        <ImageView fx:id="mostBidsImageView" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true">
+                           <image>
+                              <Image url="@../DDCAuction.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </HBox>
                   <TextFlow prefHeight="200.0" prefWidth="200.0">
                      <children>
-                        <Label fx:id="nameLabel1" alignment="CENTER" graphicTextGap="0.0" prefHeight="18.0" prefWidth="160.0" text="TÊN MÓN HÀNG 1" textFill="DARKBLUE">
+                        <Label fx:id="mostBidsNameLabel" alignment="CENTER" graphicTextGap="0.0" prefHeight="18.0" prefWidth="160.0" text="Đang tải chờ xíu :v" textFill="DARKBLUE">
                            <font>
                               <Font name="System Bold" size="15.0" />
                            </font>
@@ -247,7 +252,7 @@
                               <Insets />
                            </opaqueInsets>
                         </Label>
-                        <Label fx:id="typeLabel1" alignment="CENTER" graphicTextGap="0.0" prefHeight="18.0" prefWidth="160.0" textFill="DARKBLUE">
+                        <Label fx:id="mostBidsTypeLabel" alignment="CENTER" graphicTextGap="0.0" prefHeight="18.0" prefWidth="160.0" textFill="DARKBLUE">
                            <font>
                               <Font name="System Italic" size="15.0" />
                            </font>
@@ -255,7 +260,7 @@
                               <Insets />
                            </opaqueInsets>
                         </Label>
-                        <Label fx:id="priceLabel1" alignment="CENTER" graphicTextGap="0.0" prefHeight="18.0" prefWidth="160.0" textFill="DARKBLUE">
+                        <Label fx:id="mostBidsPriceLabel" alignment="CENTER" graphicTextGap="0.0" prefHeight="18.0" prefWidth="160.0" textFill="DARKBLUE">
                            <font>
                               <Font name="System Italic" size="15.0" />
                            </font>
@@ -263,7 +268,7 @@
                               <Insets />
                            </opaqueInsets>
                         </Label>
-                        <Label fx:id="statusLabel1" alignment="CENTER" graphicTextGap="0.0" prefHeight="18.0" prefWidth="160.0" textFill="DARKBLUE">
+                        <Label fx:id="mostBidsStatusLabel" alignment="CENTER" graphicTextGap="0.0" prefHeight="18.0" prefWidth="160.0" textFill="DARKBLUE">
                            <font>
                               <Font name="System Italic" size="15.0" />
                            </font>
@@ -276,16 +281,20 @@
                </children>
             </VBox>
             <Separator orientation="VERTICAL" prefHeight="80.0" prefWidth="30.0" />
-            <VBox alignment="CENTER" prefHeight="220.0" prefWidth="160.0" style="-fx-background-color: cyan; -fx-border-color: #00008b;">
+            <VBox fx:id="highestPriceVBox" alignment="CENTER" prefHeight="220.0" prefWidth="160.0" style="-fx-background-color: cyan; -fx-border-color: #00008b;">
                <children>
-                  <ImageView fx:id="iv2" fitHeight="150.0" fitWidth="160.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../+icon.png" />
-                     </image>
-                  </ImageView>
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #00008b;">
+                     <children>
+                        <ImageView fx:id="highestPriceImageView" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true">
+                           <image>
+                              <Image url="@../DDCAuction.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </HBox>
                   <TextFlow prefHeight="200.0" prefWidth="200.0">
                      <children>
-                        <Label fx:id="nameLabel2" alignment="CENTER" graphicTextGap="0.0" prefHeight="18.0" prefWidth="160.0" text="TÊN MÓN HÀNG 2" textFill="DARKBLUE">
+                        <Label fx:id="highestPriceNameLabel" alignment="CENTER" graphicTextGap="0.0" prefHeight="18.0" prefWidth="160.0" text="Đang tải chờ xíu :v" textFill="DARKBLUE">
                            <font>
                               <Font name="System Bold" size="15.0" />
                            </font>
@@ -301,7 +310,7 @@
                               <Insets />
                            </opaqueInsets>
                         </Label>
-                        <Label fx:id="typeLabel2" alignment="CENTER" graphicTextGap="0.0" prefHeight="18.0" prefWidth="160.0" textFill="DARKBLUE">
+                        <Label fx:id="highestPriceTypeLabel" alignment="CENTER" graphicTextGap="0.0" prefHeight="18.0" prefWidth="160.0" textFill="DARKBLUE">
                            <font>
                               <Font name="System Italic" size="15.0" />
                            </font>
@@ -309,7 +318,7 @@
                               <Insets />
                            </opaqueInsets>
                         </Label>
-                        <Label fx:id="priceLabel2" alignment="CENTER" graphicTextGap="0.0" prefHeight="18.0" prefWidth="160.0" textFill="DARKBLUE">
+                        <Label fx:id="highestPricePriceLabel" alignment="CENTER" graphicTextGap="0.0" prefHeight="18.0" prefWidth="160.0" textFill="DARKBLUE">
                            <font>
                               <Font name="System Italic" size="15.0" />
                            </font>
@@ -317,7 +326,7 @@
                               <Insets />
                            </opaqueInsets>
                         </Label>
-                        <Label fx:id="statusLabel2" alignment="CENTER" graphicTextGap="0.0" prefHeight="18.0" prefWidth="160.0" textFill="DARKBLUE">
+                        <Label fx:id="highestPriceStatusLabel" alignment="CENTER" graphicTextGap="0.0" prefHeight="18.0" prefWidth="160.0" textFill="DARKBLUE">
                            <font>
                               <Font name="System Italic" size="15.0" />
                            </font>
@@ -330,16 +339,20 @@
                </children>
             </VBox>
             <Separator orientation="VERTICAL" prefHeight="80.0" prefWidth="30.0" />
-            <VBox alignment="CENTER" prefHeight="220.0" prefWidth="160.0" style="-fx-background-color: cyan; -fx-border-color: #00008b;">
+            <VBox fx:id="recentlyEndedVBox" alignment="CENTER" prefHeight="220.0" prefWidth="160.0" style="-fx-background-color: cyan; -fx-border-color: #00008b;">
                <children>
-                  <ImageView fx:id="iv3" fitHeight="150.0" fitWidth="160.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../+icon.png" />
-                     </image>
-                  </ImageView>
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #00008b;">
+                     <children>
+                        <ImageView fx:id="recentlyEndedImageView" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true">
+                           <image>
+                              <Image url="@../DDCAuction.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </HBox>
                   <TextFlow prefHeight="200.0" prefWidth="200.0">
                      <children>
-                        <Label fx:id="nameLabel3" alignment="CENTER" graphicTextGap="0.0" prefHeight="18.0" prefWidth="160.0" text="TÊN MÓN HÀNG 2" textFill="DARKBLUE">
+                        <Label fx:id="recentlyEndedNameLabel" alignment="CENTER" graphicTextGap="0.0" prefHeight="18.0" prefWidth="160.0" text="Đang tải chờ xíu :v" textFill="DARKBLUE">
                            <font>
                               <Font name="System Bold" size="15.0" />
                            </font>
@@ -355,7 +368,7 @@
                               <Insets />
                            </opaqueInsets>
                         </Label>
-                        <Label fx:id="typeLabel3" alignment="CENTER" graphicTextGap="0.0" prefHeight="18.0" prefWidth="160.0" textFill="DARKBLUE">
+                        <Label fx:id="recentlyEndedTypeLabel" alignment="CENTER" graphicTextGap="0.0" prefHeight="18.0" prefWidth="160.0" textFill="DARKBLUE">
                            <font>
                               <Font name="System Italic" size="15.0" />
                            </font>
@@ -363,7 +376,7 @@
                               <Insets />
                            </opaqueInsets>
                         </Label>
-                        <Label fx:id="priceLabel3" alignment="CENTER" graphicTextGap="0.0" prefHeight="18.0" prefWidth="160.0" textFill="DARKBLUE">
+                        <Label fx:id="recentlyEndedPriceLabel" alignment="CENTER" graphicTextGap="0.0" prefHeight="18.0" prefWidth="160.0" textFill="DARKBLUE">
                            <font>
                               <Font name="System Italic" size="15.0" />
                            </font>
@@ -371,7 +384,7 @@
                               <Insets />
                            </opaqueInsets>
                         </Label>
-                        <Label fx:id="statusLabel3" alignment="CENTER" graphicTextGap="0.0" prefHeight="18.0" prefWidth="160.0" textFill="DARKBLUE">
+                        <Label fx:id="recentlyEndedStatusLabel" alignment="CENTER" graphicTextGap="0.0" prefHeight="18.0" prefWidth="160.0" textFill="DARKBLUE">
                            <font>
                               <Font name="System Italic" size="15.0" />
                            </font>
@@ -385,12 +398,12 @@
             </VBox>
          </children>
       </HBox>
-      <Button alignment="CENTER" contentDisplay="CENTER" layoutX="648.0" layoutY="142.0" mnemonicParsing="false" onAction="#learnMore" prefHeight="40.0" prefWidth="120.0" style="-fx-border-radius: 15; -fx-background-color: CYAN; -fx-border-color: #00008b; -fx-border-width: 2; -fx-background-radius: 15;" text="XEM THÊM" textAlignment="CENTER" textFill="DARKBLUE" AnchorPane.rightAnchor="32.0">
+      <Button alignment="CENTER" contentDisplay="CENTER" layoutX="648.0" layoutY="142.0" mnemonicParsing="false" onAction="#learnMore1" prefHeight="40.0" prefWidth="120.0" style="-fx-border-radius: 15; -fx-background-color: CYAN; -fx-border-color: #00008b; -fx-border-width: 2; -fx-background-radius: 15;" text="XEM THÊM" textAlignment="CENTER" textFill="DARKBLUE" AnchorPane.rightAnchor="32.0">
          <font>
             <Font name="Arial Bold Italic" size="15.0" />
          </font>
       </Button>
-      <Button alignment="CENTER" contentDisplay="CENTER" layoutX="648.0" layoutY="365.0" mnemonicParsing="false" onAction="#learnMore" prefHeight="40.0" prefWidth="120.0" style="-fx-border-radius: 15; -fx-background-color: CYAN; -fx-border-color: #00008b; -fx-border-width: 2; -fx-background-radius: 15;" text="XEM THÊM" textAlignment="CENTER" textFill="DARKBLUE" AnchorPane.rightAnchor="32.0">
+      <Button alignment="CENTER" contentDisplay="CENTER" layoutX="648.0" layoutY="365.0" mnemonicParsing="false" onAction="#learnMore1" prefHeight="40.0" prefWidth="120.0" style="-fx-border-radius: 15; -fx-background-color: CYAN; -fx-border-color: #00008b; -fx-border-width: 2; -fx-background-radius: 15;" text="XEM THÊM" textAlignment="CENTER" textFill="DARKBLUE" AnchorPane.rightAnchor="32.0">
          <font>
             <Font name="Arial Bold Italic" size="15.0" />
          </font>

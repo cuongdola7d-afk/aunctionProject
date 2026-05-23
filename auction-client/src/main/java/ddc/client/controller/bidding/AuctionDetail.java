@@ -1,5 +1,8 @@
 package ddc.client.controller.bidding;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import ddc.client.config.ClientContext;
 import ddc.client.controller.SceneSwitcher;
 import ddc.client.model.AuctionItemViewModel;
@@ -20,12 +23,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
-
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class AuctionDetail implements ServerMessageListener {
 

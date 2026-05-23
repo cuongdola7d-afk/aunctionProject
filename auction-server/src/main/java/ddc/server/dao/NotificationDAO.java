@@ -115,7 +115,14 @@ public class NotificationDAO {
         n.setTitle(rs.getString("title"));
         n.setMessage(rs.getString("message"));
         n.setRead(rs.getBoolean("is_read"));
-        n.setCreatedAt(rs.getObject("created_at", LocalDateTime.class));
+        LocalDateTime utcDateTime = rs.getObject("created_at", LocalDateTime.class);
+        if (utcDateTime != null) {
+            n.setCreatedAt(utcDateTime.atZone(java.time.ZoneId.of("UTC"))
+                                      .withZoneSameInstant(java.time.ZoneId.systemDefault())
+                                      .toLocalDateTime());
+        } else {
+            n.setCreatedAt(null);
+        }
         return n;
     
 }
