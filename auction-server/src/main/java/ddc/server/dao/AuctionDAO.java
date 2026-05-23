@@ -170,6 +170,86 @@ public class AuctionDAO {
         return false;
     }
 
+    public Auction getMostBidsAuction () {
+        String sql = "SELECT a.*, COUNT(b.id) AS total_bids\n" + //
+                        "FROM ddc_auctions a\n" + //
+                        "JOIN ddc_bids b ON a.id = b.auction_id\n" + //
+                        "WHERE a.status = 'RUNNING' \n" + //
+                        "GROUP BY a.id\n" + //
+                        "ORDER BY total_bids DESC\n" + //
+                        "LIMIT 1;";
+
+        Auction auction = new Auction();
+
+        try (Connection con = getConnection();
+            PreparedStatement pst = con.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery()) {
+
+            if (rs.next()) {
+                auction.setId(rs.getString("id"));
+                auction.setItem(itemDAO.getItem(rs.getString("item_id")));
+                auction.setStatus(rs.getString("status"));
+                auction.setHighestBidder(userDAO.getUser(rs.getString("highest_bidder_name")));
+                auction.setCurrentPrice(rs.getDouble("current_price"));
+                auction.setStartingPrice(rs.getDouble("starting_price"));
+                auction.setStartTime(rs.getObject("start_time", LocalDateTime.class));
+                auction.setEndTime(rs.getObject("end_time", LocalDateTime.class));
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Lay auction khong thanh cong", e);
+        }
+        return auction;
+    }
+
+    public Auction getHighestPriceAuction () {
+        String sql = "SELECT * FROM ddc_auctions WHERE status = 'RUNNING' ORDER BY current_price DESC LIMIT 1;";
+
+        Auction auction = new Auction();
+
+        try (Connection con = getConnection();
+            PreparedStatement pst = con.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery()) {
+
+            if (rs.next()) {
+                auction.setId(rs.getString("id"));
+                auction.setItem(itemDAO.getItem(rs.getString("item_id")));
+                auction.setStatus(rs.getString("status"));
+                auction.setHighestBidder(userDAO.getUser(rs.getString("highest_bidder_name")));
+                auction.setCurrentPrice(rs.getDouble("current_price"));
+                auction.setStartingPrice(rs.getDouble("starting_price"));
+                auction.setStartTime(rs.getObject("start_time", LocalDateTime.class));
+                auction.setEndTime(rs.getObject("end_time", LocalDateTime.class));
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Lay auction khong thanh cong", e);
+        }
+        return auction;
+    }
+
+    public Auction getRecentlyEndedAuction () {
+        String sql = "SELECT * FROM ddc_auctions WHERE status = 'FINISHED' ORDER BY end_time DESC LIMIT 1;";
+
+        Auction auction = new Auction();
+
+        try (Connection con = getConnection();
+            PreparedStatement pst = con.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery()) {
+
+            if (rs.next()) {
+                auction.setId(rs.getString("id"));
+                auction.setItem(itemDAO.getItem(rs.getString("item_id")));
+                auction.setStatus(rs.getString("status"));
+                auction.setHighestBidder(userDAO.getUser(rs.getString("highest_bidder_name")));
+                auction.setCurrentPrice(rs.getDouble("current_price"));
+                auction.setStartingPrice(rs.getDouble("starting_price"));
+                auction.setStartTime(rs.getObject("start_time", LocalDateTime.class));
+                auction.setEndTime(rs.getObject("end_time", LocalDateTime.class));
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Lay auction khong thanh cong", e);
+        }
+        return auction;
+    }
 
     protected Connection getConnection() throws SQLException {
         return ddc.server.config.DatabaseConnection.getConnection();

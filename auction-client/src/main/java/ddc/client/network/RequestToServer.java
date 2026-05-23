@@ -1,7 +1,6 @@
 package ddc.client.network;
 
 import java.io.BufferedReader;
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -42,6 +41,7 @@ public class RequestToServer {
                     return errorJson("EMPTY_RESPONSE", "Server khong tra response.");
                 }
                 LOGGER.debug("Response: {}", response);
+                System.out.println(response);
                 return response;
             }
         } catch (Exception e) {

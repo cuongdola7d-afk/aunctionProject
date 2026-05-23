@@ -177,7 +177,7 @@ public class History {
     private void renderBidHistory () {
         if (bidList.isEmpty()) {
             Label nothing = new Label("KHÔNG CÓ LỊCH SỬ ĐẤU GIÁ.");
-            nothing.setStyle("-fx-font: Tahoma; -fx-text-fill: #00008b; -fx-font-size: 40px");
+            nothing.setStyle("-fx-font-family: Tahoma; -fx-text-fill: #00008b; -fx-font-size: 40px");
             bidFlowPane.getChildren().add(nothing);
             return;
         }
@@ -210,8 +210,8 @@ public class History {
 
     private void renderAuctionHistory () {
         if (auctionList.isEmpty()) {
-            Label nothing = new Label("Không có lịch sử đăng bán");
-            nothing.setStyle("-fx-font: Tahoma; -fx-text-fill: #00008b; -fx-font-size: 40px");
+            Label nothing = new Label("KHÔNG CÓ LỊCH SỬ ĐĂNG BÁN");
+            nothing.setStyle("-fx-font-family: Tahoma; -fx-text-fill: #00008b; -fx-font-size: 40px");
             bidFlowPane.getChildren().add(nothing);
             return;
         }

@@ -1,6 +1,7 @@
 package ddc.server.controller.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -35,6 +36,14 @@ public class AuctionService {
 
     public List<Auction> getAllUserAuctions(String username) {
         return auctionDAO.getAllUserAuctions(username);
+    }
+
+    public List<Auction> getHotAuctions() {
+        List<Auction> hotList = new ArrayList<>();
+        hotList.add(auctionDAO.getMostBidsAuction());
+        hotList.add(auctionDAO.getHighestPriceAuction());
+        hotList.add(auctionDAO.getRecentlyEndedAuction());
+        return hotList;
     }
 
     public void refreshAuctionStatus(Auction auction) {
