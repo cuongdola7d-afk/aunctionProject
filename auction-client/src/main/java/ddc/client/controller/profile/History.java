@@ -39,6 +39,9 @@ import javafx.util.Duration;
 
 public class History {
     @FXML
+    private Label historyLabel;
+
+    @FXML
     private TreeView<String> bidTreeView;
 
     @FXML
@@ -153,6 +156,7 @@ public class History {
     private void updateFlowPaneData() {
         bidFlowPane.getChildren().clear();
         if ("Lịch sử đấu giá".equals(selectedInTree)) {
+            historyLabel.setText("LỊCH SỬ ĐẤU GIÁ");
             if (isLoadingBids) {
                 showLoading();
             } else {
@@ -160,6 +164,7 @@ public class History {
                 renderBidHistory();
             }
         } else if ("Lịch sử đăng bán".equals(selectedInTree)) {
+            historyLabel.setText("LỊCH SỬ ĐĂNG BÁN");
             if (isLoadingAuctions) {
                 showLoading();
             } else {
