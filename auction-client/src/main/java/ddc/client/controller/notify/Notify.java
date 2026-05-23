@@ -16,6 +16,12 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import java.util.List;
+import javafx.animation.Transition;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.paint.Color;
+import javafx.util.Duration;
 
 public class Notify {
     private static final Gson gson = GsonConfig.newGson();
@@ -65,9 +71,14 @@ public class Notify {
     private HBox createNotifCard(NotificationDTO n) {
         HBox card = new HBox(10);
         card.setPadding(new Insets(10));
-        card.setStyle(n.isRead()
-                ? "-fx-background-color: #f0f0f0; -fx-background-radius: 8;"
-                : "-fx-background-color: #e3f2fd; -fx-background-radius: 8;");
+        card.setFocusTraversable(false); // Tránh viền focus
+
+        // Đặt màu nền ban đầu bằng Background thay vì CSS style
+        if (n.isRead()) {
+            card.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(8), Insets.EMPTY)));
+        } else {
+            card.setBackground(new Background(new BackgroundFill(Color.web("#bbdefb"), new CornerRadii(8), Insets.EMPTY)));
+        }
 
         VBox content = new VBox(4);
         Label title = new Label(n.getTitle());
@@ -90,13 +101,32 @@ public class Notify {
         return card;
     }
 
+    // Hiệu ứng chuyển màu nền mượt mà
+    private void animateBackground(HBox card, Color fromColor, Color toColor) {
+        Transition transition = new Transition() {
+            {
+                setCycleDuration(Duration.millis(500));
+            }
+            @Override
+            protected void interpolate(double frac) {
+                Color color = fromColor.interpolate(toColor, frac);
+                card.setBackground(new Background(new BackgroundFill(color, new CornerRadii(8), Insets.EMPTY)));
+            }
+        };
+        transition.play();
+    }
+
     private void markRead(String notifId, HBox card) {
         new Thread(() -> {
-            JsonObject data = new JsonObject();
-            data.addProperty("notificationId", notifId);
-            RequestToServer.sendRequest(new Request("MARK_NOTIFICATION_READ", data));
+            try {
+                JsonObject data = new JsonObject();
+                data.addProperty("notificationId", notifId);
+                RequestToServer.sendRequest(new Request("MARK_NOTIFICATION_READ", data));
 
-            Platform.runLater(() -> card.setStyle("-fx-background-color: #f0f0f0; -fx-background-radius: 8;"));
+                Platform.runLater(() -> animateBackground(card, Color.web("#bbdefb"), Color.WHITE));
+            } catch (Exception ex) {
+                System.err.println("Lỗi khi đánh dấu đã đọc thông báo: " + ex.getMessage());
+            }
         }).start();
     }
 
