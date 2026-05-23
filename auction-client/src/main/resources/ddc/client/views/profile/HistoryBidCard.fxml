@@ -11,26 +11,62 @@
       <Region prefHeight="100.0" prefWidth="20.0" style="-fx-background-color: cyan;" />
       <VBox prefHeight="102.0" prefWidth="450.0" HBox.hgrow="ALWAYS">
          <children>
-            <Label fx:id="idLabel" prefHeight="26.0" prefWidth="580.0" text="B00000" textFill="DARKBLUE">
-               <font>
-                  <Font name="Tahoma Bold" size="20.0" />
-               </font>
-            </Label>
-            <Label fx:id="itemNameLabel" prefHeight="26.0" prefWidth="580.0" text="Tên sản phẩm đấu giá" textFill="DARKBLUE">
-               <font>
-                  <Font name="Tahoma Bold" size="20.0" />
-               </font>
-            </Label>
-            <Label fx:id="bidPriceLabel" prefHeight="26.0" prefWidth="580.0" text="Giá đấu giá" textFill="DARKBLUE">
-               <font>
-                  <Font name="Tahoma Bold" size="20.0" />
-               </font>
-            </Label>
-            <Label fx:id="bidTimeLabel" prefHeight="26.0" prefWidth="580.0" text="Thời gian đấu giá" textFill="DARKBLUE">
-               <font>
-                  <Font name="Tahoma Bold" size="20.0" />
-               </font>
-            </Label>
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Label prefHeight="26.0" prefWidth="196.0" text="ID:" textFill="DARKBLUE">
+                     <font>
+                        <Font name="Tahoma Bold" size="20.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="idLabel" prefHeight="26.0" prefWidth="580.0" text="B00000" textFill="DARKBLUE">
+                     <font>
+                        <Font name="Tahoma Bold" size="20.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Label prefHeight="26.0" prefWidth="225.0" text="Tên:" textFill="DARKBLUE">
+                     <font>
+                        <Font name="Tahoma Bold" size="20.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="itemNameLabel" prefHeight="26.0" prefWidth="580.0" text="Tên sản phẩm đấu giá" textFill="DARKBLUE">
+                     <font>
+                        <Font name="Tahoma Bold" size="20.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Label prefHeight="26.0" prefWidth="218.0" text="Giá:" textFill="DARKBLUE">
+                     <font>
+                        <Font name="Tahoma Bold" size="20.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="bidPriceLabel" prefHeight="26.0" prefWidth="580.0" text="Giá đấu giá" textFill="DARKBLUE">
+                     <font>
+                        <Font name="Tahoma Bold" size="20.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Label prefHeight="26.0" prefWidth="336.0" text="Thời gian:" textFill="DARKBLUE">
+                     <font>
+                        <Font name="Tahoma Bold" size="20.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="bidTimeLabel" prefHeight="26.0" prefWidth="580.0" text="Thời gian đấu giá" textFill="DARKBLUE">
+                     <font>
+                        <Font name="Tahoma Bold" size="20.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
          </children>
       </VBox>
       <VBox alignment="CENTER" prefHeight="100.0" prefWidth="130.0" HBox.hgrow="ALWAYS">
