@@ -5,6 +5,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,6 +39,7 @@ public class RealtimeToServer {
                 if (response == null || response.isBlank()) {
                     return errorJson("EMPTY_RESPONSE", "Server khong tra response.");
                 }
+                System.out.println(response);
                 LOGGER.debug("Response: {}", response);
                 return response;
             }

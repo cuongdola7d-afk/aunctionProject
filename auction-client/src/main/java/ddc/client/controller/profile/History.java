@@ -20,16 +20,22 @@ import ddc.client.network.RequestToServer;
 import ddc.client.network.UserSession;
 import ddc.client.network.response.GetAllAuctionsResponse;
 import ddc.client.network.response.GetAllUserBidResponse;
+import javafx.animation.Animation;
+import javafx.animation.Interpolator;
+import javafx.animation.RotateTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 
 public class History {
     @FXML
@@ -39,7 +45,13 @@ public class History {
     private FlowPane bidFlowPane;
 
     @FXML
+    private ScrollPane bidScrollPane;
+
+    @FXML
     private ImageView loadingImageView;
+
+    @FXML
+    private VBox loadingVBox;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(History.class);
     private static final Gson gson = GsonConfig.newGson();
@@ -50,12 +62,16 @@ public class History {
     private final List<AuctionDTO> auctionList = new ArrayList<>();
 
     private String selectedInTree;
-
     private String currentBidderId;
+
+    private RotateTransition rotateTransition;
+    private boolean isLoadingBids = true;
+    private boolean isLoadingAuctions = true;
 
     @FXML
     public void initialize () {
         currentBidderId = UserSession.getInstance().getId();
+        setupLoadingAnimation();
         setUpTree();
         loadAllData();
     }
@@ -73,8 +89,9 @@ public class History {
                     Platform.runLater(() -> {
                         bidList.clear();
                         bidList.addAll(bids);
+                        isLoadingBids = false;
                         if ("Lịch sử đấu giá".equals(selectedInTree)) {
-                            renderBidHistory();
+                            updateFlowPaneData();
                         }
                     });
                 }
@@ -89,14 +106,20 @@ public class History {
                     Platform.runLater(() -> {
                         auctionList.clear();
                         auctionList.addAll(auctions);
+                        isLoadingAuctions = false;
                         if ("Lịch sử đăng bán".equals(selectedInTree)) {
-                            renderAuctionHistory();
+                            updateFlowPaneData();
                         }
                     });
                 }
             } catch (Exception e) {
                 LOGGER.error("Lay du lieu that bai.");
                 e.printStackTrace();
+                Platform.runLater(() -> {
+                    isLoadingBids = false;
+                    isLoadingAuctions = false;
+                    updateFlowPaneData(); 
+                });
             }
         }).start();
     }
@@ -116,20 +139,33 @@ public class History {
         bidTreeView.getSelectionModel().selectedItemProperty().addListener((obs, o, n) -> {
             if (n == null) {
                 selectedInTree = null;
+                hideLoading();
                 bidFlowPane.getChildren().clear();
             } else {
                 selectedInTree = n.getValue();
                 updateFlowPaneData();
             }
         });
+
+        bidTreeView.getSelectionModel().select(bid);
     }
 
     private void updateFlowPaneData() {
         bidFlowPane.getChildren().clear();
         if ("Lịch sử đấu giá".equals(selectedInTree)) {
-            renderBidHistory();
+            if (isLoadingBids) {
+                showLoading();
+            } else {
+                hideLoading();
+                renderBidHistory();
+            }
         } else if ("Lịch sử đăng bán".equals(selectedInTree)) {
-            renderAuctionHistory();
+            if (isLoadingAuctions) {
+                showLoading();
+            } else {
+                hideLoading();
+                renderAuctionHistory();
+            }
         }
     }
 
@@ -199,6 +235,25 @@ public class History {
         }
         bidFlowPane.getChildren().setAll(willBeRenderedNodes);
         auctionCardCache.keySet().removeIf(id -> auctionList.stream().noneMatch(i -> i.getId().equals(id)));
+    }
+
+    private void setupLoadingAnimation() {
+        rotateTransition = new RotateTransition(Duration.seconds(1), loadingImageView);
+        rotateTransition.setByAngle(360);
+        rotateTransition.setCycleCount(Animation.INDEFINITE);
+        rotateTransition.setInterpolator(Interpolator.LINEAR);
+    }
+
+    private void showLoading() {
+        bidScrollPane.setVisible(false);
+        loadingVBox.setVisible(true);
+        rotateTransition.play();
+    }
+
+    private void hideLoading() {
+        rotateTransition.stop();
+        loadingVBox.setVisible(false);
+        bidScrollPane.setVisible(true);
     }
 
     private static class BidNodeHolder {

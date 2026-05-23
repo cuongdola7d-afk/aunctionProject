@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,12 +20,33 @@ public class BidDAO {
     private final UserDAO userDAO = new UserDAO();
     private final AuctionDAO auctionDAO = new AuctionDAO();
 
+    public boolean insertBid(Bid bid) {
+        String sql = "INSERT INTO ddc_bids (bidder_name, bid_amount, bid_time, auction_id) VALUES (?, ?, ?, ?)";
+
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement pst = con.prepareStatement(sql)) {
+
+            pst.setString(1, bid.getBidder().getUsername());
+            pst.setDouble(2, bid.getBidAmount());
+            pst.setTimestamp(3, Timestamp.valueOf(bid.getBidTime()));
+            pst.setString(4, bid.getAuction().getId());
+
+            int insert = pst.executeUpdate();
+            return insert > 0;
+
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public List<Bid> getAllUserBid(String username) {
         List<Bid> list = new ArrayList<>();
         String sql = "SELECT b.id, b.bidder_name, b.bid_amount, b.bid_time, b.auction_id FROM ddc_bids b INNER JOIN ddc_users u ON b.bidder_name = u.username WHERE bidder_name = ?";
 
         try (Connection con = DatabaseConnection.getConnection();
-                PreparedStatement pst = con.prepareStatement(sql);) {
+                PreparedStatement pst = con.prepareStatement(sql)) {
 
             pst.setString(1, username.trim());
             

@@ -5,15 +5,18 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+
 import ddc.client.config.ClientContext;
 import ddc.client.network.UserSession;
 import ddc.client.network.message.MessageType;
 import ddc.client.network.message.SocketMessage;
 import javafx.application.Platform;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class GlobalSocketClient {
     private static final Logger LOGGER = LoggerFactory.getLogger(GlobalSocketClient.class);
@@ -67,6 +70,12 @@ public class GlobalSocketClient {
             while (connected && (line = reader.readLine()) != null) {
                 handleRawMessage(line);
             }
+        } catch (java.net.SocketException e) {
+            if (!connected) {
+                LOGGER.info("Socket Disconnected Actively :)");
+            } else {
+                LOGGER.warn("Lost Socket Connection :(", e);
+            }
         } catch (Exception e) {
             LOGGER.warn("GlobalSocketClient read error", e);
         } finally {
@@ -87,8 +96,9 @@ public class GlobalSocketClient {
 
     public synchronized void disconnect() {
         connected = false;
+        try { if (socket != null) socket.close(); } catch (IOException ignored) {}
         try { if (reader != null) reader.close(); } catch (IOException ignored) {}
         if (writer != null) writer.close();
-        try { if (socket != null) socket.close(); } catch (IOException ignored) {}
+
     }
 }

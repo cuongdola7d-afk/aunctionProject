@@ -1,6 +1,5 @@
 package ddc.client.controller.bidding;
 
-import java.io.IOException;
 import java.text.DecimalFormat;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -21,7 +20,7 @@ import ddc.client.controller.notify.NotificationBadgeUtil;
 import ddc.client.model.AuctionDTO;
 import ddc.client.model.AuctionItemViewModel;
 import ddc.client.model.Request;
-import ddc.client.network.RealtimeToServer;
+import ddc.client.network.RequestToServer;
 import ddc.client.network.UserSession;
 import ddc.client.network.response.GetAllAuctionsResponse;
 import javafx.animation.Animation;
@@ -151,12 +150,20 @@ public class Bidding {
         });
     }
 
+    private void toggleLoading(boolean isLoading) {
+        if (imageViewLoading != null) {
+            imageViewLoading.setVisible(isLoading);
+            imageViewLoading.setManaged(isLoading);
+        }
+    }
+
     private void refreshDataFromServer() {
+        toggleLoading(true);
         String defaultImage = "/ddc/client/views/bidding/image/watch.jpg";
 
         new Thread(() -> {
             try {
-                String JsonResponse = RealtimeToServer.sendRequest(new Request().setAction("GET_ALL_AUCTIONS"));
+                String JsonResponse = RequestToServer.sendRequest(new Request().setAction("GET_ALL_AUCTIONS"));
                 GetAllAuctionsResponse response = gson.fromJson(JsonResponse, GetAllAuctionsResponse.class);
                 
                 if ("SUCCESS".equals(response.getStatus())) {
@@ -194,11 +201,17 @@ public class Bidding {
                         itemList.clear();
                         itemList.addAll(newList);
                         applyFilters();
+                        toggleLoading(false);
                     });
+                } else {
+                    Platform.runLater(() -> toggleLoading(false));
+                    LOGGER.error("Server returned FAILED status.");
                 }
                 
             } catch (Exception e) {
+                Platform.runLater(() -> toggleLoading(false));
                 LOGGER.error("Loi load danh sach auction", e);
+                e.printStackTrace();
             }
         }).start();
     }
@@ -283,8 +296,9 @@ public class Bidding {
 
                 holder.controller.setData(item, currentBidderId);
                 willBeRenderedNodes.add(holder.cardNode);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 LOGGER.error("Không load được card item", e);
+                e.printStackTrace();
             }
         }
         auctionContainer.getChildren().setAll(willBeRenderedNodes);
@@ -334,7 +348,7 @@ public class Bidding {
             case "ELECTRONICS" -> {
                 return "Đồ điện tử";
             }
-            default -> throw new AssertionError();
+            default -> { return "Khác"; }
         }
     }
 

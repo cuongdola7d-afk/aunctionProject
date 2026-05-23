@@ -36,7 +36,7 @@
       </VBox>
       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="130.0">
          <children>
-            <Button fx:id="cancelButton" mnemonicParsing="false" style="-fx-background-color: cyan; -fx-border-color: #00008b; -fx-background-radius: 15; -fx-border-radius: 15;" text="Hủy bỏ" textFill="DARKBLUE">
+            <Button fx:id="cancelButton" mnemonicParsing="false" style="-fx-background-color: cyan; -fx-border-color: #00008b; -fx-background-radius: 15; -fx-border-radius: 15;" text="Hủy bỏ" textFill="DARKBLUE" visible="false">
                <font>
                   <Font name="Tahoma Bold" size="15.0" />
                </font>
