@@ -167,7 +167,7 @@
                   AnchorPane.bottomAnchor="70.0"
                   AnchorPane.leftAnchor="10.0"
                   AnchorPane.rightAnchor="10.0"
-                  style="-fx-background: transparent;">
+                  style="-fx-background: transparent; -fx-background-color: transparent; -fx-background-insets: 0; -fx-focus-color: transparent; -fx-faint-focus-color: transparent;">
          <content>
             <VBox fx:id="notificationListVBox" spacing="8">
                <padding><Insets top="10" bottom="10" left="5" right="5" /></padding>

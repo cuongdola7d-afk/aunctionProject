@@ -79,12 +79,6 @@
                         <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="250.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 
                             <children>
-      
-                                <Button onAction="#handleScrollTop" style="-fx-background-color: #0b1a44; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 999;" text="↑" StackPane.alignment="BOTTOM_RIGHT">
-                                    <StackPane.margin>
-                                        <Insets bottom="20.0" right="20.0" />
-                                    </StackPane.margin>
-                                </Button>
                                 <ScrollPane fx:id="mainScrollPane" fitToWidth="true" hbarPolicy="NEVER" pannable="true" prefWidth="781.0" style="-fx-background: transparent; -fx-background-color: transparent;">
                                     <content>
                                         <FlowPane fx:id="auctionContainer" alignment="TOP_CENTER" hgap="18.0" prefHeight="494.0" prefWidth="1014.0" prefWrapLength="980.0" vgap="18.0">
@@ -110,6 +104,11 @@
                                         </FlowPane>
                                     </content>
                                 </ScrollPane>
+                                <Button onAction="#handleScrollTop" style="-fx-background-color: #0b1a44; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 999;" text="↑" StackPane.alignment="BOTTOM_RIGHT">
+                                    <StackPane.margin>
+                                        <Insets bottom="20.0" right="20.0" />
+                                    </StackPane.margin>
+                                </Button>
                             </children>
                         </StackPane>
                     </children>
