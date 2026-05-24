@@ -75,6 +75,9 @@ public class AuctionStatusScheduler {
                         broadcastFinished(auction);
                         createFinishedNotifications(auction);
                     }
+
+                    // Thông báo tất cả client reload (VD: OPEN→RUNNING khi đến giờ bắt đầu)
+                    RealtimeClientHandler.broadcastDashboardRefresh();
                 }
             }
         } catch (Exception e) {
@@ -98,6 +101,10 @@ public class AuctionStatusScheduler {
 
         event.setMessage("Phien dau gia da ket thuc.");
         RealtimeClientHandler.broadcastAuctionEvent(auction.getId(), event);
+        RealtimeClientHandler.broadcastDashboardUpdate(auction.getId(),
+                auction.getCurrentPrice(),
+                AuctionStatus.FINISHED.name(),
+                auction.getEndTime() != null ? auction.getEndTime().toString() : null);
     }
 
 

@@ -146,6 +146,8 @@ public class AuctionSocketClient {
                     listener.onError(error != null ? error.getMessage() : "Lỗi không xác định.");
                 }
             }
+            // Bỏ qua các event không liên quan tới AuctionDetail
+            case DASHBOARD_UPDATE, DASHBOARD_REFRESH, NOTIFICATION_EVENT -> {}
             default -> {
                 if (listener != null) {
                     listener.onError("Loại message không hỗ trợ: " + message.getType());

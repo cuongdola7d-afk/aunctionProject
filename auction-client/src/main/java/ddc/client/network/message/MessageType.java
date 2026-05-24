@@ -6,5 +6,7 @@ public enum MessageType {
     PLACE_BID,
     AUCTION_EVENT,
     NOTIFICATION_EVENT,
+    DASHBOARD_UPDATE,
+    DASHBOARD_REFRESH,
     ERROR
 }

@@ -107,5 +107,9 @@ public class AdminService {
 
         event.setMessage("Phien dau gia da bi huy.");
         RealtimeClientHandler.broadcastAuctionEvent(auction.getId(), event);
+        RealtimeClientHandler.broadcastDashboardUpdate(auction.getId(),
+                auction.getCurrentPrice(),
+                AuctionStatus.CANCELLED.name(),
+                auction.getEndTime() != null ? auction.getEndTime().toString() : null);
     }
 }
