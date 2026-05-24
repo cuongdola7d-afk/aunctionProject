@@ -21,6 +21,30 @@ public class WalletDAO {
         return 0.0;
     }
 
+    public double getReservedBidAmount(String userId, String excludedAuctionId) {
+        String sql = "SELECT COALESCE(SUM(a.current_price), 0) AS reserved_amount "
+                + "FROM ddc_auctions a "
+                + "INNER JOIN ddc_users u ON a.highest_bidder_name = u.username "
+                + "WHERE u.id = ? "
+                + "AND a.status IN ('OPEN', 'RUNNING') "
+                + "AND (? IS NULL OR a.id <> ?)";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, userId);
+            stmt.setString(2, excludedAuctionId);
+            stmt.setString(3, excludedAuctionId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getDouble("reserved_amount");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0.0;
+    }
+
     public boolean updateBalance(String userId, double amount, String type, String description) {
         String updateSql = "UPDATE ddc_wallets SET balance = balance + ? WHERE user_id = ?";
         String logSql = "INSERT INTO ddc_wallet_transactions (user_id, amount, transaction_type, description) VALUES (?, ?, ?, ?)";

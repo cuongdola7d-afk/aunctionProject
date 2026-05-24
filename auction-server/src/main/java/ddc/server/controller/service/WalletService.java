@@ -22,6 +22,21 @@ public class WalletService {
         return walletDAO.getBalance(userId);
     }
 
+    public double getReservedBidAmount(String userId, String excludedAuctionId) {
+        return walletDAO.getReservedBidAmount(userId, excludedAuctionId);
+    }
+
+    public double getAvailableBalanceForBid(String userId, String auctionId) {
+        return getBalance(userId) - getReservedBidAmount(userId, auctionId);
+    }
+
+    public boolean hasAvailableBalanceForBid(String userId, String auctionId, double bidAmount) {
+        if (userId == null || userId.isBlank() || !Double.isFinite(bidAmount) || bidAmount <= 0) {
+            return false;
+        }
+        return getAvailableBalanceForBid(userId, auctionId) >= bidAmount;
+    }
+
     public boolean deposit(String userId, double amount) {
         try {
             depositOrThrow(userId, amount);

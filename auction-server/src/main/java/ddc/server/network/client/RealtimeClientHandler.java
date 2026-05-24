@@ -192,10 +192,10 @@ public class RealtimeClientHandler implements Runnable {
             return;
         }
         
-        double balance = walletService.getBalance(request.getBidderId());
-        if (balance < request.getAmount()) {
+        double availableBalance = walletService.getAvailableBalanceForBid(request.getBidderId(), request.getAuctionId());
+        if (availableBalance < request.getAmount()) {
             sendError(client,
-                    "So du vi khong du. So du hien tai: " + String.format("%,.0f", balance)
+                    "So du kha dung khong du. So du kha dung: " + String.format("%,.0f", availableBalance)
                             + ", so tien bid: " + String.format("%,.0f", request.getAmount()));
             return;
         }
