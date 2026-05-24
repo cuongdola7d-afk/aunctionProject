@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+    <!-- Fallback về auction-server/logs nếu không set -DLOG_DIR -->
+    <property name="LOG_DIR" value="${LOG_DIR:-auction-server/logs}"/>
+
     <!-- Console output -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -9,9 +12,9 @@
 
     <!-- Ghi log ra file, rotation theo ngày -->
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>logs/auction-server.log</file>
+        <file>${LOG_DIR}/auction-server.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>logs/auction-server.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>${LOG_DIR}/auction-server.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
         <encoder>
