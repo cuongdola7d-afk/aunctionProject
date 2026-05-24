@@ -1,163 +1,120 @@
 package ddc.server.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.UUID;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import ddc.server.config.DatabaseConnection;
-
 class WalletDAOTest {
-    private final WalletDAO walletDAO = new WalletDAO();
+    private static final String SELECT_BALANCE_SQL = "SELECT balance FROM ddc_wallets WHERE user_id = ?";
+    private static final String UPDATE_BALANCE_SQL = "UPDATE ddc_wallets SET balance = balance + ? WHERE user_id = ?";
+    private static final String INSERT_WALLET_SQL = "INSERT INTO ddc_wallets (user_id, balance) VALUES (?, ?)";
+    private static final String INSERT_TRANSACTION_SQL =
+            "INSERT INTO ddc_wallet_transactions (user_id, amount, transaction_type, description) VALUES (?, ?, ?, ?)";
 
-    @Test
-    void getBalance_shouldReturnZeroWhenWalletDoesNotExist() {
-        assumeTrue(hasDbConfig(), "Bo qua test DB khi chua cau hinh DDC_DB_*");
+    private Connection connection;
+    private WalletDAO walletDAO;
 
-        String userId = "missing-wallet-" + UUID.randomUUID();
-
-        assertEquals(0, walletDAO.getBalance(userId));
-    }
-
-    @Test
-    void updateBalance_shouldCreateWalletAndTransactionWhenWalletDoesNotExist() {
-        assumeTrue(hasDbConfig(), "Bo qua test DB khi chua cau hinh DDC_DB_*");
-
-        String userId = null;
-        try {
-            userId = createTestUser();
-
-            boolean success = walletDAO.updateBalance(userId, 100_000, "DEPOSIT", "Test deposit");
-
-            assertTrue(success);
-            assertEquals(100_000, walletDAO.getBalance(userId));
-            assertEquals(1, countWalletTransactions(userId));
-        } finally {
-            deleteTestUserWalletData(userId);
-        }
+    @BeforeEach
+    void setUp() {
+        connection = mock(Connection.class);
+        walletDAO = new WalletDAO() {
+            @Override
+            protected Connection getConnection() {
+                return connection;
+            }
+        };
     }
 
     @Test
-    void updateBalance_shouldIncrementExistingWalletAndCreateTransaction() {
-        assumeTrue(hasDbConfig(), "Bo qua test DB khi chua cau hinh DDC_DB_*");
+    void getBalance_shouldReturnZeroWhenWalletDoesNotExist() throws SQLException {
+        PreparedStatement statement = mock(PreparedStatement.class);
+        ResultSet resultSet = mock(ResultSet.class);
 
-        String userId = null;
-        try {
-            userId = createTestUser();
-            walletDAO.updateBalance(userId, 100_000, "DEPOSIT", "Initial deposit");
+        when(connection.prepareStatement(SELECT_BALANCE_SQL)).thenReturn(statement);
+        when(statement.executeQuery()).thenReturn(resultSet);
+        when(resultSet.next()).thenReturn(false);
 
-            boolean success = walletDAO.updateBalance(userId, -40_000, "DEDUCT_BID", "Test deduct");
-
-            assertTrue(success);
-            assertEquals(60_000, walletDAO.getBalance(userId));
-            assertEquals(2, countWalletTransactions(userId));
-        } finally {
-            deleteTestUserWalletData(userId);
-        }
+        assertEquals(0, walletDAO.getBalance("missing-user"));
+        verify(statement).setString(1, "missing-user");
     }
 
-    private String createTestUser() {
-        String token = UUID.randomUUID().toString().replace("-", "");
-        String username = "wallet_test_" + token.substring(0, 12);
-        String email = username + "@example.test";
-        String sql = "INSERT INTO ddc_users (username, name, email, password) VALUES (?, ?, ?, ?)";
+    @Test
+    void getBalance_shouldReturnWalletBalanceWhenWalletExists() throws SQLException {
+        PreparedStatement statement = mock(PreparedStatement.class);
+        ResultSet resultSet = mock(ResultSet.class);
 
-        try (Connection con = DatabaseConnection.getConnection();
-                PreparedStatement pst = con.prepareStatement(sql)) {
-            pst.setString(1, username);
-            pst.setString(2, "Wallet Test User");
-            pst.setString(3, email);
-            pst.setString(4, "password123");
-            pst.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException("Khong the tao user test wallet.", e);
-        }
+        when(connection.prepareStatement(SELECT_BALANCE_SQL)).thenReturn(statement);
+        when(statement.executeQuery()).thenReturn(resultSet);
+        when(resultSet.next()).thenReturn(true);
+        when(resultSet.getDouble("balance")).thenReturn(125_000.0);
 
-        return findUserId(username);
+        assertEquals(125_000.0, walletDAO.getBalance("user1"));
     }
 
-    private String findUserId(String username) {
-        String sql = "SELECT id FROM ddc_users WHERE username = ?";
-        try (Connection con = DatabaseConnection.getConnection();
-                PreparedStatement pst = con.prepareStatement(sql)) {
-            pst.setString(1, username);
-            try (ResultSet rs = pst.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getString("id");
-                }
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Khong the lay id user test wallet.", e);
-        }
-        throw new RuntimeException("Khong tim thay user test wallet: " + username);
+    @Test
+    void updateBalance_shouldCreateWalletAndTransactionWhenWalletDoesNotExist() throws SQLException {
+        PreparedStatement updateStatement = mock(PreparedStatement.class);
+        PreparedStatement insertWalletStatement = mock(PreparedStatement.class);
+        PreparedStatement transactionStatement = mock(PreparedStatement.class);
+
+        when(connection.prepareStatement(eq(UPDATE_BALANCE_SQL))).thenReturn(updateStatement);
+        when(connection.prepareStatement(eq(INSERT_WALLET_SQL))).thenReturn(insertWalletStatement);
+        when(connection.prepareStatement(eq(INSERT_TRANSACTION_SQL))).thenReturn(transactionStatement);
+        when(updateStatement.executeUpdate()).thenReturn(0);
+
+        boolean success = walletDAO.updateBalance("user1", 100_000, "DEPOSIT", "Test deposit");
+
+        assertTrue(success);
+        verify(connection).setAutoCommit(false);
+        verify(insertWalletStatement).setString(1, "user1");
+        verify(insertWalletStatement).setDouble(2, 100_000);
+        verify(transactionStatement).setString(3, "DEPOSIT");
+        verify(connection).commit();
     }
 
-    private int countWalletTransactions(String userId) {
-        String sql = "SELECT COUNT(*) FROM ddc_wallet_transactions WHERE user_id = ?";
-        try (Connection con = DatabaseConnection.getConnection();
-                PreparedStatement pst = con.prepareStatement(sql)) {
-            pst.setString(1, userId);
-            try (ResultSet rs = pst.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt(1);
-                }
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Khong the dem transaction wallet test.", e);
-        }
-        return 0;
+    @Test
+    void updateBalance_shouldIncrementExistingWalletAndCreateTransaction() throws SQLException {
+        PreparedStatement updateStatement = mock(PreparedStatement.class);
+        PreparedStatement transactionStatement = mock(PreparedStatement.class);
+
+        when(connection.prepareStatement(eq(UPDATE_BALANCE_SQL))).thenReturn(updateStatement);
+        when(connection.prepareStatement(eq(INSERT_TRANSACTION_SQL))).thenReturn(transactionStatement);
+        when(updateStatement.executeUpdate()).thenReturn(1);
+
+        boolean success = walletDAO.updateBalance("user1", -40_000, "DEDUCT_BID", "Test deduct");
+
+        assertTrue(success);
+        verify(updateStatement).setDouble(1, -40_000);
+        verify(updateStatement).setString(2, "user1");
+        verify(connection, never()).prepareStatement(INSERT_WALLET_SQL);
+        verify(transactionStatement).setDouble(2, -40_000);
+        verify(transactionStatement).setString(3, "DEDUCT_BID");
+        verify(connection).commit();
     }
 
-    private void deleteTestUserWalletData(String userId) {
-        if (userId == null || userId.isBlank()) {
-            return;
-        }
+    @Test
+    void updateBalance_shouldRollbackAndReturnFalseWhenSqlFails() throws SQLException {
+        PreparedStatement updateStatement = mock(PreparedStatement.class);
 
-        try (Connection con = DatabaseConnection.getConnection()) {
-            con.setAutoCommit(false);
-            try {
-                deleteByUserId(con, "ddc_wallet_transactions", userId);
-                deleteByUserId(con, "ddc_wallets", userId);
-                deleteById(con, "ddc_users", userId);
-                con.commit();
-            } catch (SQLException e) {
-                con.rollback();
-                throw e;
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Khong the xoa du lieu test wallet userId=" + userId, e);
-        }
-    }
+        when(connection.prepareStatement(eq(UPDATE_BALANCE_SQL))).thenReturn(updateStatement);
+        when(updateStatement.executeUpdate()).thenThrow(new SQLException("DB error"));
 
-    private void deleteByUserId(Connection con, String tableName, String userId) throws SQLException {
-        String sql = "DELETE FROM " + tableName + " WHERE user_id = ?";
-        try (PreparedStatement pst = con.prepareStatement(sql)) {
-            pst.setString(1, userId);
-            pst.executeUpdate();
-        }
-    }
+        boolean success = walletDAO.updateBalance("user1", 100_000, "DEPOSIT", "Test deposit");
 
-    private void deleteById(Connection con, String tableName, String id) throws SQLException {
-        String sql = "DELETE FROM " + tableName + " WHERE id = ?";
-        try (PreparedStatement pst = con.prepareStatement(sql)) {
-            pst.setString(1, id);
-            pst.executeUpdate();
-        }
-    }
-
-    private boolean hasDbConfig() {
-        return hasValue("DDC_DB_URL") && hasValue("DDC_DB_USER") && hasValue("DDC_DB_PASSWORD");
-    }
-
-    private boolean hasValue(String envName) {
-        String value = System.getenv(envName);
-        return value != null && !value.isBlank();
+        assertFalse(success);
+        verify(connection).rollback();
     }
 }

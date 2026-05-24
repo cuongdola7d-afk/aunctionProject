@@ -12,7 +12,7 @@ public class WalletDAO {
     
     public double getBalance(String userId) {
         String sql = "SELECT balance FROM ddc_wallets WHERE user_id = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, userId);
             ResultSet rs = stmt.executeQuery();
@@ -29,7 +29,7 @@ public class WalletDAO {
                 + "AND a.status IN ('OPEN', 'RUNNING') "
                 + "AND (? IS NULL OR a.id <> ?)";
 
-        try (Connection conn = DatabaseConnection.getConnection();
+        try (Connection conn = getConnection();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, userId);
             stmt.setString(2, excludedAuctionId);
@@ -51,7 +51,7 @@ public class WalletDAO {
         
         Connection conn = null;
         try {
-            conn = DatabaseConnection.getConnection();
+            conn = getConnection();
             conn.setAutoCommit(false);
 
             try (PreparedStatement stmtUpdate = conn.prepareStatement(updateSql)) {
@@ -101,7 +101,7 @@ public class WalletDAO {
 
         Connection conn = null;
         try {
-            conn = DatabaseConnection.getConnection();
+            conn = getConnection();
             conn.setAutoCommit(false);
 
             try (PreparedStatement stmtDeduct = conn.prepareStatement(deductSql)) {
@@ -166,5 +166,9 @@ public class WalletDAO {
 
     private boolean isBlank(String value) {
         return value == null || value.trim().isEmpty();
+    }
+
+    protected Connection getConnection() throws SQLException {
+        return DatabaseConnection.getConnection();
     }
 }
