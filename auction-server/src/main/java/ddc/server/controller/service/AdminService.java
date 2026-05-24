@@ -54,6 +54,9 @@ public class AdminService {
         if (!isAdmin(adminUsername) || userId == null || userId.isBlank() || status == null || status.isBlank()) {
             return false;
         }
+        if (!"ACTIVE".equalsIgnoreCase(status) && !"BLOCKED".equalsIgnoreCase(status)) {
+            return false;
+        }
         return adminDAO.updateUserStatus(userId, status);
     }
 

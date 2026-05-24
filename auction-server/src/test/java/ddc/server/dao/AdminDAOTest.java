@@ -76,9 +76,16 @@ public class AdminDAOTest {
     @Test
     public void testUpdateUserStatus_Success() throws SQLException {
         when(mockPreparedStatement.executeUpdate()).thenReturn(1);
-        boolean result = adminDAO.updateUserStatus("user1", "BANNED");
+        boolean result = adminDAO.updateUserStatus("user1", "BLOCKED");
         assertTrue(result);
-        verify(mockPreparedStatement).setString(1, "BANNED");
+        verify(mockPreparedStatement).setString(1, "BLOCKED");
         verify(mockPreparedStatement).setString(2, "user1");
+    }
+
+    @Test
+    public void testUpdateUserStatus_RejectsDeleted() throws SQLException {
+        boolean result = adminDAO.updateUserStatus("user1", "DELETED");
+        assertFalse(result);
+        verify(mockConnection, never()).prepareStatement("UPDATE ddc_users SET status = ? WHERE id = ?");
     }
 }
