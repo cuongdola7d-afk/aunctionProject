@@ -82,4 +82,12 @@ public class AuctionItemViewModel {
         return status;
     }
 
+    public void setStatus(AuctionStatus status) {
+        this.status = status;
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
+    }
+
 }

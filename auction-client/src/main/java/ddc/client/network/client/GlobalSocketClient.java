@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,8 +16,10 @@ import com.google.gson.JsonObject;
 
 import ddc.client.config.ClientContext;
 import ddc.client.network.UserSession;
+import ddc.client.network.listener.DashboardUpdateListener;
 import ddc.client.network.message.MessageType;
 import ddc.client.network.message.SocketMessage;
+import ddc.client.network.response.DashboardUpdatePayload;
 import javafx.application.Platform;
 
 public class GlobalSocketClient {
@@ -27,6 +31,9 @@ public class GlobalSocketClient {
     private PrintWriter writer;
     private volatile boolean connected = false;
 
+    // Danh sách listener cho event DASHBOARD_UPDATE (thread-safe)
+    private final Set<DashboardUpdateListener> dashboardListeners = ConcurrentHashMap.newKeySet();
+
     private GlobalSocketClient() {}
 
     public static synchronized GlobalSocketClient getInstance() {
@@ -34,6 +41,18 @@ public class GlobalSocketClient {
             instance = new GlobalSocketClient();
         }
         return instance;
+    }
+
+    // Đăng ký listener nhận event DASHBOARD_UPDATE
+    public void addDashboardListener(DashboardUpdateListener listener) {
+        if (listener != null) {
+            dashboardListeners.add(listener);
+        }
+    }
+
+    // Hủy đăng ký listener khi rời màn hình
+    public void removeDashboardListener(DashboardUpdateListener listener) {
+        dashboardListeners.remove(listener);
     }
 
     public synchronized void connect() {
@@ -85,12 +104,45 @@ public class GlobalSocketClient {
 
     private void handleRawMessage(String line) {
         SocketMessage message = gson.fromJson(line, SocketMessage.class);
-        if (message != null && message.getType() == MessageType.NOTIFICATION_EVENT) {
-            JsonObject payload = gson.fromJson(message.getPayloadJson(), JsonObject.class);
-            if (payload.has("unreadCount")) {
-                int unreadCount = payload.get("unreadCount").getAsInt();
-                Platform.runLater(() -> UserSession.getInstance().setUnreadCount(unreadCount));
+        if (message == null || message.getType() == null) return;
+
+        switch (message.getType()) {
+            case NOTIFICATION_EVENT -> {
+                JsonObject payload = gson.fromJson(message.getPayloadJson(), JsonObject.class);
+                if (payload.has("unreadCount")) {
+                    int unreadCount = payload.get("unreadCount").getAsInt();
+                    Platform.runLater(() -> UserSession.getInstance().setUnreadCount(unreadCount));
+                }
             }
+            case DASHBOARD_UPDATE -> {
+                DashboardUpdatePayload payload = gson.fromJson(message.getPayloadJson(), DashboardUpdatePayload.class);
+                if (payload != null && payload.getAuctionId() != null) {
+                    // Gọi tất cả listener đã đăng ký
+                    for (DashboardUpdateListener listener : dashboardListeners) {
+                        try {
+                            listener.onDashboardUpdate(
+                                payload.getAuctionId(),
+                                payload.getCurrentPrice(),
+                                payload.getStatus(),
+                                payload.getEndTime()
+                            );
+                        } catch (Exception e) {
+                            LOGGER.warn("Dashboard listener error", e);
+                        }
+                    }
+                }
+            }
+            case DASHBOARD_REFRESH -> {
+                // Yêu cầu client reload toàn bộ danh sách
+                for (DashboardUpdateListener listener : dashboardListeners) {
+                    try {
+                        listener.onDashboardRefresh();
+                    } catch (Exception e) {
+                        LOGGER.warn("Dashboard refresh listener error", e);
+                    }
+                }
+            }
+            default -> LOGGER.debug("Unhandled message type: {}", message.getType());
         }
     }
 
