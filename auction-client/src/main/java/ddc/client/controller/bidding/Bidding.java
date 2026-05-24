@@ -21,7 +21,7 @@ import ddc.client.model.AuctionDTO;
 import ddc.client.model.AuctionItemViewModel;
 import ddc.client.model.AuctionStatus;
 import ddc.client.model.Request;
-import ddc.client.network.RequestToServer;
+import ddc.client.network.RealtimeToServer;
 import ddc.client.network.UserSession;
 import ddc.client.network.response.GetAllAuctionsResponse;
 import javafx.animation.Animation;
@@ -164,7 +164,7 @@ public class Bidding {
 
         new Thread(() -> {
             try {
-                String JsonResponse = RequestToServer.sendRequest(new Request().setAction("GET_ALL_AUCTIONS"));
+                String JsonResponse = RealtimeToServer.sendRequest(new Request().setAction("GET_ALL_AUCTIONS"));
                 GetAllAuctionsResponse response = gson.fromJson(JsonResponse, GetAllAuctionsResponse.class);
                 
                 if ("SUCCESS".equals(response.getStatus())) {
