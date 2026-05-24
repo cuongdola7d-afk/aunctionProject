@@ -31,7 +31,7 @@ public class LoginHandler implements ActionHandler {
             return new BaseResponse().setStatus("INVALID PASSWORD");
         }
 
-        if ("BLOCKED".equalsIgnoreCase(user.getStatus()) || "DELETED".equalsIgnoreCase(user.getStatus())) {
+        if ("BLOCKED".equalsIgnoreCase(user.getStatus())) {
             return new BaseResponse().setStatus("BLOCKED").setMessage("Tai khoan da bi khoa.");
         }
 

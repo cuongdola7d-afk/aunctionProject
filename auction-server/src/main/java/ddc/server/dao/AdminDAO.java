@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,9 +25,7 @@ public class AdminDAO {
         List<User> users = new ArrayList<>();
 
         try (Connection con = getConnection()) {
-            String sql = hasColumn(con, "ddc_users", "status")
-                    ? "SELECT * FROM ddc_users WHERE status <> 'DELETED' ORDER BY username"
-                    : "SELECT * FROM ddc_users ORDER BY username";
+            String sql = "SELECT * FROM ddc_users ORDER BY username";
 
             try (PreparedStatement pst = con.prepareStatement(sql);
                     ResultSet rs = pst.executeQuery()) {
@@ -51,9 +48,6 @@ public class AdminDAO {
 
             pst.setString(1, userId);
             return pst.executeUpdate() > 0;
-        } catch (SQLIntegrityConstraintViolationException e) {
-            LOGGER.warn("User dang duoc tham chieu, chuyen sang xoa mem: {}", userId);
-            return updateUserStatus(userId, "DELETED");
         } catch (SQLException e) {
             LOGGER.error("Loi xoa user", e);
         }
@@ -61,6 +55,11 @@ public class AdminDAO {
     }
 
     public boolean updateUserStatus(String userId, String status) {
+        if (!isAllowedUserStatus(status)) {
+            LOGGER.warn("Trang thai user khong hop le: {}", status);
+            return false;
+        }
+
         String sql = "UPDATE ddc_users SET status = ? WHERE id = ?";
 
         try (Connection con = getConnection()) {
@@ -70,7 +69,7 @@ public class AdminDAO {
             }
 
             try (PreparedStatement pst = con.prepareStatement(sql)) {
-                pst.setString(1, status);
+                pst.setString(1, status.toUpperCase());
                 pst.setString(2, userId);
                 return pst.executeUpdate() > 0;
             }
@@ -90,14 +89,11 @@ public class AdminDAO {
     }
 
     private int countUsers() {
-        try (Connection con = getConnection()) {
-            if (hasColumn(con, "ddc_users", "status")) {
-                return countWhere("ddc_users", "status <> 'DELETED'");
-            }
-        } catch (SQLException e) {
-            LOGGER.warn("Khong kiem tra duoc cot status cua ddc_users", e);
-        }
         return count("ddc_users");
+    }
+
+    private boolean isAllowedUserStatus(String status) {
+        return "ACTIVE".equalsIgnoreCase(status) || "BLOCKED".equalsIgnoreCase(status);
     }
 
     private int count(String tableName) {

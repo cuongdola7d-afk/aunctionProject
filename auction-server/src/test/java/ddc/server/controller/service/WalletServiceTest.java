@@ -2,6 +2,7 @@ package ddc.server.controller.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
@@ -10,6 +11,9 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import ddc.server.dao.WalletDAO;
+import ddc.server.exception.WalletException.InsufficientBalanceException;
+import ddc.server.exception.WalletException.InvalidAmountException;
+import ddc.server.exception.WalletException.OperationFailedException;
 
 class WalletServiceTest {
 
@@ -23,6 +27,40 @@ class WalletServiceTest {
 
         assertEquals(120_000, balance);
         assertEquals("U001", walletDAO.lastBalanceUserId);
+    }
+
+    @Test
+    void getAvailableBalanceForBid_shouldSubtractReservedAmountFromOtherAuctions() {
+        FakeWalletDAO walletDAO = new FakeWalletDAO();
+        walletDAO.balance = 500;
+        walletDAO.reservedBidAmount = 300;
+        WalletService service = new WalletService(walletDAO);
+
+        double available = service.getAvailableBalanceForBid("U001", "A002");
+
+        assertEquals(200, available);
+        assertEquals("U001", walletDAO.lastReservedUserId);
+        assertEquals("A002", walletDAO.lastExcludedAuctionId);
+    }
+
+    @Test
+    void hasAvailableBalanceForBid_shouldRejectBidThatExceedsAvailableBalance() {
+        FakeWalletDAO walletDAO = new FakeWalletDAO();
+        walletDAO.balance = 500;
+        walletDAO.reservedBidAmount = 300;
+        WalletService service = new WalletService(walletDAO);
+
+        assertFalse(service.hasAvailableBalanceForBid("U001", "A002", 300));
+    }
+
+    @Test
+    void hasAvailableBalanceForBid_shouldAllowBidWhenCurrentAuctionHoldIsExcluded() {
+        FakeWalletDAO walletDAO = new FakeWalletDAO();
+        walletDAO.balance = 500;
+        walletDAO.reservedBidAmount = 0;
+        WalletService service = new WalletService(walletDAO);
+
+        assertTrue(service.hasAvailableBalanceForBid("U001", "A001", 350));
     }
 
     @Test
@@ -50,6 +88,22 @@ class WalletServiceTest {
     }
 
     @Test
+    void depositOrThrow_shouldThrowInvalidAmountWhenAmountIsNotPositive() {
+        WalletService service = new WalletService(new FakeWalletDAO());
+
+        assertThrows(InvalidAmountException.class, () -> service.depositOrThrow("U001", 0));
+    }
+
+    @Test
+    void depositOrThrow_shouldThrowOperationFailedWhenDaoFails() {
+        FakeWalletDAO walletDAO = new FakeWalletDAO();
+        walletDAO.nextUpdateResults.add(false);
+        WalletService service = new WalletService(walletDAO);
+
+        assertThrows(OperationFailedException.class, () -> service.depositOrThrow("U001", 50_000));
+    }
+
+    @Test
     void processAuctionFinished_shouldFailWhenBidderBalanceIsInsufficient() {
         FakeWalletDAO walletDAO = new FakeWalletDAO();
         walletDAO.balance = 99_999;
@@ -58,6 +112,17 @@ class WalletServiceTest {
         boolean success = service.processAuctionFinished("A001", "BUYER", "SELLER", 100_000);
 
         assertFalse(success);
+        assertEquals(0, walletDAO.updates.size());
+    }
+
+    @Test
+    void processAuctionFinishedOrThrow_shouldThrowInsufficientBalanceWhenBalanceIsTooLow() {
+        FakeWalletDAO walletDAO = new FakeWalletDAO();
+        walletDAO.balance = 99_999;
+        WalletService service = new WalletService(walletDAO);
+
+        assertThrows(InsufficientBalanceException.class,
+                () -> service.processAuctionFinishedOrThrow("A001", "BUYER", "SELLER", 100_000));
         assertEquals(0, walletDAO.updates.size());
     }
 
@@ -98,7 +163,10 @@ class WalletServiceTest {
 
     private static class FakeWalletDAO extends WalletDAO {
         private double balance;
+        private double reservedBidAmount;
         private String lastBalanceUserId;
+        private String lastReservedUserId;
+        private String lastExcludedAuctionId;
         private final List<WalletUpdate> updates = new ArrayList<>();
         private final List<Boolean> nextUpdateResults = new ArrayList<>();
 
@@ -106,6 +174,13 @@ class WalletServiceTest {
         public double getBalance(String userId) {
             lastBalanceUserId = userId;
             return balance;
+        }
+
+        @Override
+        public double getReservedBidAmount(String userId, String excludedAuctionId) {
+            lastReservedUserId = userId;
+            lastExcludedAuctionId = excludedAuctionId;
+            return reservedBidAmount;
         }
 
         @Override

@@ -183,7 +183,7 @@ public class AdminDashboard {
     }
 
     private void loadAuctions() {
-        String responseJson = RequestToServer.sendRequest(new Request().setAction("GET_ALL").setData(null));
+        String responseJson = RequestToServer.sendRequest(new Request().setAction("GET_ALL_AUCTIONS").setData(null));
         GetAllAuctionsResponse response = gson.fromJson(responseJson, GetAllAuctionsResponse.class);
 
         if (response != null && "SUCCESS".equals(response.getStatus()) && response.getData() != null) {

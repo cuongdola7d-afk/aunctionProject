@@ -8,6 +8,8 @@ import java.sql.SQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ddc.server.exception.ItemValidationException;
+
 public class General extends ItemGeneric<General> {
     private static final Logger LOGGER = LoggerFactory.getLogger(General.class);
     public General () {}
@@ -48,5 +50,7 @@ public class General extends ItemGeneric<General> {
     public void load(Connection con) {} 
 
     @Override
-    public void validate() {}
+    public void validate() throws ItemValidationException {
+        super.validate();
+    }
 }
