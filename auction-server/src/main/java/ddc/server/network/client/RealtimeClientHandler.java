@@ -50,6 +50,18 @@ public class RealtimeClientHandler implements Runnable {
         return ACTIVE_CONNECTIONS;
     }
 
+    public static boolean isUserOnline(String userId) {
+        if (userId == null || userId.isBlank()) {
+            return false;
+        }
+        for (ClientConnection conn : ACTIVE_CONNECTIONS) {
+            if (userId.equals(conn.getUserId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public void run() {
         ClientConnection client = null;
