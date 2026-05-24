@@ -2,6 +2,7 @@ package ddc.server.controller.handler;
 
 import ddc.server.controller.RequestMessage;
 import ddc.server.model.transaction.Auction;
+import ddc.server.network.client.RealtimeClientHandler;
 import ddc.server.network.response.BaseResponse;
 import ddc.server.network.response.Response;
 
@@ -26,6 +27,8 @@ public class CreateAuctionHandler implements ActionHandler {
 
             boolean isSuccess = auctionService.createAuction(auction);
             if (isSuccess) {
+                // Thông báo tất cả client reload danh sách Bidding
+                RealtimeClientHandler.broadcastDashboardRefresh();
                 return new BaseResponse().setStatus("SUCCESS");
             }
             return new BaseResponse().setStatus("FAIL");

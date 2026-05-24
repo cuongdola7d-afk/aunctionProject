@@ -21,12 +21,15 @@ import ddc.client.model.AuctionDTO;
 import ddc.client.model.AuctionItemViewModel;
 import ddc.client.model.AuctionStatus;
 import ddc.client.model.Request;
-import ddc.client.network.RealtimeToServer;
+import ddc.client.network.RequestToServer;
 import ddc.client.network.UserSession;
+import ddc.client.network.client.GlobalSocketClient;
+import ddc.client.network.listener.DashboardUpdateListener;
 import ddc.client.network.response.GetAllAuctionsResponse;
 import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
+import javafx.animation.PauseTransition;
 import javafx.animation.RotateTransition;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -42,7 +45,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 
-public class Bidding {
+public class Bidding implements DashboardUpdateListener {
 
     @FXML
     private Label badgeLabel;
@@ -74,8 +77,9 @@ public class Bidding {
     private final Gson gson = GsonConfig.newGson();
     private final Map<String, CardNodeHolder> cardCache = new HashMap<>();
 
-    private Timeline serverRefreshTimeline;
     private Timeline clockTimeline;
+    // Debounce timer: gom nhiều DASHBOARD_UPDATE lại, chỉ render 1 lần sau 200ms
+    private PauseTransition debounceTimer;
 
     // bidder hiện tại sẽ được scene trước truyền vào
     private String currentBidderId;
@@ -89,16 +93,18 @@ public class Bidding {
         setupCategoryTree();
         loadingLogo();
         txtSearch.textProperty().addListener((observable, oldValue, newValue) -> applyFilters());
-        
+
+        // Khởi tạo debounce timer 200ms, khi hết hạn mới render
+        debounceTimer = new PauseTransition(javafx.util.Duration.millis(200));
+        debounceTimer.setOnFinished(e -> applyFilters());
+
+        // Đăng ký nhận event DASHBOARD_UPDATE qua GlobalSocketClient (đã kết nối sẵn)
+        GlobalSocketClient.getInstance().addDashboardListener(this);
+
+        // Tải dữ liệu ban đầu
         refreshDataFromServer();
 
-        serverRefreshTimeline = new Timeline(new KeyFrame(javafx.util.Duration.seconds(5),
-            event -> {
-                refreshDataFromServer();
-            }));
-        serverRefreshTimeline.setCycleCount(Timeline.INDEFINITE);
-        serverRefreshTimeline.play();
-
+        // Clock đếm ngược giây trên UI
         clockTimeline = new Timeline(new KeyFrame(javafx.util.Duration.seconds(1),
             event -> {
                 updateAllCountdowns();
@@ -106,6 +112,7 @@ public class Bidding {
         clockTimeline.setCycleCount(Timeline.INDEFINITE);
         clockTimeline.play();
     }
+
 
     /**
      * Gọi hàm này sau khi load Bidding.fxml
@@ -164,7 +171,7 @@ public class Bidding {
 
         new Thread(() -> {
             try {
-                String JsonResponse = RealtimeToServer.sendRequest(new Request().setAction("GET_ALL_AUCTIONS"));
+                String JsonResponse = RequestToServer.sendRequest(new Request().setAction("GET_ALL_AUCTIONS"));
                 GetAllAuctionsResponse response = gson.fromJson(JsonResponse, GetAllAuctionsResponse.class);
                 
                 if ("SUCCESS".equals(response.getStatus())) {
@@ -199,7 +206,7 @@ public class Bidding {
                             auction.getStatus()
                         ));
                     }
-                    Platform.runLater(() ->{
+                    Platform.runLater(() -> {
                         itemList.clear();
                         itemList.addAll(newList);
                         applyFilters();
@@ -209,7 +216,6 @@ public class Bidding {
                     Platform.runLater(() -> toggleLoading(false));
                     LOGGER.error("Server returned FAILED status.");
                 }
-                
             } catch (Exception e) {
                 Platform.runLater(() -> toggleLoading(false));
                 LOGGER.error("Loi load danh sach auction", e);
@@ -225,6 +231,14 @@ public class Bidding {
                     || item.getTimeLeft().equals("Sắp bắt đầu.")) {
                 continue;
             }
+
+            // Kiểm tra nếu đã qua endTime thì đánh dấu kết thúc
+            if (item.getEndTime() != null && LocalDateTime.now().isAfter(item.getEndTime())) {
+                item.setTimeLeft("Đã kết thúc.");
+                debounceTimer.playFromStart();
+                continue;
+            }
+
             String newTime = TimeCalculate(LocalDateTime.now(), item.getEndTime());
 
             if (!newTime.equals(item.getTimeLeft())) {
@@ -386,12 +400,6 @@ public class Bidding {
         mainScrollPane.setVvalue(0);
     }
 
-    private void stopAutoRefresh() {
-        if (serverRefreshTimeline != null) {
-            serverRefreshTimeline.stop();
-        }
-    }
-
     private static class CardNodeHolder {
         final Parent cardNode;
         final AuctionCard controller;
@@ -402,31 +410,79 @@ public class Bidding {
         }
     }
 
+    // Nhận event DASHBOARD_UPDATE từ GlobalSocketClient (chạy trên reader thread)
+    @Override
+    public void onDashboardUpdate(String auctionId, double currentPrice, String status, String endTime) {
+        Platform.runLater(() -> {
+            for (AuctionItemViewModel item : itemList) {
+                if (item.getAuctionId().equals(auctionId)) {
+                    // Chỉ cập nhật data, KHÔNG render
+                    item.setPrice(new DecimalFormat("#,###").format(currentPrice) + " đ");
+
+                    if (status != null) {
+                        item.setStatus(AuctionStatus.valueOf(status));
+                    }
+
+                    if (endTime != null) {
+                        item.setEndTime(LocalDateTime.parse(endTime));
+                    }
+
+                    // Reset debounce timer, chỉ render sau 200ms không có event mới
+                    debounceTimer.playFromStart();
+                    break;
+                }
+            }
+        });
+    }
+
+    // Khi server yêu cầu reload (auction mới, status thay đổi lớn)
+    @Override
+    public void onDashboardRefresh() {
+        Platform.runLater(() -> {
+            LOGGER.info("Nhận DASHBOARD_REFRESH, reload danh sách.");
+            refreshDataFromServer();
+        });
+    }
+
+    // Dọn dẹp khi rời màn hình: hủy listener + dừng timer
+    public void cleanup() {
+        GlobalSocketClient.getInstance().removeDashboardListener(this);
+        if (clockTimeline != null) {
+            clockTimeline.stop();
+        }
+        if (debounceTimer != null) {
+            debounceTimer.stop();
+        }
+    }
+
     @FXML
     @SuppressWarnings("unused")
     private void switchToHome(MouseEvent event) {
-        stopAutoRefresh();
+        cleanup();
         SceneSwitcher.goTo(event, "/ddc/client/views/home/Home.fxml");
     }
 
     @FXML
     @SuppressWarnings("unused")
     private void switchToSelling(MouseEvent event) {
-        stopAutoRefresh();
+        cleanup();
         SceneSwitcher.goTo(event, "/ddc/client/views/selling/Selling.fxml");
     }
 
     @FXML
     @SuppressWarnings("unused")
     private void switchToProfile(MouseEvent event) {
-        stopAutoRefresh();
+        cleanup();
         SceneSwitcher.goTo(event, "/ddc/client/views/profile/Profile.fxml");
     }
 
     @FXML
     @SuppressWarnings("unused")
     private void switchToNotify(MouseEvent event) {
-        stopAutoRefresh();
+        cleanup();
         SceneSwitcher.goTo(event, "/ddc/client/views/notify/Notify.fxml");
     }
+
+
+
 }

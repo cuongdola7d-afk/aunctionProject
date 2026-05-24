@@ -16,7 +16,7 @@ import ddc.client.controller.SceneSwitcher;
 import ddc.client.model.AuctionDTO;
 import ddc.client.model.BidDTO;
 import ddc.client.model.Request;
-import ddc.client.network.RealtimeToServer;
+import ddc.client.network.RequestToServer;
 import ddc.client.network.UserSession;
 import ddc.client.network.response.GetAllAuctionsResponse;
 import ddc.client.network.response.GetAllUserBidResponse;
@@ -82,7 +82,7 @@ public class History {
     private void loadAllData () {
         new Thread(() -> {
             try {
-                String jsonBidResponse = RealtimeToServer.sendRequest(new Request().setAction("GET_ALL_USER_BIDS")
+                String jsonBidResponse = RequestToServer.sendRequest(new Request().setAction("GET_ALL_USER_BIDS")
                                                                                    .setData(UserSession.getInstance().getUsername()));
                 GetAllUserBidResponse bidResponse = gson.fromJson(jsonBidResponse, GetAllUserBidResponse.class);
 
@@ -99,7 +99,7 @@ public class History {
                     });
                 }
 
-                String jsonAuctionResponse = RealtimeToServer.sendRequest(new Request().setAction("GET_ALL_USER_AUCTIONS")
+                String jsonAuctionResponse = RequestToServer.sendRequest(new Request().setAction("GET_ALL_USER_AUCTIONS")
                                                                                        .setData(UserSession.getInstance().getUsername()));
                 GetAllAuctionsResponse auctionResponse = gson.fromJson(jsonAuctionResponse, GetAllAuctionsResponse.class);
 

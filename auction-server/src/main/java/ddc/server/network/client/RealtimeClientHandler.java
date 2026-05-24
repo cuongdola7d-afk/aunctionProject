@@ -25,6 +25,7 @@ import ddc.server.model.user.User;
 import ddc.server.network.message.MessageType;
 import ddc.server.network.message.SocketMessage;
 import ddc.server.network.request.AuctionEventPayload;
+import ddc.server.network.request.DashboardUpdatePayload;
 import ddc.server.network.request.PlaceBidRequest;
 import ddc.server.network.request.SubscribeAuctionRequest;
 import ddc.server.network.response.ErrorPayload;
@@ -224,6 +225,9 @@ public class RealtimeClientHandler implements Runnable {
         }
 
         broadcastAuctionEvent(auctionId, event);
+        broadcastDashboardUpdate(auctionId, auction.getCurrentPrice(),
+                auction.getStatus().name(),
+                auction.getEndTime() != null ? auction.getEndTime().toString() : null);
         if (previousBidderId != null && !previousBidderId.equals(request.getBidderId())) {
             NotificationService notifService = new NotificationService();
             notifService.createNotification(previousBidderId, NotificationType.BID_OUTBID,
@@ -258,6 +262,33 @@ public class RealtimeClientHandler implements Runnable {
                 } catch (Exception e) {
                     LOGGER.warn("Broadcast fail: {}", e.getMessage());
                 }
+            }
+        }
+    }
+
+    // Gửi thông tin cập nhật dashboard tới TẤT CẢ connected clients (không cần subscribe)
+    public static void broadcastDashboardUpdate(String auctionId, double currentPrice, String status, String endTime) {
+        Gson gson = GsonConfig.newGson();
+        DashboardUpdatePayload payload = new DashboardUpdatePayload(auctionId, currentPrice, status, endTime);
+        for (ClientConnection connection : ACTIVE_CONNECTIONS) {
+            try {
+                connection.send(MessageType.DASHBOARD_UPDATE, payload, gson);
+            } catch (Exception e) {
+                LOGGER.warn("Dashboard broadcast fail: {}", e.getMessage());
+            }
+        }
+    }
+
+    // Yêu cầu tất cả client reload danh sách (khi có auction mới hoặc status thay đổi lớn)
+    public static void broadcastDashboardRefresh() {
+        Gson gson = GsonConfig.newGson();
+        com.google.gson.JsonObject payload = new com.google.gson.JsonObject();
+        payload.addProperty("action", "REFRESH");
+        for (ClientConnection connection : ACTIVE_CONNECTIONS) {
+            try {
+                connection.send(MessageType.DASHBOARD_REFRESH, payload, gson);
+            } catch (Exception e) {
+                LOGGER.warn("Dashboard refresh broadcast fail: {}", e.getMessage());
             }
         }
     }

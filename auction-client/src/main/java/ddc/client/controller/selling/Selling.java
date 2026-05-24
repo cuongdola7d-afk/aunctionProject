@@ -48,7 +48,7 @@ public class Selling {
             Stage ownerStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.initOwner(ownerStage);
 
-            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initModality(Modality.WINDOW_MODAL);
             stage.setScene(new Scene(root));
             stage.show();
 
