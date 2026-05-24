@@ -16,6 +16,7 @@ import com.google.gson.Gson;
 import ddc.server.config.GsonConfig;
 import ddc.server.controller.service.AuctionService;
 import ddc.server.controller.service.NotificationService;
+import ddc.server.controller.service.WalletService;
 import ddc.server.dao.AuctionDAO;
 import ddc.server.dao.UserDAO;
 import ddc.server.model.notification.NotificationType;
@@ -40,6 +41,7 @@ public class RealtimeClientHandler implements Runnable {
     private final AuctionManager auctionManager = AuctionManager.getInstance();
     private final AuctionDAO auctionDAO = new AuctionDAO();
     private final UserDAO userDAO = new UserDAO();
+    private final WalletService walletService = new WalletService();
     private final Gson gson = GsonConfig.newGson();
 
     public RealtimeClientHandler(Socket socket, AuctionService auctionService) {
@@ -187,6 +189,14 @@ public class RealtimeClientHandler implements Runnable {
         Bidder bidder = getBidderOrLoad(request.getBidderId());
         if (bidder == null) {
             sendError(client, "Khong tim thay bidder: " + request.getBidderId());
+            return;
+        }
+        
+        double balance = walletService.getBalance(request.getBidderId());
+        if (balance < request.getAmount()) {
+            sendError(client,
+                    "So du vi khong du. So du hien tai: " + String.format("%,.0f", balance)
+                            + ", so tien bid: " + String.format("%,.0f", request.getAmount()));
             return;
         }
 

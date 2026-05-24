@@ -2,6 +2,7 @@ package ddc.server.controller.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
@@ -10,6 +11,9 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import ddc.server.dao.WalletDAO;
+import ddc.server.exception.WalletException.InsufficientBalanceException;
+import ddc.server.exception.WalletException.InvalidAmountException;
+import ddc.server.exception.WalletException.OperationFailedException;
 
 class WalletServiceTest {
 
@@ -50,6 +54,22 @@ class WalletServiceTest {
     }
 
     @Test
+    void depositOrThrow_shouldThrowInvalidAmountWhenAmountIsNotPositive() {
+        WalletService service = new WalletService(new FakeWalletDAO());
+
+        assertThrows(InvalidAmountException.class, () -> service.depositOrThrow("U001", 0));
+    }
+
+    @Test
+    void depositOrThrow_shouldThrowOperationFailedWhenDaoFails() {
+        FakeWalletDAO walletDAO = new FakeWalletDAO();
+        walletDAO.nextUpdateResults.add(false);
+        WalletService service = new WalletService(walletDAO);
+
+        assertThrows(OperationFailedException.class, () -> service.depositOrThrow("U001", 50_000));
+    }
+
+    @Test
     void processAuctionFinished_shouldFailWhenBidderBalanceIsInsufficient() {
         FakeWalletDAO walletDAO = new FakeWalletDAO();
         walletDAO.balance = 99_999;
@@ -58,6 +78,17 @@ class WalletServiceTest {
         boolean success = service.processAuctionFinished("A001", "BUYER", "SELLER", 100_000);
 
         assertFalse(success);
+        assertEquals(0, walletDAO.updates.size());
+    }
+
+    @Test
+    void processAuctionFinishedOrThrow_shouldThrowInsufficientBalanceWhenBalanceIsTooLow() {
+        FakeWalletDAO walletDAO = new FakeWalletDAO();
+        walletDAO.balance = 99_999;
+        WalletService service = new WalletService(walletDAO);
+
+        assertThrows(InsufficientBalanceException.class,
+                () -> service.processAuctionFinishedOrThrow("A001", "BUYER", "SELLER", 100_000));
         assertEquals(0, walletDAO.updates.size());
     }
 
