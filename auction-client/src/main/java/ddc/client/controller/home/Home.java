@@ -16,7 +16,7 @@ import ddc.client.controller.notify.NotificationBadgeUtil;
 import ddc.client.model.AuctionDTO;
 import ddc.client.model.AuctionItemViewModel;
 import ddc.client.model.Request;
-import ddc.client.network.RequestToServer;
+import ddc.client.network.RealtimeToServer;
 import ddc.client.network.UserSession;
 import ddc.client.network.response.GetAllAuctionsResponse;
 import javafx.application.Platform;
@@ -63,7 +63,7 @@ public class Home {
     private void loadHotAuctions () {
         new Thread(() -> {
             try {
-                String jsonResponse = RequestToServer.sendRequest(new Request()
+                String jsonResponse = RealtimeToServer.sendRequest(new Request()
                                                      .setAction("GET_HOT_AUCTIONS"));
                 GetAllAuctionsResponse response = gson.fromJson(jsonResponse, GetAllAuctionsResponse.class);
 
