@@ -76,6 +76,9 @@ public class GlobalSocketClient {
             }
 
             Thread.ofVirtual().name("global-socket-reader-").start(this::readLoop);
+
+            Thread.ofVirtual().name("global-socket-heartbeat-").start(this::heartbeatLoop);
+            
             LOGGER.info("GlobalSocketClient connected for userId {}", userId);
         } catch (IOException e) {
             LOGGER.error("GlobalSocketClient connect failed", e);
@@ -99,6 +102,44 @@ public class GlobalSocketClient {
             LOGGER.warn("GlobalSocketClient read error", e);
         } finally {
             disconnect();
+        }
+    }
+
+    private void heartbeatLoop() {
+        LOGGER.info("Heartbeat loop started.");
+        try {
+            // Vòng lặp sẽ chạy liên tục miễn là trạng thái connected còn true
+            while (connected) {
+                Thread.sleep(5000); // Đợi 5 giây (Sử dụng Virtual Thread nên sleep không tốn tài nguyên)
+                
+                if (connected) {
+                    sendPing();
+                }
+            }
+        } catch (InterruptedException e) {
+            LOGGER.info("Heartbeat loop interrupted.");
+            Thread.currentThread().interrupt();
+        } catch (Exception e) {
+            LOGGER.warn("Error in heartbeat loop", e);
+        } finally {
+            LOGGER.info("Heartbeat loop stopped.");
+        }
+    }
+
+    private synchronized void sendPing() {
+        if (!connected || writer == null) return;
+        try {
+            // Tạo SocketMessage với Type là PING, payload có thể để rỗng hoặc null tùy constructor của bạn
+            SocketMessage pingMessage = new SocketMessage(MessageType.PING, "{}");
+            
+            String line = gson.toJson(pingMessage);
+            writer.println(line);
+            
+            if (writer.checkError()) {
+                LOGGER.warn("Failed to send PING heartbeat (Stream error)");
+            }
+        } catch (Exception e) {
+            LOGGER.warn("Failed to send PING heartbeat: {}", e.getMessage());
         }
     }
 
