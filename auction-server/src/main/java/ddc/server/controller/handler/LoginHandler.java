@@ -3,6 +3,7 @@ package ddc.server.controller.handler;
 import ddc.server.controller.RequestMessage;
 import ddc.server.dao.UserDAO;
 import ddc.server.model.user.User;
+import ddc.server.network.client.RealtimeClientHandler;
 import ddc.server.network.response.BaseResponse;
 import ddc.server.network.response.Response;
 import ddc.server.network.response.UserResponse;
@@ -32,6 +33,12 @@ public class LoginHandler implements ActionHandler {
 
         if ("BLOCKED".equalsIgnoreCase(user.getStatus())) {
             return new BaseResponse().setStatus("BLOCKED").setMessage("Tai khoan da bi khoa.");
+        }
+
+        if (RealtimeClientHandler.isUserOnline(user.getId())) {
+            return new BaseResponse()
+                    .setStatus("ALREADY_LOGGED_IN")
+                    .setMessage("Tài khoản đang được đăng nhập ở một thiết bị khác.");
         }
 
         return new UserResponse()

@@ -25,31 +25,41 @@
 
             <!-- HEADER -->
             <top>
-                <VBox spacing="10.0" style="-fx-background-color: #f3f4f6;">
+                <VBox>
                     <children>
-                        <HBox alignment="CENTER_LEFT" prefHeight="90.0" spacing="16.0">
+                        <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                             <children>
-                                <Label style="-fx-font-size: 34px; -fx-font-weight: bold; -fx-text-fill: #001a8d;" text="ĐẤU GIÁ" />
-
+                                <ImageView fitHeight="70.0" fitWidth="70.0" preserveRatio="true">
+                                    <image>
+                                        <Image url="@../DDCAuction.png" />
+                                    </image>
+                                </ImageView>
+                                <Label style="-fx-font-weight: bold; -fx-text-fill: DARKBLUE;" text="ĐẤU GIÁ" textAlignment="CENTER" alignment="CENTER" contentDisplay="CENTER" prefHeight="75.0">
+                                    <font>
+                                        <Font name="System Bold" size="36.0" />
+                                    </font>
+                                </Label>
                                 <Region HBox.hgrow="ALWAYS" />
-
-                                <TextField fx:id="txtSearch" prefHeight="42.0" prefWidth="320.0" promptText="Tìm sản phẩm..." style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: #38bdf8; -fx-border-radius: 10; -fx-border-width: 2;" />
+                                <TextField fx:id="txtSearch" prefHeight="42.0" prefWidth="320.0" promptText="Tìm sản phẩm..." style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: #38bdf8; -fx-border-radius: 10; -fx-border-width: 2;">
+                                    <HBox.margin>
+                                        <Insets right="10.0" top="20.0" />
+                                    </HBox.margin>
+                                </TextField>
                             </children>
                             <padding>
-                                <Insets bottom="0.0" left="18.0" right="18.0" top="18.0" />
+                                <Insets left="11.0" />
                             </padding>
                         </HBox>
-
-                        <Separator />
-
+                        <Separator halignment="RIGHT" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-color: #00008B;" VBox.vgrow="ALWAYS">
+                            <VBox.margin>
+                                <Insets top="-30.0" />
+                            </VBox.margin>
+                        </Separator>
                         <HBox alignment="CENTER_LEFT" prefHeight="42.0" spacing="12.0">
                             <children>
                                 <Label fx:id="lblResultCount" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #12308a;" text="Kết quả: 0" />
-
                                 <Label fx:id="lblSelectedCategory" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #12308a;" text="Danh mục: Tất cả" />
-
                                 <Region HBox.hgrow="ALWAYS" />
-
                                 <Button mnemonicParsing="false" onAction="#handleClearFilters" style="-fx-background-color: #dbe2ef; -fx-background-radius: 10; -fx-font-weight: bold; -fx-text-fill: #23395d;" text="Xóa bộ lọc" />
                             </children>
                             <padding>

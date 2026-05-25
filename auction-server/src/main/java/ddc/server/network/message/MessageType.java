@@ -8,5 +8,6 @@ public enum MessageType {
     NOTIFICATION_EVENT,
     DASHBOARD_UPDATE,
     DASHBOARD_REFRESH,
-    ERROR
+    ERROR,
+    PING
 }

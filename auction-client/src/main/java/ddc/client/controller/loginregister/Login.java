@@ -1,5 +1,8 @@
 package ddc.client.controller.loginregister;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.gson.Gson;
 
 import ddc.client.config.ClientContext;
@@ -18,14 +21,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class Login {
 
@@ -125,8 +126,9 @@ public class Login {
             case "PASSWORD_LESS_THAN_8" -> "Mật khẩu phải có từ 8 ký tự trở lên.";
             case "UNAVAILABLE" -> "Tài khoản không tồn tại.";
             case "INVALID PASSWORD" -> "Mật khẩu không đúng.";
-            case "BLOCKED" -> "Tai khoan da bi khoa.";
+            case "BLOCKED" -> "Tài khoản đã bị khóa.";
             case "CONNECTION_ERROR" -> "Không kết nối được với server.";
+            case "ALREADY_LOGGED_IN" -> "Tài khoản đang được sử dụng.";
             default -> "Đăng nhập thất bại.";
         };
     }

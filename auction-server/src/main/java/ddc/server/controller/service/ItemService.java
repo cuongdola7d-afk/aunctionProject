@@ -20,8 +20,16 @@ public class ItemService {
     private final Gson gson;
 
     public ItemService() {
-        this.itemDAO = new ItemDAO();
-        this.gson = GsonConfig.newGson();
+        this(new ItemDAO(), GsonConfig.newGson());
+    }
+
+    ItemService(ItemDAO itemDAO) {
+        this(itemDAO, GsonConfig.newGson());
+    }
+
+    ItemService(ItemDAO itemDAO, Gson gson) {
+        this.itemDAO = itemDAO;
+        this.gson = gson;
     }
 
     /**

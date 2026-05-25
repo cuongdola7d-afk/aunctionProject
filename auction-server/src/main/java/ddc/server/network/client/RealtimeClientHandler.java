@@ -53,11 +53,26 @@ public class RealtimeClientHandler implements Runnable {
         return ACTIVE_CONNECTIONS;
     }
 
+    public static boolean isUserOnline(String userId) {
+        if (userId == null || userId.isBlank()) {
+            return false;
+        }
+        for (ClientConnection conn : ACTIVE_CONNECTIONS) {
+            if (userId.equals(conn.getUserId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public void run() {
         ClientConnection client = null;
 
         try {
+            // CẤU HÌNH TIMEOUT: Nếu quá 15 giây không có dữ liệu -> Ném SocketTimeoutException
+            socket.setSoTimeout(15_000); 
+
             BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
 
@@ -69,6 +84,8 @@ public class RealtimeClientHandler implements Runnable {
             while ((line = reader.readLine()) != null) {
                 handleMessage(client, line);
             }
+        } catch (java.net.SocketTimeoutException e) {
+            LOGGER.warn("Client disconnected unexpectedly: {}", client != null ? client.getUserId() : "Unknown");
         } catch (Exception e) {
             LOGGER.warn("Client disconnected: {}", e.getMessage());
         } finally {
@@ -90,6 +107,12 @@ public class RealtimeClientHandler implements Runnable {
             if (message == null || message.getType() == null) {
                 sendError(client, "Message khong hop le.");
                 return;
+            }
+
+            if (message.getType() == MessageType.PING) {
+                // Không cần xử lý gì, việc reader.readLine() đọc được dòng này 
+                // đã tự động reset lại bộ đếm 15 giây của socket.setSoTimeout()
+                return; 
             }
 
             LOGGER.info("Received message type: {} from client: {}", message.getType(), client.getConnectionId());
