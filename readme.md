@@ -85,62 +85,7 @@ auctionProject/
 // Chưa có
 
 ## Hướng Dẫn Chạy
-
-Chạy từ thư mục gốc:
-
-```powershell
-cd "D:\File Jva\AuctionProjectVScode\auctionProject"
-```
-
-### 1. Build project
-
-```powershell
-mvn clean compile
-```
-
-### 2. Chạy test server
-
-```powershell
-mvn test -B -pl auction-server
-```
-
-Nếu chạy local bằng JDK mới và JaCoCo sinh log dài, có thể tắt JaCoCo:
-
-```powershell
-mvn test -B -pl auction-server "-Djacoco.skip=true"
-```
-
-### 3. Chạy Server trước
-
-Chạy bằng IDE:
-
-- Mở `auction-server/src/main/java/ddc/server/Server.java`
-- Chọn `Run Java`
-
-Hoặc chạy bằng Maven:
-
-```powershell
-mvn -pl auction-server exec:java "-Dexec.mainClass=ddc.server.Server"
-```
-
-Server mở các cổng mặc định:
-
-- `8080`: request-response cho login, register, add item, lấy dữ liệu
-- `5555`: realtime socket cho subscribe auction và bidding
-- `8081`: image/static resource port nếu được dùng
-
-### 4. Chạy Client sau
-
-Chạy bằng IDE:
-
-- Mở `auction-client/src/main/java/ddc/client/Client.java`
-- Chọn `Run Java`
-
-Hoặc chạy bằng JavaFX Maven plugin:
-
-```powershell
-mvn -pl auction-client javafx:run
-```
+//chưa có
 
 Client mặc định kết nối tới:
 
@@ -150,34 +95,40 @@ DDC_REQUEST_PORT=8080
 DDC_REALTIME_PORT=5555
 ```
 
-Nếu server chạy trên máy khác, sửa `DDC_SERVER_HOST` trong `.env`.
+Nếu server chạy trên máy khác, sửa `DDC_SERVER_HOST` thành ip mạng của server trong `.env`.
 
 ## Chức Năng Đã Hoàn Thành
 
-- Đăng ký tài khoản người dùng
-- Đăng nhập người dùng
-- Cập nhật thông tin cá nhân
-- Đổi mật khẩu
-- Ví người dùng và nạp tiền
-- Thêm sản phẩm đấu giá
-- Hỗ trợ nhiều loại item: Art, Electronics, Vehicle, General
-- Upload và hiển thị ảnh sản phẩm
-- Tạo phiên đấu giá
-- Xem danh sách phiên đấu giá
-- Xem chi tiết phiên đấu giá
-- Đặt giá trong phiên đấu giá
-- Kiểm tra giá hiện tại và người đặt giá cao nhất
-- Realtime bidding qua socket TCP
-- Tự động cập nhật trạng thái phiên đấu giá theo thời gian
-- Cơ chế chống bid sát giờ bằng gia hạn thời gian kết thúc
-- Thông báo cho người dùng
-- Trang quản trị admin
-- Admin xem danh sách người dùng
-- Admin khóa/mở trạng thái người dùng
-- Admin xem thống kê hệ thống
-- Admin xem và hủy phiên đấu giá
-- Unit test cho DAO, service, handler, model và design pattern
-- CI build và test bằng GitHub Actions
+1. Quản Lý Tài Khoản & Người Dùng (User Management)
+-Xác thực: Đăng ký, đăng nhập và đổi mật khẩu bảo mật.
+
+-Hồ sơ cá nhân: Xem và cập nhật thông tin người dùng.
+
+-Ví điện tử tích hợp: Quản lý số dư tài khoản và hỗ trợ nạp tiền ảo để tham gia đấu giá.
+
+2. Quản Lý Sản Phẩm Đấu Giá (Product Management)
+-Phân loại đa dạng: Hỗ trợ nhiều danh mục sản phẩm khác nhau (Art, Electronics, Vehicle, General) thông qua mô hình OOP/Design Pattern linh hoạt.
+
+-Hình ảnh sản phẩm: Tích hợp upload và hiển thị hình ảnh trực quan cho từng sản phẩm.
+
+3. Sàn Đấu Giá Trực Tuyến (Core Auction System)
+-Quản lý phiên: Tạo, xem danh sách và xem chi tiết thông tin từng phiên đấu giá.
+
+-Đấu giá thời gian thực (Real-time Bidding): Tích hợp công nghệ Socket TCP, cho phép đặt giá, cập nhật giá hiện tại và thông tin người dẫn đầu ngay lập tức mà không cần tải lại trang.
+
+-Cơ chế chống "bắn tỉa" (Anti-sniping): Tự động gia hạn thời gian kết thúc nếu có lượt bid sát giờ, đảm bảo tính công bằng.
+
+-Tự động hóa: Hệ thống tự động cập nhật trạng thái phiên đấu giá (Đang diễn ra, Kết thúc) theo thời gian thực.
+
+-Thông báo: Gửi thông báo real-time tới người dùng khi có diễn biến mới trong phiên.
+
+4. Hệ Thống Quản Trị (Admin Dashboard)
+-Quản lý người dùng: Xem danh sách, thực hiện khóa/mở khóa tài khoản vi phạm.
+
+-Quản lý sàn đấu giá: Giám sát, kiểm tra và có quyền hủy các phiên đấu giá không hợp lệ.
+
+-Thống kê: Xem báo cáo và số liệu thống kê tổng quan của toàn hệ thống.
+
 
 ## Thiết Kế Và Pattern
 
@@ -200,6 +151,12 @@ Hệ thống dùng TCP socket vì đấu giá cần kết nối ổn định, đ
 
 ## Kiểm Thử
 
+5. Kiểm Thử & Chất Lượng Code (Testing & Quality Assurance)
+* Unit Testing: Bao phủ toàn diện các tầng kiến trúc trong hệ thống bao gồm DAO, Service, Handler, Model.
+
+* Tích Hợp Liên Tục (CI/CD Pipeline)
+-GitHub Actions: Tự động hóa quy trình Build và Run Test mỗi khi có code mới được push hoặc merge, đảm bảo độ ổn định của hệ thống.
+
 Chạy toàn bộ test server:
 
 ```powershell
@@ -209,7 +166,7 @@ mvn test -B -pl auction-server
 Chạy riêng một test class:
 
 ```powershell
-mvn -pl auction-server "-Djacoco.skip=true" "-Dtest=ItemDAOTest" test
+mvn -pl auction-server "-Djacoco.skip=true" "-Dtest=Ten_Test" test
 ```
 
 Report test sinh tại:
