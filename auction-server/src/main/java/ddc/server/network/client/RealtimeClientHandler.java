@@ -70,8 +70,8 @@ public class RealtimeClientHandler implements Runnable {
         ClientConnection client = null;
 
         try {
-            // CẤU HÌNH TIMEOUT: Nếu quá 15 giây không có dữ liệu -> Ném SocketTimeoutException
-            socket.setSoTimeout(15_000); 
+            // CẤU HÌNH TIMEOUT: Nếu quá 90 giây không có dữ liệu -> Ném SocketTimeoutException
+            socket.setSoTimeout(90_000); 
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
@@ -111,7 +111,7 @@ public class RealtimeClientHandler implements Runnable {
 
             if (message.getType() == MessageType.PING) {
                 // Không cần xử lý gì, việc reader.readLine() đọc được dòng này 
-                // đã tự động reset lại bộ đếm 15 giây của socket.setSoTimeout()
+                // đã tự động reset lại bộ đếm 90 giây của socket.setSoTimeout()
                 return; 
             }
 
