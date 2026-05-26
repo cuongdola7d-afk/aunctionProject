@@ -13,7 +13,7 @@ public class ClientContext {
     public static final ExecutorService EXECUTOR = Executors.newVirtualThreadPerTaskExecutor();
     private static final Map<String, String> ENV_VALUES = loadEnv();
 
-    public static final String SERVER_HOST = readConfig("DDC_SERVER_HOST", "ddc.server.host", "localhost");
+    public static final String SERVER_HOST = readConfig("DDC_SERVER_HOST", "ddc.server.host", "20.205.19.250");
     public static final int REQUEST_PORT = readIntConfig("DDC_REQUEST_PORT", "ddc.request.port", 8080);
     public static final int REALTIME_PORT = readIntConfig("DDC_REALTIME_PORT", "ddc.realtime.port", 5555);
     public static final int IMAGE_PORT = readIntConfig("DDC_IMAGE_PORT", "ddc.image.port", 8081);
