@@ -54,7 +54,7 @@
       </VBox>
       <AnchorPane layoutX="1.0" layoutY="80.0" prefHeight="522.0" prefWidth="800.0" AnchorPane.bottomAnchor="-3.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="80.80000000000007">
          <children>
-            <TreeView fx:id="bidTreeView" prefHeight="517.0" prefWidth="178.0" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="621.6" AnchorPane.topAnchor="0.7999999999999545" />
+            <TreeView fx:id="bidTreeView" prefHeight="517.0" prefWidth="178.0" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.7999999999999545" />
             <StackPane alignment="TOP_CENTER" focusTraversable="true" layoutX="176.8" layoutY="0.8" prefHeight="518.0" prefWidth="622.0" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="177.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="1.0">
                <children>
                   <StackPane prefHeight="150.0" prefWidth="200.0">
