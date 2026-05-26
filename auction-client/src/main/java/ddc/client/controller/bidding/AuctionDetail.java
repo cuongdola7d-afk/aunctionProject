@@ -1,5 +1,9 @@
 package ddc.client.controller.bidding;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,6 +39,9 @@ public class AuctionDetail implements ServerMessageListener {
     private Label lblEndTime;
 
     @FXML
+    private Label lblHighestBidder;
+
+    @FXML
     private ImageView mainImage;
 
     @FXML
@@ -42,9 +49,6 @@ public class AuctionDetail implements ServerMessageListener {
 
     @FXML
     private Label lblPrice;
-
-    @FXML
-    private Label lblCountdown;
 
     @FXML
     private Label lblMessage;
@@ -63,6 +67,7 @@ public class AuctionDetail implements ServerMessageListener {
     private AuctionSocketClient socketClient;
     private String currentAuctionId;
     private String currentBidderId;
+    private volatile boolean isViewing = false;
     private AuctionItemViewModel currentItem;
     private long minBidIncrement; // bước giá tối thiểu từ server
 
@@ -82,10 +87,6 @@ public class AuctionDetail implements ServerMessageListener {
 
         if (lblEndTime != null) {
             lblEndTime.setText("--:--");
-        }
-
-        if (lblCountdown != null) {
-            lblCountdown.setText("Đang chờ dữ liệu...");
         }
 
         priceSeries = new XYChart.Series<>();
@@ -132,6 +133,7 @@ public class AuctionDetail implements ServerMessageListener {
     public void setupAuctionContext(String auctionId, String bidderId) {
         this.currentAuctionId = auctionId;
         this.currentBidderId = bidderId;
+        this.isViewing = true;
 
         setMessage("Đang kết nối tới phiên đấu giá...");
 
@@ -142,6 +144,8 @@ public class AuctionDetail implements ServerMessageListener {
                 }
                 socketClient.subscribeAuction(auctionId);
                 Platform.runLater(() -> setMessage("Đã kết nối tới phiên đấu giá."));
+
+                startHeartbeat();
             } catch (Exception e) {
                 LOGGER.error("Loi ket noi auction", e);
                 Platform.runLater(() -> setMessage("Không kết nối được server: " + e.getMessage()));
@@ -242,7 +246,15 @@ public class AuctionDetail implements ServerMessageListener {
             }
             // Cập nhật endTime nếu server gửi (anti-snip gia hạn)
             if (event.getEndTime() != null && lblEndTime != null) {
-                lblEndTime.setText(event.getEndTime());
+                lblEndTime.setText(formatDisplayDate(event.getEndTime()));
+            }
+
+            if (event.getStartTime() != null && lblStartTime != null) {
+                lblStartTime.setText(formatDisplayDate(event.getStartTime()));
+            }
+
+            if (lblHighestBidder != null && !event.getBidderName().equalsIgnoreCase("username")) {
+                lblHighestBidder.setText(event.getBidderName());
             }
 
             if ("NEW_BID".equals(event.getEventType()) || "SNAPSHOT".equals(event.getEventType())) {
@@ -251,12 +263,9 @@ public class AuctionDetail implements ServerMessageListener {
 
             String eventType = event.getEventType();
             if ("CANCELLED".equals(eventType) || "CANCELLED".equals(event.getStatus())) {
-                if (lblCountdown != null) {
-                    lblCountdown.setText("Da huy");
-                }
-                setMessage(event.getMessage() != null ? event.getMessage() : "Phien dau gia da bi huy.");
+                setMessage(event.getMessage() != null ? event.getMessage() : "Phiên đấu giá đã bị hủy.");
             } else if ("FINISHED".equals(eventType) || "FINISHED".equals(event.getStatus())) {
-                setMessage(event.getMessage() != null ? event.getMessage() : "Phien dau gia da ket thuc.");
+                setMessage(event.getMessage() != null ? event.getMessage() : "Phiên đấu giá đã kết thúc.");
             } else if ("SNAPSHOT".equals(eventType)) {
                 setMessage("Đã tải dữ liệu phiên đấu giá.");
             } else if ("NEW_BID".equals(eventType)) {
@@ -267,6 +276,26 @@ public class AuctionDetail implements ServerMessageListener {
                 setMessage(msg);
             } else {
                 setMessage(event.getMessage() != null ? event.getMessage() : "Có cập nhật mới.");
+            }
+        });
+    }
+
+    private void startHeartbeat() {
+        Thread.ofVirtual().name("auction-heartbeat").start(() -> {
+            while (isViewing && socketClient != null && socketClient.isConnected()) {
+                try {
+                    Thread.sleep(60000); // Đợi 60 giây
+                    
+                    if (isViewing) {
+                        // Gửi lại request để mồi dữ liệu thực qua mạng, chặn Azure ngắt kết nối
+                        socketClient.subscribeAuction(currentAuctionId);
+                    }
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    break;
+                } catch (Exception e) {
+                    LOGGER.warn("Heartbeat lỗi: " + e.getMessage());
+                }
             }
         });
     }
@@ -291,6 +320,22 @@ public class AuctionDetail implements ServerMessageListener {
 
     private String formatPrice(double value) {
         return String.format("%,.0f đ", value);
+    }
+
+    public static String formatDisplayDate(String rawDate) {
+        if (rawDate == null || rawDate.trim().isEmpty()) {
+            return "--:--"; 
+        }
+
+        try {
+            LocalDateTime dateTime = LocalDateTime.parse(rawDate);
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
+            return dateTime.format(formatter);
+        } catch (DateTimeParseException e) {
+            return rawDate; 
+        }
     }
 
     @FXML
@@ -335,6 +380,7 @@ public class AuctionDetail implements ServerMessageListener {
     }
 
     public void cleanup() {
+        isViewing = false;
         if (socketClient != null) {
             socketClient.disconnect();
         }

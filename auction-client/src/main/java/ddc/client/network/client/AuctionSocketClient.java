@@ -44,6 +44,8 @@ public class AuctionSocketClient {
         }
 
         socket = new Socket(host, port);
+        socket.setKeepAlive(true);
+        
         reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         writer = new PrintWriter(socket.getOutputStream(), true);
         connected = true;
