@@ -153,12 +153,7 @@ public class AuctionService {
         bid.setAuction(auction);
 
         bidDAO.insertBid(bid);
-
-        try {
-            auction.placeBid(bid);
-        } catch (RuntimeException e) {
-            throw new InvalidBidException(e.getMessage());
-        }
+        auction.placeBid(bid);
 
         bidder.addBid(bid);
         auction.setCurrentPrice(amount);

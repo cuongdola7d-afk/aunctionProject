@@ -35,8 +35,7 @@ public class BidDAO {
             return insert > 0;
 
         } catch (SQLException e) {
-            LOGGER.error(e.getMessage());
-            e.printStackTrace();
+            LOGGER.error(e.getMessage());
         }
         return false;
     }
@@ -62,8 +61,7 @@ public class BidDAO {
                 }
             }  
         } catch (SQLException e) {
-            LOGGER.error("Loi lay danh sach bid", e);
-            e.printStackTrace();
+            LOGGER.error("Loi lay danh sach bid", e);
         }
 
         return list;

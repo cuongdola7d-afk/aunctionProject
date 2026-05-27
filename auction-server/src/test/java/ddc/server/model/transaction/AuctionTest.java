@@ -8,6 +8,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
+import ddc.server.exception.AuctionClosedException;
+import ddc.server.exception.InvalidBidException;
 import ddc.server.model.user.User;
 
 class AuctionTest {
@@ -36,7 +38,7 @@ class AuctionTest {
         Auction auction = new Auction().setCurrentPrice(100);
         Bid bid = new Bid().setBidAmount(150);
 
-        RuntimeException ex = assertThrows(RuntimeException.class, () -> auction.placeBid(bid));
+        AuctionClosedException ex = assertThrows(AuctionClosedException.class, () -> auction.placeBid(bid));
 
         assertEquals("Auction not running.", ex.getMessage());
     }
@@ -48,13 +50,13 @@ class AuctionTest {
 
         Bid bid = new Bid().setBidAmount(100);
 
-        RuntimeException ex = assertThrows(RuntimeException.class, () -> auction.placeBid(bid));
+        InvalidBidException ex = assertThrows(InvalidBidException.class, () -> auction.placeBid(bid));
 
         assertEquals("Bidded amount lower the current.", ex.getMessage());
     }
 
     @Test
-    void placeBid_shouldStoreBidUpdatePriceAndHighestBidder() {
+    void placeBid_shouldStoreBidUpdatePriceAndHighestBidder() throws Exception {
         User bidder = new User().setName("Buyer One");
         Auction auction = new Auction()
                 .setId("A001")
