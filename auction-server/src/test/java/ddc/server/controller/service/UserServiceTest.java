@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 
+import ddc.server.dao.AdminDAO;
 import ddc.server.dao.UserDAO;
 import ddc.server.model.user.User;
 
@@ -191,5 +192,108 @@ public class UserServiceTest {
         // Email rule: contains @
         assertTrue("user@test.com".contains("@"));
         assertFalse("usertest.com".contains("@"));
+    }
+
+    // ==================== deleteOwnAccount Tests ====================
+
+    @Test
+    @DisplayName("deleteOwnAccount - Should reject null user id")
+    void testDeleteOwnAccount_NullUserId_ShouldReturnFalse() {
+        UserService service = new UserService(new FakeUserDAO(validUser("U001", "user1")), new FakeAdminDAO(true));
+
+        boolean result = service.deleteOwnAccount(null, "user1");
+
+        assertFalse(result, "Should reject null user id");
+    }
+
+    @Test
+    @DisplayName("deleteOwnAccount - Should reject blank username")
+    void testDeleteOwnAccount_BlankUsername_ShouldReturnFalse() {
+        UserService service = new UserService(new FakeUserDAO(validUser("U001", "user1")), new FakeAdminDAO(true));
+
+        boolean result = service.deleteOwnAccount("U001", "   ");
+
+        assertFalse(result, "Should reject blank username");
+    }
+
+    @Test
+    @DisplayName("deleteOwnAccount - Should reject missing user")
+    void testDeleteOwnAccount_MissingUser_ShouldReturnFalse() {
+        FakeAdminDAO adminDAO = new FakeAdminDAO(true);
+        UserService service = new UserService(new FakeUserDAO(null), adminDAO);
+
+        boolean result = service.deleteOwnAccount("U001", "user1");
+
+        assertFalse(result, "Should reject when user id does not exist");
+        assertFalse(adminDAO.deleteCalled, "Should not call delete when user lookup fails");
+    }
+
+    @Test
+    @DisplayName("deleteOwnAccount - Should reject username mismatch")
+    void testDeleteOwnAccount_UsernameMismatch_ShouldReturnFalse() {
+        FakeAdminDAO adminDAO = new FakeAdminDAO(true);
+        UserService service = new UserService(new FakeUserDAO(validUser("U001", "owner")), adminDAO);
+
+        boolean result = service.deleteOwnAccount("U001", "other");
+
+        assertFalse(result, "Should reject deleting another user's account");
+        assertFalse(adminDAO.deleteCalled, "Should not call delete when username does not match id");
+    }
+
+    @Test
+    @DisplayName("deleteOwnAccount - Should call admin delete for matching id and username")
+    void testDeleteOwnAccount_MatchingUser_ShouldCallAdminDelete() {
+        FakeAdminDAO adminDAO = new FakeAdminDAO(true);
+        UserService service = new UserService(new FakeUserDAO(validUser("U001", "user1")), adminDAO);
+
+        boolean result = service.deleteOwnAccount("U001", "user1");
+
+        assertTrue(result, "Should return DAO delete result");
+        assertTrue(adminDAO.deleteCalled, "Should call shared admin delete logic");
+        assertEquals("U001", adminDAO.deletedUserId);
+    }
+
+    @Test
+    @DisplayName("deleteOwnAccount - Should return false when admin delete fails")
+    void testDeleteOwnAccount_AdminDeleteFails_ShouldReturnFalse() {
+        UserService service = new UserService(new FakeUserDAO(validUser("U001", "user1")), new FakeAdminDAO(false));
+
+        boolean result = service.deleteOwnAccount("U001", "user1");
+
+        assertFalse(result, "Should forward failed delete result");
+    }
+
+    private User validUser(String id, String username) {
+        return new User().setId(id).setUsername(username);
+    }
+
+    private static class FakeUserDAO extends UserDAO {
+        private final User user;
+
+        FakeUserDAO(User user) {
+            this.user = user;
+        }
+
+        @Override
+        public User getUserById(String id) {
+            return user;
+        }
+    }
+
+    private static class FakeAdminDAO extends AdminDAO {
+        private final boolean deleteResult;
+        private boolean deleteCalled;
+        private String deletedUserId;
+
+        FakeAdminDAO(boolean deleteResult) {
+            this.deleteResult = deleteResult;
+        }
+
+        @Override
+        public boolean deleteUser(String userId) {
+            deleteCalled = true;
+            deletedUserId = userId;
+            return deleteResult;
+        }
     }
 }

@@ -7,6 +7,7 @@ import ddc.server.controller.handler.ActionHandler;
 import ddc.server.controller.handler.AddItemHandler;
 import ddc.server.controller.handler.ChangePasswordHandler;
 import ddc.server.controller.handler.CreateAuctionHandler;
+import ddc.server.controller.handler.DeleteAccountHandler;
 import ddc.server.controller.handler.DepositHandler;
 import ddc.server.controller.handler.GetAllUserAuctionHandler;
 import ddc.server.controller.handler.GetAllUserBidHandler;
@@ -39,6 +40,7 @@ public class RequestRouter {
         routes.put("GET_ALL_USER_AUCTIONS", new GetAllUserAuctionHandler());
         routes.put("GET_HOT_AUCTIONS", new GetHotAuctionsHandler());
         routes.put("UPDATE_PASSWORD", new ChangePasswordHandler());
+        routes.put("DELETE_ACCOUNT", new DeleteAccountHandler());
         routes.put("UPDATE_PROFILE", new UpdateProfileHandler());
         routes.put("ADMIN_STATS", new AdminGetStatsHandler());
         routes.put("ADMIN_GET_USERS", new AdminGetUsersHandler());
