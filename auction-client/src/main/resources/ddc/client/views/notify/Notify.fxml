@@ -2,15 +2,15 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-<?import javafx.scene.control.ScrollPane?>
-
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ddc.client.controller.notify.Notify">
    <children>
@@ -162,15 +162,10 @@
             </VBox>
          </children>
       </HBox>
-      <ScrollPane fitToWidth="true"
-                  AnchorPane.topAnchor="55.0"
-                  AnchorPane.bottomAnchor="70.0"
-                  AnchorPane.leftAnchor="10.0"
-                  AnchorPane.rightAnchor="10.0"
-                  style="-fx-background: transparent; -fx-background-color: transparent; -fx-background-insets: 0; -fx-focus-color: transparent; -fx-faint-focus-color: transparent;">
+      <ScrollPane fitToWidth="true" layoutX="11.2" layoutY="80.0" prefHeight="450.0" prefWidth="779.0" style="-fx-background: transparent; -fx-background-color: transparent; -fx-background-insets: 0; -fx-focus-color: transparent; -fx-faint-focus-color: transparent;" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="11.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="80.0">
          <content>
             <VBox fx:id="notificationListVBox" spacing="8">
-               <padding><Insets top="10" bottom="10" left="5" right="5" /></padding>
+               <padding><Insets bottom="10" left="5" right="5" top="10" /></padding>
             </VBox>
          </content>
       </ScrollPane>

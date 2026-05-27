@@ -116,7 +116,6 @@ public class RequestClientHandler implements Runnable {
             return fail("INVALID_JSON", "JSON khong hop le.");
         } catch (Exception e) {
             LOGGER.warn("Handler xu ly loi.", e);
-            e.printStackTrace(); // DEBUG: in ra console
             return fail("SERVER_ERROR", "Loi server: " + e.getMessage());
         }
     }

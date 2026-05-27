@@ -99,7 +99,7 @@ public class Vehicle extends ItemGeneric<Vehicle> {
 
         if (manufacturer == null || manufacturer.isEmpty())
             throw new ItemValidationException.MissingFieldException("Thiếu thông tin nhà sản xuất");
-        if (year < 1886) // Năm chiếc ô tô đầu tiên ra đời
-            throw new ItemValidationException.InvalidValueException("Năm sản xuất không hợp lệ");
+        if (year < 0)
+            throw new ItemValidationException.MissingFieldException("Nam san xuat khong hop le!");
     }
 }

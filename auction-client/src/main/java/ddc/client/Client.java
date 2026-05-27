@@ -12,7 +12,7 @@ import javafx.stage.Stage;
 public class Client extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/ddc/client/views/loginregister/login.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/ddc/client/views/loginregister/Login.fxml"));
 
         Parent root = loader.load();
 

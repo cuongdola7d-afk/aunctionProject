@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import ddc.server.exception.AuctionClosedException;
+import ddc.server.exception.InvalidBidException;
 import ddc.server.model.entity.Entity;
 import ddc.server.model.item.ItemGeneric;
 import ddc.server.model.user.User;
@@ -118,13 +120,13 @@ public class Auction extends Entity<Auction> {
         this.status = AuctionStatus.FINISHED;
     }
 
-    public synchronized void placeBid(Bid bid) {
+    public synchronized void placeBid(Bid bid) throws AuctionClosedException, InvalidBidException {
         if (status != AuctionStatus.RUNNING) {
-            throw new RuntimeException("Auction not running.");
+            throw new AuctionClosedException("Auction not running.");
         }
 
         if (bid.getBidAmount() <= currentPrice) {
-            throw new RuntimeException("Bidded amount lower the current.");
+            throw new InvalidBidException("Bidded amount lower the current.");
         }
 
         bidHistory.add(bid);
