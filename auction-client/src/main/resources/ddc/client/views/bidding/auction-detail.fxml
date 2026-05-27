@@ -8,6 +8,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -31,8 +32,11 @@
                                 <Label style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #001a8d;" text="CHI TIẾT ĐẤU GIÁ" />
 
                                 <Region HBox.hgrow="ALWAYS" />
-
-                                <Label fx:id="lblCountdown" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #12308a;" text="Đang chờ dữ liệu..." />
+                        <ImageView fitHeight="70.0" fitWidth="70.0" preserveRatio="true">
+                           <image>
+                              <Image url="@../DDCAuction.png" />
+                           </image>
+                        </ImageView>
                             </children>
                             <padding>
                                 <Insets bottom="0.0" left="18.0" right="18.0" top="18.0" />
@@ -55,7 +59,7 @@
                                 <ImageView fx:id="mainImage" fitHeight="320.0" fitWidth="420.0" pickOnBounds="true" preserveRatio="true" />
                         <LineChart fx:id="priceChart" prefHeight="190.0" prefWidth="450.0" title="Biểu đồ giá">
                           <xAxis>
-                            <CategoryAxis fx:id="xAxis" side="BOTTOM" />
+                            <CategoryAxis side="BOTTOM" fx:id="xAxis" />
                           </xAxis>
                           <yAxis>
                             <NumberAxis fx:id="yAxis" side="LEFT" />
@@ -87,6 +91,12 @@
                                                 <Label fx:id="lblEndTime" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #0f172a;" text="--:--" />
                                             </children>
                                         </VBox>
+                              <VBox spacing="6.0">
+                                 <children>
+                                    <Label style="-fx-font-size: 13px; -fx-text-fill: #64748b;" text="Người đặt giá cao nhất" />
+                                    <Label fx:id="lblHighestBidder" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #0f172a;" text="Chưa có ai cả :(" />
+                                 </children>
+                              </VBox>
                                     </children>
                                 </HBox>
 

@@ -11,6 +11,7 @@ public class AuctionEventResponse {
     private String status;
     private String eventTime;
     private String message;
+    private String startTime;
     private String endTime;
     private boolean timeExtended;
     private long minBidIncrement;
@@ -96,6 +97,14 @@ public class AuctionEventResponse {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
     }
 
     public String getEndTime() {
