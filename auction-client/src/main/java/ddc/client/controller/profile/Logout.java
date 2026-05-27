@@ -34,7 +34,7 @@ public class Logout {
             Stage popupStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Stage primaryStage = (Stage) popupStage.getOwner();
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ddc/client/views/loginregister/login.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ddc/client/views/loginregister/Login.fxml"));
             Parent root = loader.load();
 
             Stage loginStage = new Stage();
