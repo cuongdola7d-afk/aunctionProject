@@ -28,7 +28,6 @@ public class GetAllUserAuctionHandler implements ActionHandler{
                                                .setData(auctions);
         } catch (Exception e) {
             LOGGER.error("Loi lay danh sach auction", e);
-            e.printStackTrace();
             return new BaseResponse().setStatus("FAIL");
         }
     }

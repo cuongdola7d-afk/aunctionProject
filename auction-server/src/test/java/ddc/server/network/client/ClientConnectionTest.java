@@ -51,7 +51,7 @@ class ClientConnectionTest {
     }
 
     @Test
-    void send_shouldWriteSocketMessageJsonLine() {
+    void send_shouldWriteSocketMessageJsonLine() throws Exception {
         Gson gson = new Gson();
         StringWriter output = new StringWriter();
         ClientConnection connection = new ClientConnection(

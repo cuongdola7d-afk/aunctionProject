@@ -28,7 +28,6 @@ public class GetAllUserBidHandler implements ActionHandler {
                                               .setData(bids);
         } catch (Exception e) {
             LOGGER.error("Loi lay danh sach bid", e);
-            e.printStackTrace();
             return new BaseResponse().setStatus("FAIL");
         }
     } 

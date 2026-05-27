@@ -7,8 +7,12 @@ import java.sql.SQLException;
 
 import ddc.server.config.DatabaseConnection;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class WalletDAO {
+    private static final Logger LOGGER = LoggerFactory.getLogger(WalletDAO.class);
     
     public double getBalance(String userId) {
         String sql = "SELECT balance FROM ddc_wallets WHERE user_id = ?";
@@ -17,7 +21,7 @@ public class WalletDAO {
             stmt.setString(1, userId);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) return rs.getDouble("balance");
-        } catch (SQLException e) { e.printStackTrace(); }
+        } catch (SQLException e) { LOGGER.error("Loi lay balance", e); }
         return 0.0;
     }
 
@@ -40,7 +44,7 @@ public class WalletDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.error("Loi lay reserved bid amount", e);
         }
         return 0.0;
     }
@@ -79,11 +83,11 @@ public class WalletDAO {
             conn.commit();
             return true;
         } catch (SQLException e) {
-            if (conn != null) { try { conn.rollback(); } catch (SQLException ex) { ex.printStackTrace(); } }
-            e.printStackTrace();
+            if (conn != null) { try { conn.rollback(); } catch (SQLException ex) { LOGGER.error("Loi rollback", ex); } }
+            LOGGER.error("Loi cap nhat balance", e);
             return false;
         } finally {
-            if (conn != null) { try { conn.close(); } catch (SQLException e) { e.printStackTrace(); } }
+            if (conn != null) { try { conn.close(); } catch (SQLException e) { LOGGER.error("Loi dong connection", e); } }
         }
     }
 
@@ -137,17 +141,17 @@ public class WalletDAO {
                 try {
                     conn.rollback();
                 } catch (SQLException ex) {
-                    ex.printStackTrace();
+                    LOGGER.error("Loi rollback", ex);
                 }
             }
-            e.printStackTrace();
+            LOGGER.error("Loi transfer balance", e);
             return false;
         } finally {
             if (conn != null) {
                 try {
                     conn.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    LOGGER.error("Loi dong connection", e);
                 }
             }
         }
