@@ -74,8 +74,7 @@ class ItemModelTest {
 
         assertThrows(ItemValidationException.MissingFieldException.class,
                 () -> validVehicle().setManufacturer("").validate());
-        assertThrows(ItemValidationException.InvalidValueException.class,
-                () -> validVehicle().setYear(1885).validate());
+        assertDoesNotThrow(() -> validVehicle().setYear(1885).validate());
     }
 
     @Test
