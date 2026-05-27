@@ -20,7 +20,7 @@ public class DeleteAccountHandler implements ActionHandler {
         this.accountService = userService::deleteOwnAccount;
     }
 
-    DeleteAccountHandler(AccountDeletionService accountService) {
+    public DeleteAccountHandler(AccountDeletionService accountService) {
         this.accountService = accountService;
     }
 
@@ -45,7 +45,7 @@ public class DeleteAccountHandler implements ActionHandler {
         }
     }
 
-    interface AccountDeletionService {
+    public interface AccountDeletionService {
         boolean deleteOwnAccount(String userId, String username);
     }
 }
