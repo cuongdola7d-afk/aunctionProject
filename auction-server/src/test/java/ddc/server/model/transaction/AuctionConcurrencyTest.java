@@ -52,7 +52,7 @@ class AuctionConcurrencyTest {
                         try {
                             auction.placeBid(bid);
                             accepted.incrementAndGet();
-                        } catch (RuntimeException ex) {
+                        } catch (Exception ex) {
                             rejected.incrementAndGet();
                         }
                     }

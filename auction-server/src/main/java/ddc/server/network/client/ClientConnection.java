@@ -62,13 +62,13 @@ public class ClientConnection {
         return subscribedAuctionIds.contains(auctionId);
     }
 
-    public synchronized void send(MessageType type, Object payload, Gson gson) {
+    public synchronized void send(MessageType type, Object payload, Gson gson) throws IOException {
         String payloadJson = gson.toJson(payload);
         String jsonLine = gson.toJson(new SocketMessage(type, payloadJson));
         writer.println(jsonLine);
 
         if (writer.checkError()) {
-            throw new RuntimeException("Failed to send message to client " + connectionId);
+            throw new IOException("Failed to send message to client " + connectionId);
         }
     }
 

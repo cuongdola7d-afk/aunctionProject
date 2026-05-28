@@ -272,7 +272,7 @@ class AuctionServiceTest {
     }
 
     @Test
-    void getters_shouldBeNullSafeAndReturnAuctionState() {
+    void getters_shouldBeNullSafeAndReturnAuctionState() throws Exception {
         Auction auction = validAuction();
         Bidder highest = bidder("B009");
         Bid bid = new Bid().setBidder(highest).setBidAmount(120);

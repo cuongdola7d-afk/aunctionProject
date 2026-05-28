@@ -29,7 +29,7 @@ class LoggingAuctionObserverTest {
     private final Gson gson = GsonConfig.newGson();
 
     @Test
-    void update_shouldIgnoreNullEventBlankAuctionAndEmptyConnections() {
+    void update_shouldIgnoreNullEventBlankAuctionAndEmptyConnections() throws Exception {
         ClientConnection connection = mock(ClientConnection.class);
         LoggingAuctionObserver observer = new LoggingAuctionObserver(Set.of(connection), gson);
 
@@ -44,7 +44,7 @@ class LoggingAuctionObserverTest {
     }
 
     @Test
-    void update_shouldSendPayloadToSubscribedConnectionsOnly() {
+    void update_shouldSendPayloadToSubscribedConnectionsOnly() throws Exception {
         ClientConnection subscribed = mock(ClientConnection.class);
         ClientConnection notSubscribed = mock(ClientConnection.class);
         when(subscribed.isSubscribedTo("A001")).thenReturn(true);
@@ -74,7 +74,7 @@ class LoggingAuctionObserverTest {
     }
 
     @Test
-    void update_shouldMapAllEventTypesAndCatchSendFailure() {
+    void update_shouldMapAllEventTypesAndCatchSendFailure() throws Exception {
         ClientConnection connection = mock(ClientConnection.class);
         when(connection.isSubscribedTo("A001")).thenReturn(true);
         when(connection.getConnectionId()).thenReturn("C001");
@@ -97,7 +97,7 @@ class LoggingAuctionObserverTest {
             ClientConnection connection,
             AuctionEventType sourceType,
             String expectedType
-    ) {
+    ) throws Exception {
         reset(connection);
         when(connection.isSubscribedTo("A001")).thenReturn(true);
         ArgumentCaptor<JsonObject> payload = ArgumentCaptor.forClass(JsonObject.class);

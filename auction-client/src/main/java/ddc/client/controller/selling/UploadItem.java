@@ -81,6 +81,7 @@ public class UploadItem implements Initializable {
     // Bảng chứa TextField và ErrorLabel thêm vào
     private final List<TextField> dynamicTextFields = new ArrayList<>();
     private final List<Label> dynamicErrorLabels = new ArrayList<>();
+    private static final String INTEGER_FIELD = "INTEGER";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UploadItem.class);
 
@@ -169,18 +170,17 @@ public class UploadItem implements Initializable {
             TextField textField = dynamicTextFields.get(i);
             Label errorLabel = dynamicErrorLabels.get(i);
             String value = textField.getText().trim();
-            String prompt = textField.getPromptText().toLowerCase();
 
             if (value.isEmpty()) {
                 // Lỗi 1: Trống dữ liệu
                 showFieldError(textField, errorLabel, "Thông tin này là bắt buộc.");
                 hasError = true;
-            } else if (prompt.contains("năm") || prompt.contains("tháng") || prompt.contains("số")) {
+            } else if (INTEGER_FIELD.equals(textField.getUserData())) {
                 // Lỗi 2: Sai định dạng số
                 try {
                     Integer.valueOf(value);
                 } catch (NumberFormatException e) {
-                    showFieldError(textField, errorLabel, "Thông tin này chỉ chứa số.");
+                    showFieldError(textField, errorLabel, "Thông tin này chỉ chứa số nguyên.");
                     hasError = true;
                 }
             }
@@ -458,8 +458,14 @@ public class UploadItem implements Initializable {
         dynamicErrorLabels.add(errorLabel);
 
         textField.textProperty().addListener((obs, old, newVal) -> {
-            if (!newVal.trim().isEmpty()) {
-                textField.setStyle("");
+            if (newVal.trim().isEmpty()) {
+                return;
+            }
+
+            if (INTEGER_FIELD.equals(textField.getUserData()) && !isInteger(newVal.trim())) {
+                setFieldError(textField, errorLabel, "Thông tin này chỉ chứa số nguyên.");
+            } else {
+                hideFieldError(textField, errorLabel);
             }
         });
         // BỌC CẢ 3 VÀO VBOX ĐỂ TẠO CỤM RIÊNG
@@ -478,8 +484,7 @@ public class UploadItem implements Initializable {
     }
 
     private void showFieldError(TextInputControl control, Label errorLabel, String message) {
-        control.setStyle("-fx-border-color: red;");
-        errorLabel.setText(message);
+        setFieldError(control, errorLabel, message);
         control.textProperty().addListener((o, old, newVal) -> {
             if (!newVal.trim().isEmpty()) {
                 hideFieldError(control, errorLabel);
@@ -487,9 +492,23 @@ public class UploadItem implements Initializable {
         });
     }
 
+    private void setFieldError(TextInputControl control, Label errorLabel, String message) {
+        control.setStyle("-fx-border-color: red;");
+        errorLabel.setText(message);
+    }
+
     private void hideFieldError(TextInputControl control, Label errorLabel) {
         control.setStyle("");
         errorLabel.setText("");
+    }
+
+    private boolean isInteger(String value) {
+        try {
+            Integer.parseInt(value);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 
     private void setImageSelectedState(boolean selected) {
