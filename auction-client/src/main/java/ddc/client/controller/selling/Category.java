@@ -2,6 +2,7 @@ package ddc.client.controller.selling;
 
 import ddc.client.model.ItemDTO.ArtDTO;
 import ddc.client.model.ItemDTO.ElectronicsDTO;
+import ddc.client.model.ItemDTO.GeneralDTO;
 import ddc.client.model.ItemDTO.ItemGeneric;
 import ddc.client.model.ItemDTO.VehicleDTO;
 import javafx.scene.control.TextField;
@@ -16,7 +17,7 @@ public enum Category {
         @SuppressWarnings("rawtypes")
         @Override
         public ItemGeneric getItemData(String itemName, String description, String sellerName) {
-            return new ArtDTO()
+            return new GeneralDTO()
                     .setItemName(itemName)
                     .setDescription(description)
                     .setCategory("GENERAL")
