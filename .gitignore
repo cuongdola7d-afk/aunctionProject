@@ -9,3 +9,4 @@ conversation_cache/
 .env.*
 !.env.example
 AUCTION_FLOW.md
+.env

@@ -70,7 +70,7 @@
                   <Insets />
                </HBox.margin>
             </VBox>
-            <Button alignment="CENTER" mnemonicParsing="false" prefHeight="30.0" prefWidth="60.0" style="-fx-background-color: #9e0000;" text="Xoá" textFill="WHITE">
+            <Button fx:id="btnDeleteAccount" alignment="CENTER" mnemonicParsing="false" onAction="#handleDeleteAccount" prefHeight="30.0" prefWidth="60.0" style="-fx-background-color: #9e0000;" text="Xoá" textFill="WHITE">
                <HBox.margin>
                   <Insets right="-40.0" />
                </HBox.margin>

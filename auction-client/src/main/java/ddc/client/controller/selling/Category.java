@@ -32,7 +32,7 @@ public enum Category {
         @Override
         public void renderUI(FieldBuilder builder) {
             this.authorField = builder.add("Tác giả: ","Nhập tên tác giả.");
-            this.yearCreatedField = builder.add("Năm sáng tác: ","Nhập năm sáng tác.");
+            this.yearCreatedField = builder.addInteger("Năm sáng tác: ","Nhập năm sáng tác.");
         }
 
         @SuppressWarnings("rawtypes")
@@ -56,7 +56,7 @@ public enum Category {
     public void renderUI(FieldBuilder builder) {
         // Tạo các ô nhập liệu đặc thù cho Điện tử
         this.BrandField = builder.add("Hãng sản xuất: ", "Nhập hãng sản xuất (VD: Apple, Samsung).");
-        this.warrantyField = builder.add("Thời gian bảo hành (tháng): ", "Nhập số tháng bảo hành.");
+        this.warrantyField = builder.addInteger("Thời gian bảo hành (tháng): ", "Nhập số tháng bảo hành.");
     }
 
     @SuppressWarnings("rawtypes")
@@ -81,7 +81,7 @@ public enum Category {
         @Override
         public void renderUI(FieldBuilder builder) {
             this.manufacturerField = builder.add("Nhà sản xuất: ", "Nhập tên nhà sản xuất.");
-            this.yearField = builder.add("Năm sản xuất: ", "Nhập tên năm sản xuất.");
+            this.yearField = builder.addInteger("Năm sản xuất: ", "Nhập năm sản xuất.");
         }
 
         @SuppressWarnings("rawtypes")
@@ -121,5 +121,11 @@ public enum Category {
 
     public interface FieldBuilder {
         TextField add(String labelText, String promptText);
+
+        default TextField addInteger(String labelText, String promptText) {
+            TextField field = add(labelText, promptText);
+            field.setUserData("INTEGER");
+            return field;
+        }
     }
 }

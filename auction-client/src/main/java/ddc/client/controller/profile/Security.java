@@ -12,14 +12,27 @@ import ddc.client.network.response.BaseResponse;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.util.Optional;
 
 public class Security {
     private static final Logger LOGGER = LoggerFactory.getLogger(Security.class);
@@ -33,6 +46,8 @@ public class Security {
     private Label errorLabel;
     @FXML
     private Button btnChangePassword;
+    @FXML
+    private Button btnDeleteAccount;
 
     @FXML
     private void switchBackToProfile(MouseEvent event) {
@@ -131,6 +146,82 @@ public class Security {
 
         // Kích hoạt luồng phụ chạy
         ClientContext.EXECUTOR.execute(changePasswordTask);
+    }
+
+    @FXML
+    private void handleDeleteAccount(ActionEvent event) {
+        Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmAlert.setTitle("Xac nhan xoa tai khoan");
+        confirmAlert.setHeaderText(null);
+        confirmAlert.setContentText("Ban co chac muon xoa tai khoan khong?");
+
+        ButtonType deleteButton = new ButtonType("Xoa", ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelButton = new ButtonType("Huy", ButtonBar.ButtonData.CANCEL_CLOSE);
+        confirmAlert.getButtonTypes().setAll(deleteButton, cancelButton);
+
+        Optional<ButtonType> result = confirmAlert.showAndWait();
+        if (result.isEmpty() || result.get() != deleteButton) {
+            return;
+        }
+
+        UserSession session = UserSession.getInstance();
+        UserDTO user = new UserDTO()
+                .setId(session.getId())
+                .setUsername(session.getUsername());
+
+        btnDeleteAccount.setDisable(true);
+        Task<String> deleteAccountTask = new Task<>() {
+            Request rq = new Request("DELETE_ACCOUNT", user);
+
+            @Override
+            protected String call() {
+                return RequestToServer.sendRequest(rq);
+            }
+        };
+
+        deleteAccountTask.setOnSucceeded(e -> {
+            btnDeleteAccount.setDisable(false);
+
+            BaseResponse response = new Gson().fromJson(deleteAccountTask.getValue(), BaseResponse.class);
+            if (response != null && "SUCCESS".equalsIgnoreCase(response.getStatus())) {
+                goToLogin(event);
+            } else {
+                showError(response == null || response.getMessage() == null
+                        ? "Khong xoa duoc tai khoan."
+                        : response.getMessage());
+            }
+        });
+
+        deleteAccountTask.setOnFailed(e -> {
+            btnDeleteAccount.setDisable(false);
+            showError("Khong the ket noi toi may chu!");
+            LOGGER.error("Loi xoa tai khoan", deleteAccountTask.getException());
+        });
+
+        ClientContext.EXECUTOR.execute(deleteAccountTask);
+    }
+
+    private void goToLogin(ActionEvent event) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/ddc/client/views/loginregister/login.fxml"));
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            Stage loginStage = new Stage();
+
+            Image icon = new Image(getClass().getResourceAsStream("/ddc/client/views/DDCAuction.png"));
+            loginStage.getIcons().add(icon);
+            loginStage.setTitle("DDC Auction");
+            loginStage.setScene(new Scene(root, 400, 500));
+            loginStage.setResizable(false);
+            loginStage.show();
+
+            currentStage.close();
+            UserSession.getInstance().cleanUserSession();
+            ClientContext.EXECUTOR.execute(() ->
+                    ddc.client.network.client.GlobalSocketClient.getInstance().disconnect());
+        } catch (IOException e) {
+            showError("Khong mo duoc man hinh dang nhap.");
+            LOGGER.error("Khong tim thay file login.fxml", e);
+        }
     }
 
     private void showSuccessEffect() {
