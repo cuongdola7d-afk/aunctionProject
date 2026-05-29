@@ -82,10 +82,52 @@ auctionProject/
 
 ## Vị Trí File JAR
 
-// Chưa có
+Để thuận tiện cho việc kiểm tra, bạn có thể tìm thấy các file **Fat JAR** của dự án tại hai vị trí sau:
+
+### Vị trí 1: Tải tại mục Releases GitHub
+Nếu bạn tải file nén `.rar` từ mục **Releases** của GitHub, hãy giải nén ra. Các file JAR đã được gom sẵn tại:
+* **File Server:** `ddcserver.jar`
+* **File Client:** `ddcclient.jar`
+
+### Vị trí 2: Trong Thư Mục Mã Nguồn 
+Nếu bạn tự build lại dự án từ mã nguồn, các file JAR sẽ tự động sinh ra trong thư mục `target` của từng module:
+* **File Server:** `auction-server/target/ddcserver.jar`
+* **File Client:** `auction-client/target/ddcclient.jar`
 
 ## Hướng Dẫn Chạy
-//chưa có
+
+Hệ thống hoạt động theo kiến trúc Client-Server (Socket TCP). Để tránh lỗi kết nối, bạn **bắt buộc phải khởi chạy Server trước, sau đó mới khởi chạy Client** theo đúng thứ tự sau:
+
+### Cách 1: Chạy nhanh từ file giải nén (Khuyến nghị cho Windows)
+Nếu bạn tải file `.zip` từ mục **Releases** của GitHub và giải nén ra:
+
+1. **Bước 1: Bật Server**
+   * Nhấp đúp chuột vào file `ddcserver.bat`. 
+   * Màn hình Terminal đen sẽ hiện lên để chạy Server Socket và giữ kết nối database.
+2. **Bước 2: Bật Client**
+   * Nhấp đúp chuột vào file `DDCAuction.exe`. 
+   * Giao diện đồ họa (JavaFX) của Client sẽ hiển thị ngay lập tức (Bản này đã tích hợp sẵn môi trường `runtime` nên máy không cần cài sẵn Java vẫn chạy được).
+
+---
+
+### Cách 2: Chạy bằng dòng lệnh `java -jar` 
+Bạn có thể chạy trực tiếp các file Fat JAR độc lập bằng dòng lệnh (Terminal/CMD) tại thư mục đã giải nén:
+
+1. **Bước 1: Khởi chạy Server**
+   * Open Terminal/CMD tại thư mục này và gõ lệnh:
+     ```bash
+     java -jar ddcserver.jar
+     ```
+   * *Yêu cầu:* Giữ nguyên cửa sổ này để Server duy trì lắng nghe kết nối từ các Client.
+
+2. **Bước 2: Khởi chạy Client (Mở thêm cửa sổ mới)**
+   * Mở một cửa sổ Terminal/CMD độc lập thứ hai tại thư mục này và gõ lệnh:
+     ```bash
+     java -jar ddcclient.jar
+     ```
+   * *Mẹo:* Bạn có thể mở thêm nhiều Terminal và gõ lại lệnh trên để bật nhiều Client cùng lúc, giúp test tính năng đấu giá realtime giữa nhiều tài khoản.
+
+---
 
 Client mặc định kết nối tới:
 
@@ -94,9 +136,7 @@ DDC_SERVER_HOST=localhost
 DDC_REQUEST_PORT=8080
 DDC_REALTIME_PORT=5555
 ```
-
 Nếu server chạy trên máy khác, sửa `DDC_SERVER_HOST` thành ip mạng của server trong `.env`.
-
 ## Chức Năng Đã Hoàn Thành
 
 1. Quản Lý Tài Khoản & Người Dùng (User Management)
@@ -136,6 +176,7 @@ Nếu server chạy trên máy khác, sửa `DDC_SERVER_HOST` thành ip mạng 
 - Fluent Setter: cấu hình item/request theo dạng chain
 - Singleton: quản lý auction tập trung qua `AuctionManager`
 - Observer: phát sự kiện đấu giá realtime
+- Strategy Pattern: tách logic xử lý request theo từng hành động thông qua interface `ActionHandler`. Mỗi handler là một strategy riêng;
 - DAO: tách truy cập database khỏi service
 - Service layer: xử lý nghiệp vụ chính
 - Handler layer: xử lý request từ client
@@ -182,28 +223,6 @@ auction-server/target/site/jacoco/
 ```
 
 ## Link Báo Cáo Và Demo
-//Link báo cáo ở đây
+- Báo cáo: https://drive.google.com/file/d/1DJ22lwYQmH8TsBMfQICsUKLxUxsw69KF/view?usp=drive_link
 
-//Link video ở đây
-
-## Thành Viên Và Phân Công
-
-- Cường:
-  - Thiết kế model Item ở server
-  - Áp dụng Factory Method kết hợp Fluent Setter
-  - Xử lý logic và ngoại lệ item
-  - Giao diện Selling và controller Selling
-
-- Đăng:
-  - Test case
-  - SceneSwitcher
-  - Ngoại lệ và nghiệp vụ đấu giá
-  - Observer pattern cho realtime auction
-  - Singleton `AuctionManager`
-
-- Đức:
-  - Socket kết nối client-server và server-database
-  - Giao diện đăng nhập, đăng ký
-  - Xử lý dữ liệu đăng nhập, đăng ký
-  - Model user
-  - Quản lý database
+- Video Demo: 
