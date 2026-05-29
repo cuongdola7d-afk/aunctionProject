@@ -24,7 +24,8 @@ public class Client extends Application {
 
         stage.setTitle("DDC Auction");
         stage.setScene(scene);
-        stage.setResizable(true);
+        stage.setResizable(false);
+        stage.setFullScreen(false);
         stage.show();
     }
 
