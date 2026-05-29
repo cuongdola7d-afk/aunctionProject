@@ -202,8 +202,8 @@ auction-server/target/site/jacoco/
   - Singleton `AuctionManager`
 
 - Đức:
-  - Socket kết nối client-server và server-database
-  - Giao diện đăng nhập, đăng ký
-  - Xử lý dữ liệu đăng nhập, đăng ký
-  - Model user
-  - Quản lý database
+  - Thiết kế và hoàn thiện GUI
+  - Nối server với database
+  - Tạo và Refactoring các Model và DTO, sử dụng Fluent Setter
+  - Category.java giúp tạo các phiên đấu giá có các sản phẩm thuộc các danh mục khác nhau
+  - Logo DDCAuction
