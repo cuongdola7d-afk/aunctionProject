@@ -1,3 +1,4 @@
+![DDCAuction](auction-client/src/main/resources/ddc/client/views/DDCAuction.png)
 # DDC Auction
 
 DDC Auction là hệ thống đấu giá trực tuyến theo mô hình client-server. Server xử lý nghiệp vụ, kết nối cơ sở dữ liệu, quản lý phiên đấu giá và phát sự kiện realtime; Client là ứng dụng JavaFX cho người dùng đăng ký, đăng nhập, đăng sản phẩm, tạo phiên đấu giá, đặt giá, quản lý ví và theo dõi thông báo.
