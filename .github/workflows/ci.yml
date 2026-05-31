@@ -4,9 +4,9 @@ name: CI Build & Test
 # Khi nào chạy?
 on:
   push:
-    branches: [master]     # Push vào main hoặc develop
+    branches: [main]     # Push vào main hoặc develop
   pull_request:
-    branches: [master]              # Tạo PR vào main
+    branches: [main]              # Tạo PR vào main
 
 jobs:
   build:
