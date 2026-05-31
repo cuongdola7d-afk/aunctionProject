@@ -42,6 +42,8 @@ DDC_SERVER_HOST=localhost
 DDC_REQUEST_PORT=8080
 DDC_REALTIME_PORT=5555
 DDC_IMAGE_PORT=8081
+
+CLOUDINARY_URL=cloudinary://<api_key>:<api_secret>@<cloud_name>
 ```
 
 
