@@ -225,4 +225,4 @@ auction-server/target/site/jacoco/
 ## Link Báo Cáo Và Demo
 - Báo cáo: https://drive.google.com/file/d/1DJ22lwYQmH8TsBMfQICsUKLxUxsw69KF/view?usp=drive_link
 
-- Video Demo: 
+- Video Demo: https://www.youtube.com/watch?v=FqM2hNvkNM8
